@@ -1,0 +1,6 @@
+[report]
+# https://coverage.readthedocs.io/en/coverage-5.0/excluding.html#advanced-exclusion
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
+    if __name__ == .__main__.:
