@@ -6,7 +6,14 @@ from typing import BinaryIO, ClassVar, Optional
 import attr
 import requests
 
-from wap.exception import CurseForgeAPIException, ReleaseException
+from wap.exception import CurseForgeAPIException, UploadException
+
+CHANGELOG_SUFFIX_MAP = {
+    ".md": "markdown",
+    ".markdown": "markdown",
+    ".html": "html",
+    ".txt": "text",
+}
 
 
 @attr.s(kw_only=True, order=False, auto_attribs=True)
@@ -17,17 +24,18 @@ class CurseForgeAPI:
         default=None, init=False, eq=False
     )
 
-    SESSION: ClassVar[requests.Session] = requests.Session()
-    TOKEN_HEADER_NAME: ClassVar[str] = "X-Api-Token"
+    _SESSION: ClassVar[requests.Session] = requests.Session()
+    _TOKEN_HEADER_NAME: ClassVar[str] = "X-Api-Token"
+    _CHANGELOG_TYPES: ClassVar[set[str]] = {"markdown", "text", "html"}
+    _UPLOADED_FILE_URL_TEMPLATE: ClassVar[
+        str
+    ] = "https://www.curseforge.com/wow/addons/{addon_name}/files/{file_id}"
+
+    RELEASE_TYPES: ClassVar[set[str]] = {"alpha", "beta", "release"}
     VERSION_ENDPOINT_URL: ClassVar[str] = "https://wow.curseforge.com/api/game/versions"
     UPLOAD_ENDPOINT_URL_TEMPLATE: ClassVar[
         str
     ] = "https://wow.curseforge.com/api/projects/{project_id}/upload-file"
-    CHANGELOG_TYPES: ClassVar[set[str]] = {"markdown", "text", "html"}
-    RELEASE_TYPES: ClassVar[set[str]] = {"alpha", "beta", "release"}
-    UPLOADED_FILE_URL_TEMPLATE: ClassVar[
-        str
-    ] = "https://www.curseforge.com/wow/addons/{addon_name}/files/{file_id}"
 
     def upload_addon_file(
         self,
@@ -52,32 +60,34 @@ class CurseForgeAPI:
             changelog_type=changelog_type,
         )
 
-        resp = self.SESSION.post(
+        resp = self._SESSION.post(
             url=self.UPLOAD_ENDPOINT_URL_TEMPLATE.format(project_id=project_id),
-            headers={self.TOKEN_HEADER_NAME: self.api_token},
+            headers={self._TOKEN_HEADER_NAME: self.api_token},
             data={"metadata": metadata},
             files={"file": (file_name, archive_file)},
         )
 
         if resp.status_code != requests.codes.ok:
             raise CurseForgeAPIException(
-                f"Response from CurseForge during file upload has status code "
+                f"Response from CurseForge during file upload has error status code "
                 f"{resp.status_code}. Response body: {resp.json()}"
             )
 
         return resp.json()["id"]  # type: ignore
 
-    def get_version_id(self, *, version: str, read_cache: bool = True) -> int:
-        if self._version_map_cache is None or not read_cache:
-            resp = self.SESSION.get(
+    def get_version_id(self, *, version: str) -> int:
+        # Since it's probably very common to upload 2 addons (a retail and classic), we
+        # cache this response.
+        if self._version_map_cache is None:
+            resp = self._SESSION.get(
                 url=self.VERSION_ENDPOINT_URL,
-                headers={self.TOKEN_HEADER_NAME: self.api_token},
+                headers={self._TOKEN_HEADER_NAME: self.api_token},
             )
 
             if resp.status_code != requests.codes.ok:
                 raise CurseForgeAPIException(
-                    f"Response from CurseForge during version lookup has status code "
-                    f"{resp.status_code}. Response body: {resp.json()}"
+                    f"Response from CurseForge during version lookup has error status "
+                    f"code {resp.status_code}. Response body: {resp.json()}"
                 )
 
             # this is a weird hoop, but the big wigs packager does the same thing:
@@ -94,8 +104,8 @@ class CurseForgeAPI:
                         self._version_map_cache[name] = id_
 
         if version not in self._version_map_cache:
-            raise ReleaseException(
-                f"Version {version} could not be found on CurseForge."
+            raise CurseForgeAPIException(
+                f"Version {version} could not be found on CurseForge"
             )
 
         return self._version_map_cache[version]
@@ -109,17 +119,6 @@ class CurseForgeAPI:
         version_id: int,
         release_type: str,
     ) -> str:
-        if changelog_type not in cls.CHANGELOG_TYPES:
-            raise ReleaseException(
-                f'Changelog type "{changelog_type}" must be one of: '
-                f"{','.join(cls.CHANGELOG_TYPES)}"
-            )
-        if release_type not in cls.RELEASE_TYPES:
-            raise ReleaseException(
-                f'Release type "{release_type}" must be one of: '
-                f"{','.join(cls.RELEASE_TYPES)}"
-            )
-
         return json.dumps(
             {
                 "changelog": changelog_contents,
@@ -128,4 +127,11 @@ class CurseForgeAPI:
                 "gameVersions": [version_id],
                 "releaseType": release_type,
             }
+        )
+
+    @classmethod
+    def uploaded_file_url(cls, addon_name: str, file_id: int) -> str:
+        return cls._UPLOADED_FILE_URL_TEMPLATE.format(
+            addon_name=addon_name,
+            file_id=file_id,
         )

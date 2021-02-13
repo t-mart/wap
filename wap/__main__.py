@@ -2,9 +2,6 @@
 Main entrypoint to the module
 """
 
-# for tests that check stderr contents on exception
-_INTERRUPTED_STR = "Interrupted"
-
 
 def main() -> None:
     # imports are done here to reduce the amount of time spent outside the try-except
@@ -13,11 +10,13 @@ def main() -> None:
     # exit code reference http://www.tldp.org/LDP/abs/html/exitcodes.html
 
     try:
-        import wap.cli
+        from wap.commands import base
 
-        wap.cli.base.main(standalone_mode=False)
+        base.main(standalone_mode=False)
+
         exit_code = 0
 
+    # unfortunately, BaseException is the only exception superclass of KeyboardInterrupt
     except BaseException as exc:
         from click import ClickException
 
@@ -25,7 +24,7 @@ def main() -> None:
         from wap.exception import WAPException
 
         if isinstance(exc, KeyboardInterrupt):
-            log.error(_INTERRUPTED_STR)
+            log.error("Interrupted")
             exit_code = 130
 
         elif isinstance(exc, WAPException):

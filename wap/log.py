@@ -4,7 +4,6 @@ Logging setup
 
 from __future__ import annotations
 
-import sys
 from typing import Optional
 
 import click
@@ -21,6 +20,10 @@ import click
 # let's just make some functions that do what we want. this will also allow further
 # improvements, like color, in the future
 
+# some logging lines are not covered by code coverage here because they are not
+# exercised by wap currently. I'd rather retain the full set of logging functions
+# in case we need them in the future. Hopefully, their simplicity should be self-evident
+
 
 def _log(*, label: Optional[str] = None, msg: str) -> None:
     out = msg
@@ -31,17 +34,17 @@ def _log(*, label: Optional[str] = None, msg: str) -> None:
 
 
 def debug(msg: str) -> None:
-    _log(label="DEBUG", msg=msg)
+    _log(label="DEBUG", msg=msg)  # pragma: no cover
 
 
 def info(msg: str) -> None:
     # no label here. this is the default way we should be communicating with the user
-    _log(msg=msg)
+    _log(msg=msg)  # pragma: no cover
 
 
 def warn(msg: str) -> None:
-    _log(label="WARNING", msg=msg)
+    _log(label="WARNING", msg=msg)  # pragma: no cover
 
 
 def error(msg: str) -> None:
-    _log(label="ERROR", msg=msg)
+    _log(label="ERROR", msg=msg)  # pragma: no cover

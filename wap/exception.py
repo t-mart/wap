@@ -17,21 +17,33 @@ class ConfigFileException(WAPException):
     """Indicates the config file could not be found"""
 
 
+class WoWVersionException(WAPException):
+    """Indicates a problem creating a version"""
+
+
 class DevInstallException(WAPException):
     """Indicates a problem during dev-installing"""
-
-
-class WowAddonPathException(WAPException):
-    """Indicates a wow addons path doesn't look right"""
 
 
 class BuildException(WAPException):
     """Indicates a problem during building"""
 
 
-class ReleaseException(WAPException):
-    """Indicates a problem during releasing"""
+class TocException(WAPException):
+    """Indicates a problem with a TOC file"""
+
+
+class UploadException(WAPException):
+    """Indicates a problem during uploading"""
 
 
 class CurseForgeAPIException(WAPException):
     """Indicates a problem communicating with CurseForge"""
+
+
+class NewProjectException(WAPException):
+    """Indicates a creating a new project"""
+
+
+class NewConfigException(WAPException):
+    """Indicates a creating a new configuration file"""

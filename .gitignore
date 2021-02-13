@@ -3,3 +3,4 @@ __pycache__
 .coverage
 htmlcov
 coverage.xml
+tests/fixtures/test_wow_installation/

@@ -1,69 +1,59 @@
-from typing import Callable
-from unittest.mock import patch
+"""
+Other modules in tests are, more or less, blackbox tests. They work by calling the Click
+base command using a CliRunner, which bypasses the main entrypoint of the application at
+__main__.py.
+
+There is some logic in __main__.py, and we test it here. We mock out the base command
+and give it particular side effects, so these tests are more whitebox tests.
+"""
 
 import pytest
 from click import ClickException
 from pytest_mock import MockerFixture
 
-from tests.fixtures import capsys_err
 from wap import __main__
 from wap.exception import WAPException
 
-_EXCEPTIONS_THROWN = [
-    ("wap exception", WAPException, 1),
-    ("click exception", ClickException, 1),
-    (__main__._INTERRUPTED_STR, KeyboardInterrupt, 130),
-]
+MAIN = __main__.main
+
+
+def test_normal_execution(mocker: MockerFixture) -> None:
+    mocker.patch("wap.commands.base.main")
+
+    # this method from
+    # https://medium.com/python-pandemonium/testing-sys-exit-with-pytest-10c6e5f7726f
+    with pytest.raises(SystemExit) as se:
+        MAIN()
+
+    assert se.value.code == 0
 
 
 @pytest.mark.parametrize(
-    ("exc", "expected_log", "expected_exit_code"),
+    ("exc_to_throw", "expected_exit_code"),
     [
-        (
-            exc(msg),
-            msg,
-            exit_code,
-        )
-        for msg, exc, exit_code in _EXCEPTIONS_THROWN
+        [KeyboardInterrupt(), 130],
+        [WAPException(""), 1],
+        [ClickException(""), 1],
     ],
-    ids=list(t[1].__name__ for t in _EXCEPTIONS_THROWN),
+    ids=["keyboard interrupt", "wap exception", "click exception"],
 )
-def test_main_handled_exception_thrown(
-    exc: Exception,
-    expected_log: str,
-    expected_exit_code: int,
-    capsys_err: Callable[[], str],
-    mocker: MockerFixture,
+def test_expected_exceptions(
+    mocker: MockerFixture, exc_to_throw: BaseException, expected_exit_code: int
 ) -> None:
-    mock_cli = mocker.patch("wap.cli.base", spec_set=True)
-    mock_cli.main.side_effect = exc
+    mock = mocker.patch("wap.commands.base.main")
+    mock.side_effect = exc_to_throw
 
-    with pytest.raises(SystemExit) as exc:  # type: ignore
-        __main__.main()
+    with pytest.raises(SystemExit) as se:
+        MAIN()
 
-        assert exc.value.code == expected_exit_code  # type: ignore
-
-    assert mock_cli.main.called
-
-    assert expected_log in capsys_err()
+    assert se.value.code == expected_exit_code
 
 
-def test_main_unhandled_exception_thrown(mocker: MockerFixture) -> None:
-    exc = Exception("a bug!")
+def test_unexpected_exception(mocker: MockerFixture) -> None:
+    mock = mocker.patch("wap.commands.base.main")
+    mock.side_effect = RuntimeError("")
 
-    mock_cli = mocker.patch("wap.cli.base", spec_set=True)
-    mock_cli.main.side_effect = exc
-
-    with pytest.raises(type(exc)):
-        __main__.main()
-
-
-def test_main_normal(mocker: MockerFixture) -> None:
-    mock_cli = mocker.patch("wap.cli.base", spec_set=True)
-
-    with pytest.raises(SystemExit) as exc:
-        __main__.main()
-
-        assert exc.value.code == 0
-
-    assert mock_cli.main.called
+    # note here that we're not catching system exit. this is an unexpected exception,
+    # so it passes through and produces a stack trace like we expect
+    with pytest.raises(RuntimeError):
+        MAIN()
