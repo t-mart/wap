@@ -141,7 +141,6 @@ class Environment:
         project_dir_path = fs_root / "src"
 
         project_dir_fixture = fixtures.project_dir_path(project_dir_name)
-        # shutil.copytree(project_dir_fixture, project_dir_path)
         self.fs.add_real_directory(
             project_dir_fixture, read_only=False, target_path=project_dir_path
         )
@@ -150,7 +149,6 @@ class Environment:
         if config_file_name:
             config_file_fixture = fixtures.config_file_path(config_file_name)
             config_file_path = project_dir_path / DEFAULT_CONFIG_PATH
-            # shutil.copyfile(config_file_fixture, config_file_path)
             self.fs.add_real_file(config_file_fixture, target_path=config_file_path)
 
         wow_dir_path: Optional[Path] = None
@@ -193,11 +191,11 @@ class Environment:
         self._prepared = True
 
     @contextmanager
-    def _chdir_to_source_dir(self) -> Generator[None, None, None]:
+    def _chdir_ctx(self, path: Path) -> Generator[None, None, None]:
         # this is a contextmanager so that we can set and reset the cwd. don't want to
         # pollute other tests' working directories
         old_cwd = os.getcwd()
-        os.chdir(self.project_dir_path)
+        os.chdir(path)
 
         yield None
 
@@ -207,13 +205,17 @@ class Environment:
         self,
         *args: str,
         env_vars: Optional[Mapping[str, str]] = None,
+        cwd: Optional[Path] = None,
     ) -> Result:
         if env_vars is None:
             env_vars = {}
 
+        if cwd is None:
+            cwd = self.project_dir_path
+
         runner = CliRunner(mix_stderr=False)
 
-        with self._chdir_to_source_dir():
+        with self._chdir_ctx(cwd):
             return runner.invoke(
                 base,
                 args=args,

@@ -8,7 +8,7 @@ wap (WoW Addon Packager)
 - New project command to get started quickly
 - Is easily configurable
 
-.. contents::
+.. contents:: Table of Contents
 
 Usage
 -----
@@ -22,7 +22,7 @@ If you'd like to get started quickly, create a new project fast with:
 
   wap quickstart MyAddon
 
-(Of course, you don't need to use the name ``MyAddon``. Pick whatever name you choose!)
+  # replace MyAddon with whatever you'd like
 
 The above command will create a project directory structure like the following:
 
@@ -35,24 +35,21 @@ The above command will create a project directory structure like the following:
   ├── README.md         (where you document your project)
   └── .wap.yml          (the *wap* config file)
 
-After this, you can:
-
-- begin developing your project's lua code
-- build your addon with ``wap build``
-- install your addon locally with ``wap dev-install``
-- update your ``.wap.yml`` with your CurseForge information and upload with
-  ``wap upload``
+After this, you can begin developing your addon and using other *wap* commands.
 
 Migrating from other pacakgers / Creating a new config file in an existing project
 **********************************************************************************
 
-To create a new ``.wap.yml`` file, run:
+The only file *wap* needs to run is a ``.wap.yml`` file. To create a new  file, run:
 
 .. code-block:: sh
 
   wap new-config
 
 The generated config file will contain a basic structure to get you started.
+
+There are a few differences between how *wap* works and how other package managers work.
+Please read around this document to learn about them.
 
 Building
 ********
@@ -71,7 +68,7 @@ To upload your addon to CurseForge, run:
 
 .. code-block:: sh
 
-  wap upload --version 1.2.3 --curseforge-token "abc123"
+  wap upload --addon-version 1.2.3 --curseforge-token "abc123"
 
 Instead of providing ``--curseforge-token``, you may also set the environment variable
 ``WAP_CURSEFORGE_TOKEN``.
@@ -216,39 +213,25 @@ Type
   ``sequence``
 
 Description
-  The versions of World of Warcraft that your addon targets.
+  The versions of World of Warcraft that your addon targets. *wap* will create different
+  builds for each version in the output directory.
+
+  Each version must be in the form "``x.y.z``", where ``x``, ``y``, and ``z`` are
+  integers.
 
   You must at least supply one of these, and can at most supply two (for retail and
   classic).
 
-.. _wow versions version:
+  *wap* uses these versions for a few things:
 
-``wow-versions[*].version``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  - To properly generate your TOC file with the right ``## Interface`` tag
+  - To ``dev-install` the right build into the right WoW AddOns path (e.g. a classic
+    addon build should not go into a `World of Warcraft/_retail_/Interface/AddOns`
+    directory.
+  - To designate which version your addon supports on CurseForge
 
-Required
-  Yes
-
-Type
-  ``string``
-
-Description
-  The version of World of Warcraft. Must be in the form "``x.y.z``", where "``x``",
-  "``y``", and "``z``" are integers.
-
-  If you are using TOC file generation, the ``Interface`` tag will be derived from this.
-
-``wow-versions[*].type``
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-Required
-  Yes
-
-Type
-  ``string``
-
-Description
-  The "type" of World of Warcraft. Must be either "``retail``" or "``classic``".
+  *wap* uses simple heuristics to decide if a version is retail or classic. Conversely,
+  it cannot determine if a version actually exists or not.
 
 ``curseforge``
 ^^^^^^^^^^^^^^
@@ -287,10 +270,10 @@ Type
   ``string``
 
 Description
-  The path *relative to the this file* of your changelog file. This file should contain
-  a helpful history of changes to your addon over time. (Conversely, this may also just
-  be a blank file if you are just getting started. There are no requirements for the
-  contents of this file.)
+  The path *relative to the config file* of your changelog file. This file should
+  contain a helpful history of changes to your addon over time. (There are no strict
+  requirements for the contents of this file, but it must exist. You may leave it
+  blank if you wish, but it will not help your users.)
 
   CurseForge requires changelog contents to be provided with file uploads, and will
   display this content on the file's page.
@@ -330,12 +313,11 @@ Type
 
 Description
   The string of the name of your addon as it is found in your addon's CurseForge
-  URL. The benefit of adding this is that *wap* will print the URL of your file
-  upload when it runs, so you can easily copy-paste it.
+  URL.
 
   While not strictly necessary, if this is not provided, *wap* cannot provide a URL for
-  you in its output. (This is a limitation of the CurseForge API. *wap* cannot retrieve
-  this name for you.)
+  your uploads in its output. (This is a limitation of the CurseForge API. *wap* cannot
+  retrieve this name for you.)
 
   For example, if your addon's URL is
   ``https://www.curseforge.com/wow/addons/myaddon``, then you would use the string
@@ -366,7 +348,7 @@ Type
   ``string``
 
 Description
-  The path *relative to the config file* of the directory you'd like to include in your
+  The path *relative to this config file* of the directory you'd like to include in your
   packaged addon.
 
   This cannot be a file -- it must be a directory because WoW only recognizes
@@ -423,7 +405,8 @@ Description
   **Importantly, you do not need to provide the ``Interface`` and ``Version`` tags!**
   *wap* can generate these for you from the WoW version you specified in
   ``wow-versions[*].version`` and the version your supply when you ``wap upload``.
-  If you do provide these tags, *wap* will do as you say, but will emit a warning.
+  If you do provide these tags, *wap* will do as you say, but will emit a warning and
+  likely break some of its guarantees.
 
   You may add custom tags here too, if you wish. Custom tags may be retrieved with the
   |GetAddOnMetadata function|_, but only if they are prefixed with ``X-``. *wap* will
@@ -442,7 +425,7 @@ Type
   ``sequence``
 
 Description
-  An sequence of paths *relative to the root of this directory* that specify the
+  An sequence of paths *relative to the* ``path`` *of this directory* that specify the
   Lua (or XML) files your addon should load. The order of this sequence is respected.
 
   To demonstrate, a ``files`` section that looks like this:
@@ -559,7 +542,7 @@ There are two main reasons:
     Non-prefixed tags do not cause an error for WoW, but on the other hand, they are
     also invisible to WoW.
 
-During early development, **optional** TOC generation was considered. But, it was
+During early development, *optional* TOC generation was considered. But, it was
 ultimately disallowed for the following reasons:
 
 - *wap* would do no validation of the tags and files in your TOC file. For example, you
@@ -623,8 +606,8 @@ For a variety of reasons:
   and/or ``svn checkout`` runner when you can run those tools better yourself. It opens
   up a huge surface area of support if *wap* needs to be able to run those tools itself.
 
-TLDR: *wap* could, but it won't. **Copy your dependencies into your project from an **
-**official release, or from the dependency's repository if that is all they offer.**
+TLDR: *wap* could, but it won't. **Copy your dependencies into your project from an
+official release, or from the dependency's repository if that is all they offer.**
 
 Why not support WoWInterface uploads?
 *************************************

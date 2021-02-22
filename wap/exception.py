@@ -41,7 +41,7 @@ class CurseForgeAPIException(WAPException):
     """Indicates a problem communicating with CurseForge"""
 
 
-class NewProjectException(WAPException):
+class QuickstartException(WAPException):
     """Indicates a creating a new project"""
 
 

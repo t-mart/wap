@@ -6,9 +6,9 @@ from wap import __version__, log
 from wap.commands.build import build
 from wap.commands.common import VERSION_STRING_TEMPLATE
 from wap.commands.dev_install import dev_install
-from wap.commands.upload import upload
-from wap.commands.quickstart import quickstart
 from wap.commands.new_config import new_config
+from wap.commands.quickstart import quickstart
+from wap.commands.upload import upload
 
 
 @click.group()

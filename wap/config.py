@@ -15,8 +15,7 @@ from wap.exception import (
     ConfigSemanticException,
     WoWVersionException,
 )
-from wap.wowversion import WoWVersion, LATEST_RETAIL_VERSION
-from wap.util import delete_path
+from wap.wowversion import LATEST_RETAIL_VERSION, WoWVersion
 
 _Type = TypeVar("_Type")
 _YamlObjectType = TypeVar("_YamlObjectType")
@@ -324,13 +323,9 @@ class Config(YamlType["Config", Mapping[str, Any]]):
         return cls.from_yaml(yaml=contents, label=str(path))
 
     def to_path(self, path: Path) -> None:
-        if path.exists():
-            delete_path(path)
-
         with path.open("w") as file:
             file.write(self.to_yaml())
             file.write("\n")
-
 
 
 def default_config(name: str) -> Config:
@@ -349,6 +344,9 @@ def default_config(name: str) -> Config:
                     tags={
                         "Title": name,
                         "Author": "Your name",
+                        "Notes": "The description of your addon...",
+                        "DefaultState": "Enabled",
+                        "LoadOnDemand": "0",
                     },
                     files=[Path(name).with_suffix(".lua")],
                 ),

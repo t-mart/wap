@@ -1,9 +1,12 @@
 [tool.poetry]
-name = "wap"
+name = "wow-addon-packager"
 version = "0.2.0"
 description = "A tool that builds your World of Warcraft addon and uploads them to CurseForge"
 authors = ["Tim Martin <tim@timmart.in>"]
 license = "GPLv3"
+packages = [
+    { include = "wap" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"

@@ -28,10 +28,6 @@ from wap.exception import BuildException, TocException
 def test_build(
     env: Environment, config_path_from_cli: bool, default_output_path: bool
 ) -> None:
-    """
-    These tests test commands that build and zip all the versions in the config
-    (build and upload)
-    """
     env.prepare(
         project_dir_name="basic",
         config_file_name="basic",

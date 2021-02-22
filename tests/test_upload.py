@@ -49,10 +49,6 @@ def test_upload(
     default_output_path: bool,
     release_type: str,
 ) -> None:
-    """
-    These tests test commands that build and zip all the versions in the config
-    (build and upload)
-    """
     env.prepare(
         project_dir_name="basic",
         config_file_name="basic",

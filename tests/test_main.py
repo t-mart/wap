@@ -1,10 +1,14 @@
 """
 Other modules in tests are, more or less, blackbox tests. They work by calling the Click
-base command using a CliRunner, which bypasses the main entrypoint of the application at
-__main__.py.
+base command using a CliRunner, which gives us an interface similar to that of a user
+using wap on the command line. Unfortunately, this bypasses the main entrypoint of the
+application at __main__.py.
 
-There is some logic in __main__.py, and we test it here. We mock out the base command
-and give it particular side effects, so these tests are more whitebox tests.
+There is some logic in __main__.py that still requires testing though, and we do that
+here. We mock out the base command and give it particular side effects, so these tests
+are more whitebox tests (tests that have an understanding of the internals of the
+program). There does not seem to be any other way to test __main__.py functionality from
+within Python.
 """
 
 import pytest

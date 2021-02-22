@@ -1,56 +1,38 @@
 from pathlib import Path
-from wap.exception import NewProjectException
 
 import click
 
-from wap.commands.common import (
-    DEFAULT_CONFIG_PATH,
-    PATH_TYPE,
-)
-from wap.config import Config, CurseforgeConfig, DirConfig, TocConfig
-from wap.wowversion import WoWVersion
+from wap.commands.common import DEFAULT_CONFIG_PATH, PATH_TYPE
+from wap.config import default_config
+from wap.exception import QuickstartException
 from wap.log import info
+from wap.wowversion import WoWVersion
 
 LATEST_RETAIL_VERSION = WoWVersion.from_dot_version("9.0.2")
-
-
-def default_config(name: str) -> Config:
-    return Config(
-        name=name,
-        wow_versions=[LATEST_RETAIL_VERSION],
-        curseforge_config=CurseforgeConfig(
-            project_id="00000",
-            changelog_path=Path("CHANGELOG.md"),
-            addon_name="fill-this-in",
-        ),
-        dir_configs=[
-            DirConfig(
-                path=Path(name),
-                toc_config=TocConfig(
-                    tags={
-                        "Title": name,
-                        "Author": "Your name",
-                    },
-                    files=[Path(name).with_suffix(".lua")],
-                ),
-            )
-        ],
-    )
 
 
 def write_changelog(path: Path, name: str) -> None:
     with path.open("w") as changelog_file:
         changelog_file.write(f"# {name} Changelog\n\n")
-        changelog_file.write("Added feature X\n")
-        changelog_file.write("Fixed bug Y\n")
+        changelog_file.write(
+            "This file is used by *wap* when you upload to Curseforge. It should "
+            "contain a record of changes over time to your project.\n\n"
+        )
+        changelog_file.write("## Example Version 0.0.1\n\n")
+        changelog_file.write("- Added feature X\n")
+        changelog_file.write("- Fixed bug Y\n")
 
 
 def write_readme(path: Path, name: str) -> None:
     with path.open("w") as readme_file:
         readme_file.write(f"# {name}\n\n")
         readme_file.write(
-            'This README file is written in Markdown, "a lightweight and easy-to-use '
-            'syntax for styling all forms of writing".\n\n'
+            "(This file is not required to run *wap*. It is here as a suggestion to "
+            "document your project.)\n\n"
+        )
+        readme_file.write(
+            'This file is written in Markdown, "a lightweight and easy-to-use syntax '
+            'for styling all forms of writing".\n\n'
         )
         readme_file.write(
             "You can learn more about Markdown at "
@@ -87,15 +69,18 @@ def quickstart(
 ) -> None:
     """
     Creates a new addon project directory at PROJECT_DIR_PATH with a default structure.
+    PROJECT_DIR_PATH must not exist. The final path component of PROJECT_DIR_PATH will
+    be used as the addon's name, the name of the directory in `dirs`, and the Lua file
+    created. These are merely suggestions to get you started and may be changed at will.
     """
     if project_dir_path.exists():
-        raise NewProjectException(
+        raise QuickstartException(
             f"{project_dir_path} exists. Choose a path that does not exist for your "
             "new project."
         )
 
     info(f"Creating project directory at {project_dir_path}")
-    project_dir_path.mkdir()
+    project_dir_path.mkdir(parents=True)
 
     project_name = project_dir_path.name
 
@@ -124,6 +109,7 @@ def quickstart(
     )
     info("  - wap build")
     info(
-        R'  - wap dev-install --wow-addons-path'
-        R'"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"')
+        R"  - wap dev-install --wow-addons-path"
+        R'"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"'
+    )
     info("Have fun!")
