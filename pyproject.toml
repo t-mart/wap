@@ -2,8 +2,13 @@
 name = "wow-addon-packager"
 version = "0.4.1"
 description = "A tool that builds your World of Warcraft addon and uploads them to CurseForge"
+license = "MIT"
 authors = ["Tim Martin <tim@timmart.in>"]
-license = "GPLv3"
+readme = "README.rst"
+homepage = "https://github.com/t-mart/wap"
+repository = "https://github.com/t-mart/wap"
+documentation = "https://github.com/t-mart/wap"
+keywords = ["World of Warcraft", "WoW", "Addons"]
 packages = [
     { include = "wap" },
 ]
