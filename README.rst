@@ -7,6 +7,7 @@ wap (WoW Addon Packager)
 - Generates valid TOC files for you
 - New project command to get started quickly
 - Is easily configurable
+- Tested on Windows, macOS, and Linux
 
 .. contents:: Table of Contents
 
@@ -142,10 +143,20 @@ The *wap* Configuration File
 For new YAML authors, see
 "`Learn YAML in five minutes. <https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes>`_".
 
-For advanced YAML authors, it may be important to note that *wap* uses a subset of YAML
-called ``strictyaml``. `This provides many benefits for users, but does restrict some
-YAML features. <https://hitchdev.com/strictyaml/#design-justifications>`_. **The vast
-majority of users will not notice a difference!**
+.. warning::
+  For advanced YAML authors, it may be important to note that *wap* uses a subset of
+  YAML called ``strictyaml``. This provides many benefits for users, but does
+  `restrict some YAML features. <https://hitchdev.com/strictyaml/#design-justifications>`_.
+  **The vast majority of users will not notice a difference!**
+
+.. warning::
+  In *wap* configuration files, all paths are treated as POSIX paths. The main highlight
+  of this is that **all path separators (the slashes between directories and **
+  **subdirectories and files) must be FORWARD SLASHES.** By choosing a standard,
+  configuration files become cross-platform.
+
+  All other paths, such as options to the ``wap`` command or outputs of ``wap`` are
+  otherwise unaffected by this rule.
 
 Sample ``.wap.yml`` Config File
 *******************************

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, Generic, Mapping, Optional, Sequence, TypeVar, cast
 
 import attr
@@ -74,7 +74,7 @@ class YamlType(Generic[_Type, _YamlObjectType], metaclass=ABCMeta):
 @attr.s(kw_only=True, auto_attribs=True, order=False)
 class TocConfig(YamlType["TocConfig", Mapping[str, Any]]):
     tags: Mapping[str, str]
-    files: Sequence[Path] = attr.ib()
+    files: Sequence[PurePosixPath] = attr.ib()
 
     @classmethod
     def _yaml_schema(cls) -> strictyaml.Validator:
@@ -93,8 +93,8 @@ class TocConfig(YamlType["TocConfig", Mapping[str, Any]]):
     @files.validator
     def _check_files_relative(
         self,
-        attribute: attr.Attribute[Sequence[Path]],
-        value: Sequence[Path],
+        attribute: attr.Attribute[Sequence[PurePosixPath]],
+        value: Sequence[PurePosixPath],
     ) -> None:
         if any(path.is_absolute() for path in value):
             raise ConfigSemanticException(
@@ -108,7 +108,7 @@ class TocConfig(YamlType["TocConfig", Mapping[str, Any]]):
     ) -> TocConfig:
         tags = obj["tags"]
 
-        files = [Path(file) for file in obj["files"]]
+        files = [PurePosixPath(file) for file in obj["files"]]
 
         return cls(
             tags=tags,
@@ -126,14 +126,14 @@ class TocConfig(YamlType["TocConfig", Mapping[str, Any]]):
 
 @attr.s(kw_only=True, auto_attribs=True, order=False)
 class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
-    path: Path = attr.ib()
+    path: PurePosixPath = attr.ib()
     toc_config: TocConfig = attr.ib(default=None)
 
     @path.validator
     def _check_path_relative(
         self,
-        attribute: attr.Attribute[Path],
-        value: Path,
+        attribute: attr.Attribute[PurePosixPath],
+        value: PurePosixPath,
     ) -> None:
         if value.is_absolute():
             raise ConfigSemanticException(
@@ -154,7 +154,7 @@ class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
         cls,
         obj: Mapping[str, Any],
     ) -> DirConfig:
-        path = Path(obj["path"])
+        path = PurePosixPath(obj["path"])
 
         toc_config = TocConfig.from_yaml_object(obj["toc"])
 
@@ -175,7 +175,7 @@ class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
 @attr.s(kw_only=True, auto_attribs=True, order=False)
 class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
     project_id: str
-    changelog_path: Path = attr.ib()
+    changelog_path: PurePosixPath = attr.ib()
     addon_name: str
 
     @classmethod
@@ -191,8 +191,8 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
     @changelog_path.validator
     def _check_path_relative(
         self,
-        attribute: attr.Attribute[Path],
-        value: Path,
+        attribute: attr.Attribute[PurePosixPath],
+        value: PurePosixPath,
     ) -> None:
         if value.is_absolute():
             raise ConfigSemanticException(
@@ -206,7 +206,7 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
     ) -> CurseforgeConfig:
         project_id = obj["project-id"]
 
-        changelog_path = Path(obj["changelog"])
+        changelog_path = PurePosixPath(obj["changelog"])
 
         addon_name = obj["addon-name"]
 
@@ -334,12 +334,12 @@ def default_config(name: str) -> Config:
         wow_versions=[LATEST_RETAIL_VERSION],
         curseforge_config=CurseforgeConfig(
             project_id="00000",
-            changelog_path=Path("CHANGELOG.md"),
+            changelog_path=PurePosixPath("CHANGELOG.md"),
             addon_name="fill-this-in",
         ),
         dir_configs=[
             DirConfig(
-                path=Path(name),
+                path=PurePosixPath(name),
                 toc_config=TocConfig(
                     tags={
                         "Title": name,
@@ -348,7 +348,7 @@ def default_config(name: str) -> Config:
                         "DefaultState": "Enabled",
                         "LoadOnDemand": "0",
                     },
-                    files=[Path(name).with_suffix(".lua")],
+                    files=[PurePosixPath(name + ".lua")],
                 ),
             )
         ],

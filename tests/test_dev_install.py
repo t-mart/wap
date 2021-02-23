@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from click.exceptions import BadParameter
 
-from tests.util import Environment, fileset, toc_fileset, toc_tagmap
+from tests.util import Environment, fileset, toc_fileset, toc_tagmap, normalized_path_string as ps
 from wap.commands.common import (
     DEFAULT_CONFIG_PATH,
     DEFAULT_OUTPUT_PATH,
@@ -66,10 +66,10 @@ def test_dev_install(
         env_vars[WAP_CONFIG_PATH_ENVVAR_NAME] = str(DEFAULT_CONFIG_PATH)
 
     if default_output_path:
-        output_path = "/out/path"
-        run_wap_args.extend(["--output-path", output_path])
+        output_path = str(DEFAULT_OUTPUT_PATH)
     else:
-        output_path = str(env.project_dir_path / DEFAULT_OUTPUT_PATH)
+        output_path = "out/path"
+        run_wap_args.extend(["--output-path", output_path])
 
     result = env.run_wap(*run_wap_args, env_vars=env_vars)
 
@@ -81,7 +81,7 @@ def test_dev_install(
     }
     expected_toc_files = {
         "Dir1.lua",
-        "Sub/Another.lua",
+        "Sub\\Another.lua",
     }
     expected_toc_tags = {
         "Title": "MyAddon Dir1",
@@ -90,27 +90,28 @@ def test_dev_install(
     }
 
     # check the stdout json
-    assert (
-        actual_json_output[wow_type]["build_dir_path"]
-        == f"{output_path}/MyAddon-dev-{wow_type}"
+    assert actual_json_output[wow_type]["build_dir_path"] == ps(
+        f"{output_path}/MyAddon-dev-{wow_type}"
     )
     assert set(actual_json_output[wow_type]["installed_dir_paths"]) == {
-        (str(env.wow_dir_path / "Dir1"))
+        (ps(str(env.wow_dir_path / "Dir1")))
     }
 
     # check the files in the build dir
-    actual_build_files = fileset(Path(f"{output_path}/MyAddon-dev-{wow_type}"))
+    actual_build_files = fileset(
+        env.project_dir_path / f"{output_path}/MyAddon-dev-{wow_type}"
+    )
     assert expected_build_files == actual_build_files
 
     # check the tags in the toc
     assert expected_toc_files == toc_fileset(
-        Path(f"{output_path}/MyAddon-dev-{wow_type}/Dir1/Dir1.toc")
+        env.project_dir_path / f"{output_path}/MyAddon-dev-{wow_type}/Dir1/Dir1.toc"
     )
     assert expected_toc_files == toc_fileset(env.wow_dir_path / "Dir1/Dir1.toc")
 
     # check the files in the toc
     assert expected_toc_tags == toc_tagmap(
-        Path(f"{output_path}/MyAddon-dev-{wow_type}/Dir1/Dir1.toc")
+        env.project_dir_path / f"{output_path}/MyAddon-dev-{wow_type}/Dir1/Dir1.toc"
     )
     assert expected_toc_tags == toc_tagmap(env.wow_dir_path / "Dir1/Dir1.toc")
 

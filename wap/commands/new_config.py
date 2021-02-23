@@ -30,7 +30,7 @@ def new_config(
     if config_path.exists():
         raise NewConfigException(f"{config_path} exists. Aborting to avoid data loss.")
 
-    project_name = Path.cwd().resolve().name
+    project_name = Path.cwd().name
 
     config = default_config(project_name)
     info(f"Creating config file at {config_path}")

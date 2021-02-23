@@ -12,6 +12,7 @@ from tests.util import (
     toc_fileset,
     toc_tagmap,
     zip_fileset,
+    normalized_path_string as ps,
 )
 from wap.commands.common import (
     DEFAULT_ADDON_VERSION,
@@ -78,10 +79,10 @@ def test_upload(
         env_vars[WAP_CONFIG_PATH_ENVVAR_NAME] = str(DEFAULT_CONFIG_PATH)
 
     if default_output_path:
-        output_path = "/out/path"
-        run_wap_args.extend(["--output-path", output_path])
+        output_path = str(DEFAULT_OUTPUT_PATH)
     else:
-        output_path = str(env.project_dir_path / DEFAULT_OUTPUT_PATH)
+        output_path = "out/path"
+        run_wap_args.extend(["--output-path", output_path])
 
     result = env.run_wap(*run_wap_args, env_vars=env_vars)
 
@@ -93,7 +94,7 @@ def test_upload(
     }
     expected_toc_files = {
         "Dir1.lua",
-        "Sub/Another.lua",
+        "Sub\\Another.lua",
     }
 
     # request_history_idx refers to the index in the requests_mock.request_history
@@ -106,13 +107,11 @@ def test_upload(
         ("classic", "11306", 2),
     ]:
         # check the stdout json
-        assert (
-            actual_json_output[wow_type]["build_dir_path"]
-            == f"{output_path}/MyAddon-{addon_version}-{wow_type}"
+        assert actual_json_output[wow_type]["build_dir_path"] == ps(
+            f"{output_path}/MyAddon-{addon_version}-{wow_type}"
         )
-        assert (
-            actual_json_output[wow_type]["zip_file_path"]
-            == f"{output_path}/MyAddon-{addon_version}-{wow_type}.zip"
+        assert actual_json_output[wow_type]["zip_file_path"] == ps(
+            f"{output_path}/MyAddon-{addon_version}-{wow_type}.zip"
         )
         assert actual_json_output[wow_type]["curseforge_upload_url"] == (
             f"https://www.curseforge.com/wow/addons/myaddon/files/{env.UPLOAD_FILE_ID}"
@@ -120,12 +119,15 @@ def test_upload(
 
         # check the files in the build dir
         actual_build_files = fileset(
-            Path(f"{output_path}/MyAddon-{addon_version}-{wow_type}")
+            env.project_dir_path / f"{output_path}/MyAddon-{addon_version}-{wow_type}"
         )
         assert expected_build_files == actual_build_files
 
         # check the files in the zip file
-        zip_path = Path(f"{output_path}/MyAddon-{addon_version}-{wow_type}.zip")
+        zip_path = (
+            env.project_dir_path
+            / f"{output_path}/MyAddon-{addon_version}-{wow_type}.zip"
+        )
         actual_zip_files = zip_fileset(zip_path)
         assert expected_build_files == actual_zip_files
 
@@ -137,12 +139,14 @@ def test_upload(
 
         # check the tags in the toc
         assert expected_toc_files == toc_fileset(
-            Path(f"{output_path}/MyAddon-{addon_version}-{wow_type}/Dir1/Dir1.toc")
+            env.project_dir_path
+            / f"{output_path}/MyAddon-{addon_version}-{wow_type}/Dir1/Dir1.toc"
         )
 
         # check the files in the toc
         assert expected_toc_tags == toc_tagmap(
-            Path(f"{output_path}/MyAddon-{addon_version}-{wow_type}/Dir1/Dir1.toc")
+            env.project_dir_path
+            / f"{output_path}/MyAddon-{addon_version}-{wow_type}/Dir1/Dir1.toc"
         )
 
         decoded_req = decode_file_upload_multipart_request(

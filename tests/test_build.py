@@ -5,7 +5,14 @@ from pathlib import Path
 import pytest
 
 from tests.fixtures import wow_dir_path
-from tests.util import Environment, fileset, toc_fileset, toc_tagmap, zip_fileset
+from tests.util import (
+    Environment,
+    fileset,
+    toc_fileset,
+    toc_tagmap,
+    zip_fileset,
+    normalized_path_string as ps,
+)
 from wap.commands.common import (
     DEFAULT_ADDON_VERSION,
     DEFAULT_CONFIG_PATH,
@@ -42,10 +49,10 @@ def test_build(
         env_vars[WAP_CONFIG_PATH_ENVVAR_NAME] = str(DEFAULT_CONFIG_PATH)
 
     if default_output_path:
-        output_path = "/out/path"
-        run_wap_args.extend(["--output-path", output_path])
+        output_path = str(DEFAULT_OUTPUT_PATH)
     else:
-        output_path = str(env.project_dir_path / DEFAULT_OUTPUT_PATH)
+        output_path = "out/path"
+        run_wap_args.extend(["--output-path", output_path])
 
     result = env.run_wap(*run_wap_args, env_vars=env_vars)
 
@@ -57,27 +64,27 @@ def test_build(
     }
     expected_toc_files = {
         "Dir1.lua",
-        "Sub/Another.lua",
+        "Sub\\Another.lua",
     }
 
     for wow_type, interface in [("retail", "90002"), ("classic", "11306")]:
         # check the stdout json
-        assert (
-            actual_json_output[wow_type]["build_dir_path"]
-            == f"{output_path}/MyAddon-dev-{wow_type}"
+        assert actual_json_output[wow_type]["build_dir_path"] == ps(
+            f"{output_path}/MyAddon-dev-{wow_type}"
         )
-        assert (
-            actual_json_output[wow_type]["zip_file_path"]
-            == f"{output_path}/MyAddon-dev-{wow_type}.zip"
+        assert actual_json_output[wow_type]["zip_file_path"] == ps(
+            f"{output_path}/MyAddon-dev-{wow_type}.zip"
         )
 
         # check the files in the build dir
-        actual_build_files = fileset(Path(f"{output_path}/MyAddon-dev-{wow_type}"))
+        actual_build_files = fileset(
+            env.project_dir_path / f"{output_path}/MyAddon-dev-{wow_type}"
+        )
         assert expected_build_files == actual_build_files
 
         # # check the files in the zip file
         actual_zip_files = zip_fileset(
-            Path(f"{output_path}/MyAddon-dev-{wow_type}.zip")
+            env.project_dir_path / f"{output_path}/MyAddon-dev-{wow_type}.zip"
         )
         assert expected_build_files == actual_zip_files
 
@@ -89,12 +96,12 @@ def test_build(
 
         # check the tags in the toc
         assert expected_toc_files == toc_fileset(
-            Path(f"{output_path}/MyAddon-dev-{wow_type}/Dir1/Dir1.toc")
+            env.project_dir_path / f"{output_path}/MyAddon-dev-{wow_type}/Dir1/Dir1.toc"
         )
 
         # check the files in the toc
         assert expected_toc_tags == toc_tagmap(
-            Path(f"{output_path}/MyAddon-dev-{wow_type}/Dir1/Dir1.toc")
+            env.project_dir_path / f"{output_path}/MyAddon-dev-{wow_type}/Dir1/Dir1.toc"
         )
 
 
