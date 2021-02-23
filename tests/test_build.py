@@ -5,14 +5,9 @@ from pathlib import Path
 import pytest
 
 from tests.fixtures import wow_dir_path
-from tests.util import (
-    Environment,
-    fileset,
-    toc_fileset,
-    toc_tagmap,
-    zip_fileset,
-    normalized_path_string as ps,
-)
+from tests.util import Environment, fileset
+from tests.util import normalized_path_string as ps
+from tests.util import toc_fileset, toc_tagmap, zip_fileset
 from wap.commands.common import (
     DEFAULT_ADDON_VERSION,
     DEFAULT_CONFIG_PATH,

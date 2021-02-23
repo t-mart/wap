@@ -40,7 +40,6 @@ def normalized_path_string(path: str) -> str:
     return str(Path(PurePosixPath(path)))
 
 
-
 def fileset(root: Path) -> set[Path]:
     return {
         (Path(dirpath) / filename).relative_to(root)
