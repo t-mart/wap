@@ -34,7 +34,6 @@ _OFFICIAL_TAGS = {
 _METADATA_TAG_PREFIX = "X-"
 
 
-
 @attr.s(kw_only=True, auto_attribs=True, order=False, frozen=True)
 class Toc:
     tags: Mapping[str, str]

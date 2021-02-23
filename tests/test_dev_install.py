@@ -4,7 +4,9 @@ from pathlib import Path
 import pytest
 from click.exceptions import BadParameter
 
-from tests.util import Environment, fileset, toc_fileset, toc_tagmap, normalized_path_string as ps
+from tests.util import Environment, fileset
+from tests.util import normalized_path_string as ps
+from tests.util import toc_fileset, toc_tagmap
 from wap.commands.common import (
     DEFAULT_CONFIG_PATH,
     DEFAULT_OUTPUT_PATH,
