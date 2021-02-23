@@ -46,6 +46,10 @@ jobs:
     - name: Run black
       run: |
         poetry run black --check wap tests
+    - name: Check twine
+      run: |
+        poetry build
+        poetry run twine check dist/*
 
   test:
     name: Test
@@ -128,10 +132,13 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install
+      - name: Build
+        run: |
+          poetry build
       - name: Deploy to PyPI
         run: |
           poetry config pypi-token.pypi ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
-          poetry publish --build
+          poetry publish
       - name: Create GitHub release
         id: create_release
         uses: actions/create-release@v1

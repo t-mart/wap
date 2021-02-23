@@ -27,7 +27,7 @@ If you'd like to get started quickly, create a new project fast with:
 
 The above command will create a project directory structure like the following:
 
-.. code-block:: none
+.. code-block::
 
   MyAddon               (your project's root directory)
   ├── MyAddon           (an addon directory that can be build/installed/uploaded)
@@ -237,7 +237,7 @@ Description
 
   - To properly generate your TOC file with the right ``## Interface`` tag
   - To ``dev-install` the right build into the right WoW AddOns path (e.g. a classic
-    addon build should not go into a `World of Warcraft/_retail_/Interface/AddOns`
+    addon build should not go into a ``World of Warcraft/_retail_/Interface/AddOns``
     directory.
   - To designate which version your addon supports on CurseForge
 
@@ -408,7 +408,7 @@ Description
 
   will produce a TOC file with this content:
 
-  .. code-block:: none
+  .. code-block::
 
     ## Title: MyAddon
     ## Notes: This is my addon
@@ -449,7 +449,7 @@ Description
 
   will produce a TOC file with this content:
 
-  .. code-block:: none
+  .. code-block::
 
     Init.lua
     Core.lua
@@ -560,10 +560,12 @@ ultimately disallowed for the following reasons:
   may include a file that does not exist or include a custom tag without the ``X-``
   prefix. This would likely cause bugs.
 - *wap* would not add your ``## Version: <version>`` tag. Therefore:
+
   * The version in your TOC file will **not** necessarily be equal to the
     ``--addon-version`` that you supply with commands.
   * The version may not even exist in your TOC file, which is not an error, but is
     a very unconventional software practice.
+    
 - *wap* would not add your ``## Interface: <interface>`` tag. Again, it may not even
   exist in your TOC file, which will probably cause WoW to believe it is out-of-date.
 - If you're uploading a classic and a retail version, but are using a fixed TOC file in
