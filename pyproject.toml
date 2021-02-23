@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wow-addon-packager"
-version = "0.4.0"
+version = "0.4.1"
 description = "A tool that builds your World of Warcraft addon and uploads them to CurseForge"
 authors = ["Tim Martin <tim@timmart.in>"]
 license = "GPLv3"
