@@ -8,11 +8,11 @@ from contextlib import contextmanager
 from pathlib import Path, PurePosixPath
 from typing import Any, ClassVar, Optional, Union
 from zipfile import ZipFile
-import arrow
-from freezegun import freeze_time
 
+import arrow
 import attr
 from click.testing import CliRunner, Result
+from freezegun import freeze_time
 from pyfakefs.fake_filesystem import FakeFilesystem
 from requests_mock import Mocker as RequestsMocker
 from requests_mock.request import _RequestObjectProxy

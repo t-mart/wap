@@ -12,6 +12,7 @@ from tests.util import (
 )
 from tests.util import normalized_path_string as ps
 from tests.util import toc_fileset, toc_tagmap, zip_fileset
+from wap import __version__
 from wap.commands.common import (
     DEFAULT_ADDON_VERSION,
     DEFAULT_CONFIG_PATH,
@@ -19,7 +20,6 @@ from wap.commands.common import (
     WAP_CONFIG_PATH_ENVVAR_NAME,
     WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
 )
-from wap import __version__
 from wap.exception import CurseForgeAPIException, UploadException
 
 
@@ -134,9 +134,9 @@ def test_upload(
             "Title": "MyAddon Dir1",
             "Version": addon_version,
             "Interface": interface,
-            'X-BuildDateTime': env.frozen_time.to("Z").isoformat(),
-            'X-BuildTool': f'wap v{__version__}',
-            'X-Custom-Tag': 'foobar',
+            "X-BuildDateTime": env.frozen_time.to("Z").isoformat(),
+            "X-BuildTool": f"wap v{__version__}",
+            "X-Custom-Tag": "foobar",
         }
 
         # check the tags in the toc

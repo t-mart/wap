@@ -327,6 +327,7 @@ class Config(YamlType["Config", Mapping[str, Any]]):
             file.write(self.to_yaml())
             file.write("\n")
 
+
 def default_config(name: str) -> Config:
     return Config(
         name=name,
