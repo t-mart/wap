@@ -88,7 +88,7 @@ class Toc:
             "\n",
             *[f"## {key}: {value}\n" for key, value in tag_map.items()],
             "\n",
-            *[f"{str(file)}\n" for file in self.files],
+            *[f"{str(file)}\n" for file in windows_files],
         ]
 
         with path.open("w") as toc_file:
