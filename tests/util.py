@@ -5,7 +5,7 @@ import os
 import re
 from collections.abc import Generator, Mapping
 from contextlib import contextmanager
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, ClassVar, Optional, Union
 from zipfile import ZipFile
 
@@ -19,8 +19,26 @@ from requests_toolbelt.multipart.decoder import BodyPart
 
 from tests import fixtures
 from wap.commands import base
-from wap.commands.common import DEFAULT_CONFIG_PATH, DEFAULT_OUTPUT_PATH
+from wap.commands.common import DEFAULT_CONFIG_PATH
 from wap.curseforge import CurseForgeAPI
+
+
+def normalized_path_string(path: str) -> str:
+    """
+    Return a string representing a POSIX path with the correct path separators for this
+    system. This is to aid test writing, so that tests may be written as if always on
+    a POSIX system.
+
+    For example, on Windows:
+      path_string("foo/bar") -> "foo\\bar"
+      path_string("foo\\bar") -> "foo\\bar"
+
+    or on unix-like systems:
+      path_string("foo/bar") -> "foo/bar"
+      path_string("foo\\bar") -> "foo/bar"
+    """
+    return str(Path(PurePosixPath(path)))
+
 
 
 def fileset(root: Path) -> set[Path]:

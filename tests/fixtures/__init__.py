@@ -18,7 +18,7 @@ WOW_DIRS = {
 
 
 def config_file_path(name: str) -> Path:
-    path = (CONFIGS_ROOT / name).with_suffix(".yml")
+    path = CONFIGS_ROOT / (name + ".yml")
     if not path.is_file():
         raise ValueError(f"Config path {path} is not a file")
     return path

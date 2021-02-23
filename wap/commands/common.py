@@ -14,7 +14,7 @@ class PathType(click.ParamType):
         param: Optional[click.Parameter],
         ctx: Optional[click.Context],
     ) -> Path:
-        return Path(value).resolve()
+        return Path(value)
 
 
 PATH_TYPE = PathType()
