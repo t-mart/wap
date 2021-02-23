@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - 'master'
-      # TODO delete ci after this feature is done
-      - 'ci'
     tags: [ 'v*' ]
   pull_request:
     branches:
