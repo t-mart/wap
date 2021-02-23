@@ -101,6 +101,9 @@ jobs:
       with:
         file: ./coverage.xml
         env_vars: OS,PYTHON
+      env:
+        OS: ${{ runner.os }}
+        PYTHON_VERSION: ${{ matrix.pyver }}
 
   deploy:
     name: Deploy
