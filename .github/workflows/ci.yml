@@ -13,7 +13,7 @@ on:
 jobs:
 
   lint:
-    name: Linter
+    name: Lint
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -43,7 +43,10 @@ jobs:
     - name: Run mypy
       run: |
         poetry run mypy
-    - name: Run black
+    - name: Check import formatting
+      run: |
+        poetry run isort --check wap tests
+    - name: Check black style formatting
       run: |
         poetry run black --check wap tests
     - name: Check twine
