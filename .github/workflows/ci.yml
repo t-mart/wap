@@ -100,6 +100,7 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         file: ./coverage.xml
+        env_vars: OS,PYTHON
 
   deploy:
     name: Deploy
