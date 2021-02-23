@@ -13,6 +13,7 @@ from wap.commands.common import (
     WAP_CONFIG_PATH_ENVVAR_NAME,
     WAP_WOW_ADDONS_PATH_ENVVAR_NAME,
 )
+from wap import __version__
 from wap.exception import DevInstallException
 
 
@@ -89,6 +90,9 @@ def test_dev_install(
         "Title": "MyAddon Dir1",
         "Version": "dev",
         "Interface": interface,
+        'X-BuildDateTime': env.frozen_time.to("Z").isoformat(),
+        'X-BuildTool': f'wap v{__version__}',
+        'X-Custom-Tag': 'foobar',
     }
 
     # check the stdout json

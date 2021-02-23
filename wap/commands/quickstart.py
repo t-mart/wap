@@ -56,7 +56,7 @@ def write_lua_file(path: Path, name: str) -> None:
         lua_file.write("-- but you can erase it if you wish.\n\n")
         lua_file.write(f'local title = GetAddOnMetadata("{name}", "Title")\n')
         lua_file.write(f'local version = GetAddOnMetadata("{name}", "Version")\n')
-        lua_file.write(f'print(title .. " version " .. version .. " initialized")\n')
+        lua_file.write(f'print(title .. " version " .. version .. " has loaded.")\n')
 
 
 @click.command()
@@ -72,7 +72,26 @@ def quickstart(
     PROJECT_DIR_PATH must not exist. The final path component of PROJECT_DIR_PATH will
     be used as the addon's name, the name of the directory in `dirs`, and the Lua file
     created. These are merely suggestions to get you started and may be changed at will.
+
+    For example, running:
+
+        wap quickstart MyAddon
+
+    will create the following directory structure:
+
+      \b
+      MyAddon
+      ├── MyAddon
+      │   └── MyAddon.lua
+      ├── CHANGELOG.md
+      ├── README.md
+      └── .wap.yml
     """
+    # the docstring above contains the \b escape. This prevents paragraph wrapping
+    # https://click.palletsprojects.com/en/7.x/documentation/#preventing-rewrapping
+    # i'm not sure why i had to adjust the indentation level to get it to line up
+    # properly though
+
     if project_dir_path.exists():
         raise QuickstartException(
             f"{project_dir_path} exists. Choose a path that does not exist for your "
@@ -109,7 +128,7 @@ def quickstart(
     )
     info("  - wap build")
     info(
-        R"  - wap dev-install --wow-addons-path"
+        R"  - wap dev-install --wow-addons-path "
         R'"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"'
     )
     info("Have fun!")

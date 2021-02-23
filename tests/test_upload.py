@@ -19,6 +19,7 @@ from wap.commands.common import (
     WAP_CONFIG_PATH_ENVVAR_NAME,
     WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
 )
+from wap import __version__
 from wap.exception import CurseForgeAPIException, UploadException
 
 
@@ -133,6 +134,9 @@ def test_upload(
             "Title": "MyAddon Dir1",
             "Version": addon_version,
             "Interface": interface,
+            'X-BuildDateTime': env.frozen_time.to("Z").isoformat(),
+            'X-BuildTool': f'wap v{__version__}',
+            'X-Custom-Tag': 'foobar',
         }
 
         # check the tags in the toc

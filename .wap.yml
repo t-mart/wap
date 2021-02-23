@@ -1,17 +1,19 @@
-name: MyAddon
+name: wap
 wow-versions:
 - 9.0.2
-- 1.13.6
 curseforge:
-  project-id: 123456
+  project-id: 000000
   changelog: CHANGELOG.md
-  addon-name: myaddon
+  addon-name: fill-this-in
 dirs:
-- path: Dir1
+- path: wap
   toc:
     tags:
-      Title: MyAddon Dir1
+      Title: wap
+      Author: Your name
+      Notes: The description of your addon...
+      DefaultState: Enabled
+      LoadOnDemand: 0
     files:
-    - Dir1.lua
-    - Sub/Another.lua
-- path: Dir2
+    - wap.lua
+

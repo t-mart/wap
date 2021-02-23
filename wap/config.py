@@ -327,13 +327,12 @@ class Config(YamlType["Config", Mapping[str, Any]]):
             file.write(self.to_yaml())
             file.write("\n")
 
-
 def default_config(name: str) -> Config:
     return Config(
         name=name,
         wow_versions=[LATEST_RETAIL_VERSION],
         curseforge_config=CurseforgeConfig(
-            project_id="00000",
+            project_id="000000",
             changelog_path=PurePosixPath("CHANGELOG.md"),
             addon_name="fill-this-in",
         ),

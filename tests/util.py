@@ -8,6 +8,8 @@ from contextlib import contextmanager
 from pathlib import Path, PurePosixPath
 from typing import Any, ClassVar, Optional, Union
 from zipfile import ZipFile
+import arrow
+from freezegun import freeze_time
 
 import attr
 from click.testing import CliRunner, Result
@@ -57,7 +59,7 @@ def zip_fileset(zip_path: Path) -> set[Path]:
         }
 
 
-TOC_TAG_RE = re.compile(r"^## (?P<name>\w+): (?P<value>.+)$", flags=re.MULTILINE)
+TOC_TAG_RE = re.compile(r"^## (?P<name>[^:]+): (?P<value>.+)$", flags=re.MULTILINE)
 TOC_FILE_RE = re.compile(r"^(?P<filepath>[^#\s].*)$", flags=re.MULTILINE)
 
 
@@ -87,6 +89,9 @@ class Environment:
 
     fs: FakeFilesystem
     requests_mock: RequestsMocker
+    frozen_time: arrow.Arrow = attr.ib(
+        default=arrow.get("2021-02-23T20:25:06.979923+00:00")
+    )
     _config_file_path: Optional[Path] = attr.ib(default=None, init=False)
     _wow_dir_path: Optional[Path] = attr.ib(default=None, init=False)
     _project_dir_path: Optional[Path] = attr.ib(default=None, init=False)
@@ -233,13 +238,14 @@ class Environment:
         runner = CliRunner(mix_stderr=False)
 
         with self._chdir_ctx(cwd):
-            return runner.invoke(
-                base,
-                args=args,
-                catch_exceptions=False,
-                standalone_mode=False,
-                env=env_vars,
-            )
+            with freeze_time(self.frozen_time.datetime):
+                return runner.invoke(
+                    base,
+                    args=args,
+                    catch_exceptions=False,
+                    standalone_mode=False,
+                    env=env_vars,
+                )
 
 
 @attr.s(kw_only=True, frozen=True, auto_attribs=True, order=False)

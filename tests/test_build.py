@@ -14,6 +14,7 @@ from wap.commands.common import (
     DEFAULT_OUTPUT_PATH,
     WAP_CONFIG_PATH_ENVVAR_NAME,
 )
+from wap import __version__
 from wap.exception import BuildException, TocException
 
 
@@ -87,6 +88,9 @@ def test_build(
             "Title": "MyAddon Dir1",
             "Version": "dev",
             "Interface": interface,
+            'X-BuildDateTime': env.frozen_time.to("Z").isoformat(),
+            'X-BuildTool': f'wap v{__version__}',
+            'X-Custom-Tag': 'foobar',
         }
 
         # check the tags in the toc
