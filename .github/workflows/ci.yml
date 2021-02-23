@@ -33,7 +33,7 @@ jobs:
         path: ~/.cache/pip
     - name: Get Poetry
       run: |
-        pip install --user poetry
+        pip install poetry
     - name: Cache Poetry
       uses: actions/cache@v2
       with:
@@ -78,7 +78,7 @@ jobs:
         path: ${{ steps.pip-cache.outputs.dir }}
     - name: Get Poetry
       run: |
-        pip install --user poetry
+        pip install poetry
     - name: Get poetry cache dir
       id: poetry-cache
       run: |
@@ -121,7 +121,7 @@ jobs:
           path: ~/.cache/pip
       - name: Get Poetry
         run: |
-          pip install --user poetry
+          pip install poetry
       - name: Cache Poetry
         uses: actions/cache@v2
         with:
