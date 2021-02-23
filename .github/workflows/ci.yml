@@ -1,0 +1,156 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - 'master'
+      # TODO delete ci after this feature is done
+      - 'ci'
+    tags: [ 'v*' ]
+  pull_request:
+    branches:
+      - 'master'
+  workflow_dispatch:
+
+
+
+jobs:
+
+  lint:
+    name: Linter
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Cache PyPI
+      uses: actions/cache@v2
+      with:
+        key: pip-lint-poetry
+        path: ~/.cache/pip
+    - name: Get Poetry
+      run: |
+        pip install --user poetry
+    - name: Cache Poetry
+      uses: actions/cache@v2
+      with:
+        key: poetry-lint-${{ hashFiles('poetry.lock') }}
+        path: ~/.cache/pypoetry
+        restore-keys: |
+            poetry-lint-
+    - name: Install dependencies
+      run: |
+        poetry install
+    - name: Run mypy
+      run: |
+        poetry run mypy
+    - name: Run black
+      run: |
+        poetry run black --check wap tests
+
+  test:
+    name: Test
+    needs: lint
+    strategy:
+      matrix:
+        pyver: [3.9]
+        os: [ubuntu, macos, windows]
+      fail-fast: true
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Python ${{ matrix.pyver }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.pyver }}
+    - name: Get pip cache dir
+      id: pip-cache
+      run: |
+        echo "::set-output name=dir::$(pip cache dir)"
+    - name: Cache PyPI
+      uses: actions/cache@v2
+      with:
+        key: pip-test-poetry-${{ runner.os }}-${{ matrix.pyver }}
+        path: ${{ steps.pip-cache.outputs.dir }}
+    - name: Get Poetry
+      run: |
+        pip install --user poetry
+    - name: Get poetry cache dir
+      id: poetry-cache
+      run: |
+        echo "::set-output name=dir::$(poetry config cache-dir)"
+    - name: Cache Poetry
+      uses: actions/cache@v2
+      with:
+        key: poetry-test-${{ runner.os }}-${{ matrix.pyver }}-${{ hashFiles('poetry.lock') }}
+        path: ${{ steps.poetry-cache.outputs.dir }}
+        restore-keys: |
+            poetry-test-${{ runner.os }}-${{ matrix.pyver }}-
+    - name: Install dependencies
+      run: |
+        poetry install
+    - name: Run unittests
+      run: |
+        poetry run tests --cov=wap --cov-report=xml
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: test
+    # Run only on pushing a tag
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Cache PyPI
+        uses: actions/cache@v2
+        with:
+          key: pip-deploy-poetry
+          path: ~/.cache/pip
+      - name: Get Poetry
+        run: |
+          pip install --user poetry
+      - name: Cache Poetry
+        uses: actions/cache@v2
+        with:
+          key: poetry-deploy-${{ hashFiles('poetry.lock') }}
+          path: ~/.cache/pypoetry
+          restore-keys: |
+              poetry-deploy-
+      - name: Install dependencies
+        run: |
+          poetry install
+      - name: Deploy to PyPI
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
+          poetry publish --build
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload release assets
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
