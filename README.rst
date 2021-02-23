@@ -17,7 +17,7 @@ wap (WoW Addon Packager)
    :target: https://github.com/psf/black
    :alt: Code styled with black
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+.. image:: https://img.shields.io/github/license/t-mart/wap
    :target: https://github.com/t-mart/wap/blob/master/LICENSE
    :alt: MIT licensed
 
