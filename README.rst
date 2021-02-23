@@ -1,6 +1,26 @@
 wap (WoW Addon Packager)
 ========================
 
+.. image:: https://github.com/t-mart/wap/actions/workflows/ci.yml/badge.svg?branch=master
+   :target: https://github.com/t-mart/wap/actions/workflows/ci.yml
+   :alt: GitHub Actions status for master branch
+
+.. image:: https://codecov.io/gh/t-mart/wap/branch/master/graph/badge.svg?token=AVOA4QWTBL
+   :target: https://codecov.io/gh/t-mart/wap
+   :alt: Code Coverage on codecov.io
+
+.. image:: https://img.shields.io/pypi/v/wow-addon-packager
+   :target: https://pypi.org/project/wow-addon-packager/
+   :alt: Latest release on PyPI
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+   :alt: Code styled with black
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/t-mart/wap/blob/master/LICENSE
+   :alt: MIT licensed
+
 - Builds and uploads your addons to CurseForge
 - Uploads for retail and/or classic
 - Installs your addons to your Addons folder for fast development feedback
@@ -14,8 +34,8 @@ wap (WoW Addon Packager)
 Usage
 -----
 
-Quickstart
-**********
+Create a new addon project
+**************************
 
 If you'd like to get started quickly, create a new project fast with:
 
@@ -74,6 +94,8 @@ To upload your addon to CurseForge, run:
 Instead of providing ``--curseforge-token``, you may also set the environment variable
 ``WAP_CURSEFORGE_TOKEN``.
 
+You may generate a new token at `<https://authors.curseforge.com/account/api-tokens>`_.
+
 Some may prefer to use the current Git tag name as the version. You can just leverage
 your shell to fill this option in with something like:
 
@@ -118,20 +140,17 @@ Installation
 1. Get Python 3.9 or greater. You can confirm this with ``python --version`` and
    verifying your version is at least that.
 
-   Developers who do not have Python (or the right version) may get it easily from
-   `<https://www.python.org/downloads/>`_.
+   You can download Python from `<https://www.python.org/downloads/>`_.
 
 2. Install *wap* from PyPI:
 
-   .. code-block:: yaml
+   .. code-block:: sh
 
-     pip install wow-wap
-
-   Or, of course, you may install it into a virtual environment.
+     pip install wow-addon-packager
 
 3. Verify *wap* can run:
 
-   .. code-block:: yaml
+   .. code-block:: sh
 
      wap --version
 
@@ -565,7 +584,7 @@ ultimately disallowed for the following reasons:
     ``--addon-version`` that you supply with commands.
   * The version may not even exist in your TOC file, which is not an error, but is
     a very unconventional software practice.
-    
+
 - *wap* would not add your ``## Interface: <interface>`` tag. Again, it may not even
   exist in your TOC file, which will probably cause WoW to believe it is out-of-date.
 - If you're uploading a classic and a retail version, but are using a fixed TOC file in
