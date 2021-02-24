@@ -23,7 +23,7 @@ def build(
     output_path: Path,
     addon_version: str,
     show_json: bool,
-) -> None:
+) -> int:
     """
     Builds packages, creating a directory with your packaged addon and a zip archive.
     Outputs a JSON object describing the locations of the built files.
@@ -55,3 +55,5 @@ def build(
 
     if show_json:
         click.echo(json.dumps(output_map, indent=2))
+
+    return 0

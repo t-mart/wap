@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 
 import pytest
-from requests_mock import Mocker as RequestsMocker
 
 from tests.util import (
     VERSION_ID_MAP,

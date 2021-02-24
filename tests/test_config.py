@@ -12,29 +12,31 @@ from wap.exception import (
     ConfigSemanticException,
 )
 
-RUN_ARGS = [
-    (("build",),),
-    (
-        (
-            "dev-install",
-            "--wow-addons-path",
-            str(wow_dir_path("retail")),
-        ),
-    ),
-    (
-        (
-            "upload",
-            "--addon-version",
-            DEFAULT_ADDON_VERSION,
-            "--curseforge-token",
-            "abc123",
-        ),
-    ),
-]
-
 
 @pytest.mark.parametrize(
-    ("run_args",), RUN_ARGS, ids=["build", "dev-install", "upload"]
+    ("run_args",),
+    [
+        [
+            ("build",),
+        ],
+        [
+            (
+                "dev-install",
+                "--wow-addons-path",
+                str(wow_dir_path("retail")),
+            )
+        ],
+        [
+            (
+                "upload",
+                "--addon-version",
+                DEFAULT_ADDON_VERSION,
+                "--curseforge-token",
+                "abc123",
+            )
+        ],
+    ],
+    ids=["build", "dev-install", "upload"],
 )
 class TestConfigUsingCommands:
     def test_config_path_not_file(
@@ -143,8 +145,12 @@ class TestConfigUsingCommands:
 @pytest.mark.parametrize(
     ("run_args",),
     [
-        (("build",),),
-        (("dev-install", "--wow-addons-path", str(wow_dir_path("retail"))),),
+        [
+            ("build",),
+        ],
+        [
+            ("dev-install", "--wow-addons-path", str(wow_dir_path("retail"))),
+        ],
     ],
     ids=["build", "dev-install"],
 )

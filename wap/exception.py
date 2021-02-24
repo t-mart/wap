@@ -5,15 +5,19 @@ class WAPException(Exception):
         self.message = message
 
 
-class ConfigSemanticException(WAPException):
+class ConfigException(WAPException):
+    """Indicates a general problem with the config."""
+
+
+class ConfigSemanticException(ConfigException):
     """Indicates there was a problem with the data in the config"""
 
 
-class ConfigSchemaException(WAPException):
+class ConfigSchemaException(ConfigException):
     """Indicates the loaded yaml does not follow the yaml schema"""
 
 
-class ConfigFileException(WAPException):
+class ConfigFileException(ConfigException):
     """Indicates the config file could not be found"""
 
 

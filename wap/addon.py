@@ -3,6 +3,8 @@ from collections.abc import Sequence
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
+import click
+
 from wap import log
 from wap.config import CurseforgeConfig, DirConfig
 from wap.curseforge import CHANGELOG_SUFFIX_MAP, CurseForgeAPI
@@ -56,7 +58,14 @@ def build_addon(
             wow_version=wow_version,
         )
 
-    log.info(f"Built addon {addon_name} ({wow_version.type()}) at {build_path}")
+    log.info(
+        f"Built addon "
+        + click.style(f"{addon_name}", fg="blue")
+        + " ("
+        + click.style(f"{wow_version.type()}", fg="magenta")
+        + ") at "
+        + click.style(f"{build_path}", fg="green")
+    )
 
     return build_path
 
@@ -76,7 +85,14 @@ def zip_addon(addon_name: str, wow_version: WoWVersion, build_path: Path) -> Pat
                 arcname=path.relative_to(build_path),
             )
 
-    log.info(f"Zipped addon {addon_name} ({wow_version.type()}) at {zip_path}")
+    log.info(
+        f"Zipped addon "
+        + click.style(f"{addon_name}", fg="blue")
+        + " ("
+        + click.style(f"{wow_version.type()}", fg="magenta")
+        + ") at "
+        + click.style(f"{zip_path}", fg="green")
+    )
 
     return zip_path
 
@@ -127,7 +143,12 @@ def upload_addon(
         addon_name=curseforge_config.addon_name,
         file_id=file_id,
     )
-    log.info(f"Uploaded {addon_name} to CurseForge at {url}")
+    log.info(
+        f"Uploaded "
+        + click.style(f"{addon_name}", fg="blue")
+        + " to CurseForge at "
+        + click.style(f"{url}", fg="green")
+    )
 
     return url
 
@@ -150,5 +171,10 @@ def dev_install_addon(
 
         installed_paths.append(install_addon_path)
 
-    log.info(f"Installed addon {addon_name} to {wow_addons_path}")
+    log.info(
+        f"Installed addon "
+        + click.style(f"{addon_name}", fg="blue")
+        + " to "
+        + click.style(f"{install_addon_path}", fg="green")
+    )
     return installed_paths

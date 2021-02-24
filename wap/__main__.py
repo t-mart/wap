@@ -12,18 +12,16 @@ def main() -> None:
     try:
         from wap.commands import base
 
-        base.main(standalone_mode=False)
-
-        exit_code = 0
+        exit_code = base.main(standalone_mode=False)
 
     # unfortunately, BaseException is the only exception superclass of KeyboardInterrupt
     except BaseException as exc:
-        from click import ClickException
+        from click import Abort, ClickException
 
         from wap import log
         from wap.exception import WAPException
 
-        if isinstance(exc, KeyboardInterrupt):
+        if isinstance(exc, KeyboardInterrupt) or isinstance(exc, Abort):
             log.error("Interrupted")
             exit_code = 130
 
