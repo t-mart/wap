@@ -21,6 +21,11 @@ wap (WoW Addon Packager)
    :target: https://github.com/t-mart/wap/blob/master/LICENSE
    :alt: MIT licensed
 
+|
+
+.. image:: https://raw.githubusercontent.com/aio-libs/aiohttp/master/docs/demo.gif
+   :alt: wap demo
+
 - Builds and uploads your addons to CurseForge
 - Uploads for retail and/or classic
 - Installs your addons to your Addons folder for fast development feedback
@@ -287,7 +292,7 @@ Type
 Description
   The project id as found on your CurseForge addon's page.
 
-  .. image:: docs/project-id.png
+  .. image:: https://raw.githubusercontent.com/aio-libs/aiohttp/master/docs/project-id.png
     :alt: Where to find your CurseForge project id
 
 ``curseforge.changelog``
