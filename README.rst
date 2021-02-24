@@ -70,7 +70,7 @@ always change them later in your configuration file.
 Building
 ********
 
-Building packages up your addon into a single directory and creates a zip file of it.
+Building your addon packages it up into a single directory and creates a zip file of it.
 
 .. code-block:: console
 
