@@ -3,8 +3,8 @@ from pathlib import Path
 import click
 
 from wap.commands.common import DEFAULT_CONFIG_PATH, PATH_TYPE
-from wap.config import default_config
 from wap.exception import NewConfigException
+from wap.guided_config import guide
 from wap.log import info
 
 
@@ -19,7 +19,7 @@ from wap.log import info
 )
 def new_config(
     config_path: Path,
-) -> None:
+) -> int:
     """
     Creates a new configuration file with some pre-filled data.
 
@@ -32,6 +32,8 @@ def new_config(
 
     project_name = Path.cwd().name
 
-    config = default_config(project_name)
-    info(f"Creating config file at {config_path}")
+    config = guide(project_dir_name=project_name)
+    info(f"\nCreating config file at {config_path}")
     config.to_path(config_path)
+
+    return 0

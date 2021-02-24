@@ -2,10 +2,11 @@ from pathlib import Path
 
 import click
 
+from wap import log
 from wap.commands.common import DEFAULT_CONFIG_PATH, PATH_TYPE
-from wap.config import default_config
 from wap.exception import QuickstartException
-from wap.log import info
+from wap.guided_config import guide
+from wap.util import default_wow_addons_path_for_system
 from wap.wowversion import WoWVersion
 
 LATEST_RETAIL_VERSION = WoWVersion.from_dot_version("9.0.2")
@@ -66,7 +67,7 @@ def write_lua_file(path: Path, name: str) -> None:
 )
 def quickstart(
     project_dir_path: Path,
-) -> None:
+) -> int:
     """
     Creates a new addon project directory at PROJECT_DIR_PATH with a default structure.
     PROJECT_DIR_PATH must not exist. The final path component of PROJECT_DIR_PATH will
@@ -77,13 +78,13 @@ def quickstart(
 
         wap quickstart MyAddon
 
-    will create the following directory structure:
+    will create a directory structure like the following:
 
       \b
       MyAddon
       ├── MyAddon
       │   └── MyAddon.lua
-      ├── CHANGELOG.md
+      ├── CHANGELOG.md (if uploading to CurseForge)
       ├── README.md
       └── .wap.yml
     """
@@ -98,37 +99,65 @@ def quickstart(
             "new project."
         )
 
-    info(f"Creating project directory at {project_dir_path}")
+    config = guide(project_dir_name=project_dir_path.resolve().name)
+    project_name = config.name
+
+    log.info(
+        "\nCreating project directory at "
+        + click.style(f"{project_dir_path}", fg="green")
+    )
     project_dir_path.mkdir(parents=True)
-
-    project_name = project_dir_path.name
-
-    config = default_config(project_name)
     config_path = project_dir_path / DEFAULT_CONFIG_PATH
-    info(f"Creating config file at {config_path}")
+    log.info("Writing config file at " + click.style(f"{config_path}", fg="green"))
     config.to_path(config_path)
 
-    changelog_path = project_dir_path / "CHANGELOG.md"
-    info(f"Creating changelog file at {changelog_path}")
-    write_changelog(changelog_path, project_name)
+    if config.curseforge_config:
+        changelog_path = project_dir_path / config.curseforge_config.changelog_path
+        log.info(
+            "Creating changelog file at " + click.style(f"{changelog_path}", fg="green")
+        )
+        write_changelog(changelog_path, project_name)
 
     readme_path = project_dir_path / "README.md"
-    info(f"Creating readme at {readme_path}")
+    log.info("Creating readme at " + click.style(f"{readme_path}", fg="green"))
     write_readme(readme_path, project_name)
 
-    lua_file = project_dir_path / project_name / (project_name + ".lua")
-    info(f"Creating starter lua file at {lua_file}")
+    dir_config = config.dir_configs[0]
+    toc_config_file = dir_config.toc_config.files[0]
+    lua_file = project_dir_path / dir_config.path / toc_config_file
+    log.info(f"Creating starter lua file at " + click.style(f"{lua_file}", fg="green"))
     lua_file.parent.mkdir()
     write_lua_file(lua_file, project_name)
 
-    info(f"Project created! You can now begin developing your project.")
-    info(
-        f"After you `cd {project_dir_path}`, you can get started running some wap "
-        "commands immediately, such as:"
+    log.info(
+        click.style(
+            f"\nProject created! You can now begin developing your project.\n",
+            fg="green",
+            bold=True,
+        )
     )
-    info("  - wap build")
-    info(
-        R"  - wap dev-install --wow-addons-path "
-        R'"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"'
+    log.info(
+        "After you `"
+        + click.style(f"cd {project_dir_path}", fg="magenta")
+        + "`, you can get started running some wap commands immediately, such as:"
     )
-    info("Have fun!")
+    log.info("  - " + click.style("wap build", fg="blue"))
+    log.info(
+        "  - "
+        + click.style(
+            f"wap dev-install --wow-addons-path {default_wow_addons_path_for_system()}",
+            fg="blue",
+        )
+    )
+    if config.curseforge_config:
+        log.info(
+            "  - "
+            + click.style(
+                'wap upload --addon-version 0.0.1 --curseforge-token "<your-token>"',
+                fg="blue",
+            )
+        )
+
+    log.info("\nHave fun!")
+
+    return 0

@@ -87,7 +87,15 @@ def addon_version_option(
     return wrapper
 
 
-def json_option() -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYPE]:
+def json_option(
+    *, help: Optional[str] = None
+) -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYPE]:
+    if help is None:
+        help = (
+            "Output json to stdout of the operations wap performed (so it can be "
+            "written to files or piped to other programs)"
+        )
+
     def wrapper(func: _DECORATED_FUNC_TYPE) -> _DECORATED_FUNC_TYPE:
         decorated = click.option(
             "-j",
@@ -95,10 +103,7 @@ def json_option() -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYPE]:
             "show_json",
             is_flag=True,
             default=False,
-            help=(
-                "Output json to stdout of the operations wap performed (so it can be "
-                "written to files or piped to other programs)"
-            ),
+            help=help,
         )(func)
 
         return update_wrapper(decorated, func)

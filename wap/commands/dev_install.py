@@ -79,7 +79,7 @@ def dev_install(
     output_path: Path,
     wow_addons_path: Path,
     show_json: bool,
-) -> None:
+) -> int:
     config = Config.from_path(config_path)
 
     wow_addons_path_type = WoWVersion.addons_path_type(wow_addons_path.parts[-3])
@@ -119,3 +119,5 @@ def dev_install(
 
     if show_json:
         click.echo(json.dumps(output_map, indent=2))
+
+    return 0

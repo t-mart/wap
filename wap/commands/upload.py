@@ -48,7 +48,7 @@ def upload(
     release_type: str,
     curseforge_token: str,
     show_json: bool,
-) -> None:
+) -> int:
     """
     Uploads packages to CurseForge.
     """
@@ -99,3 +99,5 @@ def upload(
 
     if show_json:
         click.echo(json.dumps(output_map, indent=2))
+
+    return 0

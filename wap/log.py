@@ -29,12 +29,11 @@ def _log(*, label: Optional[str] = None, msg: str) -> None:
     out = msg
     if label is not None:
         out = f"{label} - {msg}"
-    # print(out, file=sys.stderr)
     click.echo(out, err=True)
 
 
 def debug(msg: str) -> None:
-    _log(label="DEBUG", msg=msg)  # pragma: no cover
+    _log(label=click.style("DEBUG", fg="cyan"), msg=msg)  # pragma: no cover
 
 
 def info(msg: str) -> None:
@@ -43,8 +42,8 @@ def info(msg: str) -> None:
 
 
 def warn(msg: str) -> None:
-    _log(label="WARNING", msg=msg)  # pragma: no cover
+    _log(label=click.style("WARN", fg="yellow"), msg=msg)  # pragma: no cover
 
 
 def error(msg: str) -> None:
-    _log(label="ERROR", msg=msg)  # pragma: no cover
+    _log(label=click.style("ERROR", fg="red"), msg=msg)  # pragma: no cover

@@ -6,7 +6,7 @@ import re
 from collections.abc import Generator, Mapping
 from contextlib import contextmanager
 from pathlib import Path, PurePosixPath
-from typing import Any, ClassVar, Optional, Union
+from typing import Any, ClassVar, Optional, Sequence, Union
 from zipfile import ZipFile
 
 import arrow
@@ -228,12 +228,20 @@ class Environment:
         *args: str,
         env_vars: Optional[Mapping[str, str]] = None,
         cwd: Optional[Path] = None,
+        input_lines: Optional[Sequence[str]] = None,
+        catch_exceptions: bool = False,
     ) -> Result:
         if env_vars is None:
             env_vars = {}
 
         if cwd is None:
             cwd = self.project_dir_path
+
+        if input_lines is None:
+            runner_input = None
+        else:
+            # need final \n to enter submit prompt
+            runner_input = "\n".join(input_lines) + "\n"
 
         runner = CliRunner(mix_stderr=False)
 
@@ -242,9 +250,10 @@ class Environment:
                 return runner.invoke(
                     base,
                     args=args,
-                    catch_exceptions=False,
+                    catch_exceptions=catch_exceptions,
                     standalone_mode=False,
                     env=env_vars,
+                    input=runner_input,
                 )
 
 

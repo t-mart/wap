@@ -15,7 +15,7 @@ from wap.exception import (
     ConfigSemanticException,
     WoWVersionException,
 )
-from wap.wowversion import LATEST_RETAIL_VERSION, WoWVersion
+from wap.wowversion import WoWVersion
 
 _Type = TypeVar("_Type")
 _YamlObjectType = TypeVar("_YamlObjectType")
@@ -36,11 +36,11 @@ class YamlType(Generic[_Type, _YamlObjectType], metaclass=ABCMeta):
         except strictyaml.YAMLValidationError as yve:
             raise ConfigSchemaException(str(yve))
 
-        return cls.from_yaml_object(obj.data)
+        return cls.from_python_object(obj.data)
 
     @classmethod
     @abstractmethod
-    def from_yaml_object(
+    def from_python_object(
         cls,
         obj: _YamlObjectType,
     ) -> _Type:
@@ -54,13 +54,13 @@ class YamlType(Generic[_Type, _YamlObjectType], metaclass=ABCMeta):
         return cast(
             str,
             strictyaml.as_document(
-                data=self.to_yaml_object(),
+                data=self.to_python_object(),
                 schema=self._yaml_schema(),
             ).as_yaml(),
         )
 
     @abstractmethod
-    def to_yaml_object(
+    def to_python_object(
         self,
     ) -> _YamlObjectType:
         raise NotImplementedError()
@@ -102,7 +102,7 @@ class TocConfig(YamlType["TocConfig", Mapping[str, Any]]):
             )
 
     @classmethod
-    def from_yaml_object(
+    def from_python_object(
         cls,
         obj: Mapping[str, Any],
     ) -> TocConfig:
@@ -115,7 +115,7 @@ class TocConfig(YamlType["TocConfig", Mapping[str, Any]]):
             files=files,
         )
 
-    def to_yaml_object(
+    def to_python_object(
         self,
     ) -> Mapping[str, Any]:
         return {
@@ -127,7 +127,7 @@ class TocConfig(YamlType["TocConfig", Mapping[str, Any]]):
 @attr.s(kw_only=True, auto_attribs=True, order=False)
 class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
     path: PurePosixPath = attr.ib()
-    toc_config: TocConfig = attr.ib(default=None)
+    toc_config: TocConfig
 
     @path.validator
     def _check_path_relative(
@@ -150,25 +150,25 @@ class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
         )
 
     @classmethod
-    def from_yaml_object(
+    def from_python_object(
         cls,
         obj: Mapping[str, Any],
     ) -> DirConfig:
         path = PurePosixPath(obj["path"])
 
-        toc_config = TocConfig.from_yaml_object(obj["toc"])
+        toc_config = TocConfig.from_python_object(obj["toc"])
 
         return cls(
             path=path,
             toc_config=toc_config,
         )
 
-    def to_yaml_object(
+    def to_python_object(
         self,
     ) -> Mapping[str, Any]:
         obj: dict[str, Any] = {"path": str(self.path)}
         if self.toc_config is not None:
-            obj["toc"] = self.toc_config.to_yaml_object()
+            obj["toc"] = self.toc_config.to_python_object()
         return obj
 
 
@@ -200,7 +200,7 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
             )
 
     @classmethod
-    def from_yaml_object(
+    def from_python_object(
         cls,
         obj: Mapping[str, Any],
     ) -> CurseforgeConfig:
@@ -216,7 +216,7 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
             addon_name=addon_name,
         )
 
-    def to_yaml_object(
+    def to_python_object(
         self,
     ) -> Mapping[str, Any]:
         obj: dict[str, Any] = {
@@ -264,7 +264,7 @@ class Config(YamlType["Config", Mapping[str, Any]]):
         )
 
     @classmethod
-    def from_yaml_object(
+    def from_python_object(
         cls,
         obj: Mapping[str, Any],
     ) -> Config:
@@ -280,9 +280,9 @@ class Config(YamlType["Config", Mapping[str, Any]]):
 
         curseforge_config = None
         if "curseforge" in obj:
-            curseforge_config = CurseforgeConfig.from_yaml_object(obj["curseforge"])
+            curseforge_config = CurseforgeConfig.from_python_object(obj["curseforge"])
 
-        dir_configs = [DirConfig.from_yaml_object(dir_) for dir_ in obj["dirs"]]
+        dir_configs = [DirConfig.from_python_object(dir_) for dir_ in obj["dirs"]]
         if len({dir_config.path for dir_config in dir_configs}) < len(dir_configs):
             raise ConfigSemanticException(f"Dirs in config must have unique paths")
 
@@ -293,7 +293,7 @@ class Config(YamlType["Config", Mapping[str, Any]]):
             dir_configs=dir_configs,
         )
 
-    def to_yaml_object(
+    def to_python_object(
         self,
     ) -> Mapping[str, Any]:
         obj: dict[str, Any] = {
@@ -303,12 +303,12 @@ class Config(YamlType["Config", Mapping[str, Any]]):
             ],
         }
         if self.curseforge_config is not None:
-            obj["curseforge"] = self.curseforge_config.to_yaml_object()
+            obj["curseforge"] = self.curseforge_config.to_python_object()
 
         # we could hypothetically put this in the map literal above, but I want to
         # normalize order. note that order of key-value pairs in YAML is not recognized,
         # but strictyaml uses an ordered dict to hold them, so this is possible.
-        obj["dirs"] = [dir_config.to_yaml_object() for dir_config in self.dir_configs]
+        obj["dirs"] = [dir_config.to_python_object() for dir_config in self.dir_configs]
 
         return obj
 
@@ -325,31 +325,3 @@ class Config(YamlType["Config", Mapping[str, Any]]):
     def to_path(self, path: Path) -> None:
         with path.open("w") as file:
             file.write(self.to_yaml())
-            file.write("\n")
-
-
-def default_config(name: str) -> Config:
-    return Config(
-        name=name,
-        wow_versions=[LATEST_RETAIL_VERSION],
-        curseforge_config=CurseforgeConfig(
-            project_id="000000",
-            changelog_path=PurePosixPath("CHANGELOG.md"),
-            addon_name="fill-this-in",
-        ),
-        dir_configs=[
-            DirConfig(
-                path=PurePosixPath(name),
-                toc_config=TocConfig(
-                    tags={
-                        "Title": name,
-                        "Author": "Your name",
-                        "Notes": "The description of your addon...",
-                        "DefaultState": "Enabled",
-                        "LoadOnDemand": "0",
-                    },
-                    files=[PurePosixPath(name + ".lua")],
-                ),
-            )
-        ],
-    )

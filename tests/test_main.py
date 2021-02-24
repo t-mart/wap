@@ -12,7 +12,7 @@ within Python.
 """
 
 import pytest
-from click import ClickException
+from click import ClickException, Abort
 from pytest_mock import MockerFixture
 
 from wap import __main__
@@ -22,7 +22,8 @@ MAIN = __main__.main
 
 
 def test_normal_execution(mocker: MockerFixture) -> None:
-    mocker.patch("wap.commands.base.main")
+    mock = mocker.patch("wap.commands.base.main")
+    mock.return_value = 0 
 
     # this method from
     # https://medium.com/python-pandemonium/testing-sys-exit-with-pytest-10c6e5f7726f
@@ -36,10 +37,11 @@ def test_normal_execution(mocker: MockerFixture) -> None:
     ("exc_to_throw", "expected_exit_code"),
     [
         [KeyboardInterrupt(), 130],
+        [Abort(), 130],
         [WAPException(""), 1],
         [ClickException(""), 1],
     ],
-    ids=["keyboard interrupt", "wap exception", "click exception"],
+    ids=["keyboard interrupt", "click abort", "wap exception", "click exception"],
 )
 def test_expected_exceptions(
     mocker: MockerFixture, exc_to_throw: BaseException, expected_exit_code: int
