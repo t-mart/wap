@@ -22,11 +22,31 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - name: Install dependencies
-        uses: ./.github/actions/install-deps
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+        shell: bash
+      - name: Cache PyPI
+        uses: actions/cache@v2
         with:
-          pip-cache-key: dep-cache-pip-ubuntu-${{ hashFiles('ci/poetry-requirements.txt') }}
-          poetry-cache-key: dep-cache-poetry-ubuntu-${{ hashFiles('poetry.lock') }}
+          key: dep-cache-pip-ubuntu-${{ hashFiles('ci/poetry-requirements.txt') }}
+          path: ${{ steps.pip-cache.outputs.dir }}
+      - name: Get Poetry
+        run: |
+          pip install -r ci/poetry-requirements.txt
+      - name: Get poetry cache dir
+        id: poetry-cache
+        run: |
+          echo "::set-output name=dir::$(poetry config cache-dir)"
+      - name: Cache Poetry
+        uses: actions/cache@v2
+        with:
+          key: dep-cache-poetry-ubuntu-${{ hashFiles('poetry.lock') }}
+          path: ${{ steps.poetry-cache.outputs.dir }}
+      - name: Install dependencies
+        run: |
+          poetry install
       - name: Run mypy
         run: |
           poetry run mypy
@@ -57,11 +77,31 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.pyver }}
-      - name: Install dependencies
-        uses: ./.github/actions/install-deps
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+        shell: bash
+      - name: Cache PyPI
+        uses: actions/cache@v2
         with:
-          pip-cache-key: dep-cache-pip-${{ matrix.os }}-${{ hashFiles('ci/poetry-requirements.txt') }}
-          poetry-cache-key: dep-cache-poetry-${{ matrix.os }}-${{ hashFiles('poetry.lock') }}
+          key: dep-cache-pip-${{ matrix.os }}-${{ hashFiles('ci/poetry-requirements.txt') }}
+          path: ${{ steps.pip-cache.outputs.dir }}
+      - name: Get Poetry
+        run: |
+          pip install -r ci/poetry-requirements.txt
+      - name: Get poetry cache dir
+        id: poetry-cache
+        run: |
+          echo "::set-output name=dir::$(poetry config cache-dir)"
+      - name: Cache Poetry
+        uses: actions/cache@v2
+        with:
+          key: dep-cache-poetry-${{ matrix.os }}-${{ hashFiles('poetry.lock') }}
+          path: ${{ steps.poetry-cache.outputs.dir }}
+      - name: Install dependencies
+        run: |
+          poetry install
       - name: Run unittests
         run: |
           poetry run pytest tests --cov=wap --cov-report=xml
@@ -87,11 +127,31 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - name: Install dependencies
-        uses: ./.github/actions/install-deps
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+        shell: bash
+      - name: Cache PyPI
+        uses: actions/cache@v2
         with:
-          pip-cache-key: dep-cache-pip-ubuntu-${{ hashFiles('ci/poetry-requirements.txt') }}
-          poetry-cache-key: dep-cache-poetry-ubuntu-${{ hashFiles('poetry.lock') }}
+          key: dep-cache-pip-ubuntu-${{ hashFiles('ci/poetry-requirements.txt') }}
+          path: ${{ steps.pip-cache.outputs.dir }}
+      - name: Get Poetry
+        run: |
+          pip install -r ci/poetry-requirements.txt
+      - name: Get poetry cache dir
+        id: poetry-cache
+        run: |
+          echo "::set-output name=dir::$(poetry config cache-dir)"
+      - name: Cache Poetry
+        uses: actions/cache@v2
+        with:
+          key: dep-cache-poetry-ubuntu-${{ hashFiles('poetry.lock') }}
+          path: ${{ steps.poetry-cache.outputs.dir }}
+      - name: Install dependencies
+        run: |
+          poetry install
       - name: Build
         run: |
           poetry build
