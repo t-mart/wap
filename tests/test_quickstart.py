@@ -1,10 +1,10 @@
+import json
 from pathlib import Path
 
 import pytest
 
 from tests.util import Environment, fileset
 from wap.exception import QuickstartException
-import json
 from wap.wowversion import LATEST_CLASSIC_VERSION, LATEST_RETAIL_VERSION
 
 # These tests have a timeout because they take input from prompts on stdin. wap will
@@ -32,7 +32,7 @@ class TestQuickstart:
         addon_name = "foo"
         author = "John Doe"
         description = "My description"
-        cf_addon_name ="mycooladdon"
+        cf_addon_name = "mycooladdon"
         changelog_name = "changes.md"
 
         input_lines = [
@@ -107,15 +107,15 @@ class TestQuickstart:
             "foo",  # addon name (default)
             "John Doe",  # author name
             "My description",  # notes
-            "neither yes nor no", # test the retry
-            "blarg blarg", # test the retry
-            "y", # yes to retail wow
+            "neither yes nor no",  # test the retry
+            "blarg blarg",  # test the retry
+            "y",  # yes to retail wow
             "y",  # yes to classic wow
             "yes",  # yes to having a curseforge project
             "123456",
-            "", # default changelog
-            "not a url", # test the retry
-            "still not a url", # test the retry
+            "",  # default changelog
+            "not a url",  # test the retry
+            "still not a url",  # test the retry
             f"https://www.curseforge.com/wow/addons/someaddon",  # CF url
         ]
 

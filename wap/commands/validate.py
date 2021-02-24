@@ -5,13 +5,10 @@ from pathlib import Path
 
 import click
 
-from wap.commands.common import (
-    config_path_option,
-    json_option,
-)
-from wap.exception import ConfigException
-from wap.config import Config
 from wap import log
+from wap.commands.common import config_path_option, json_option
+from wap.config import Config
+from wap.exception import ConfigException
 
 
 @click.command()
@@ -34,7 +31,7 @@ def validate(
 
         if show_json:
             click.echo(json.dumps(config.to_python_object(), indent=2))
-            
+
         return 0
     except ConfigException as ce:
         log.error(f"❌ {config_path} is not valid")

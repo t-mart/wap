@@ -16,7 +16,7 @@ def main() -> None:
 
     # unfortunately, BaseException is the only exception superclass of KeyboardInterrupt
     except BaseException as exc:
-        from click import ClickException, Abort
+        from click import Abort, ClickException
 
         from wap import log
         from wap.exception import WAPException

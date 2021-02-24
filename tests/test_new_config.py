@@ -1,10 +1,11 @@
+import json
+
 import pytest
 
 from tests.util import Environment
 from wap.commands.common import DEFAULT_CONFIG_PATH
 from wap.exception import NewConfigException
 from wap.wowversion import LATEST_CLASSIC_VERSION
-import json
 
 
 @pytest.mark.timeout(5)
