@@ -212,7 +212,7 @@ Description
 
   - To properly generate your TOC file with the right ``## Interface`` tag
   - To mark on CurseForge which version your addon supports
-  - To ``dev-install` the right build into the right WoW AddOns path. For example a
+  - To ``dev-install`` the right build into the right WoW AddOns path. For example a
     classic addon build should not go into a
     ``World of Warcraft/_retail_/Interface/AddOns`` directory.
 
