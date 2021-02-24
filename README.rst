@@ -137,8 +137,10 @@ For new YAML authors, see
   **subdirectories and files) must be FORWARD SLASHES.** By choosing a standard,
   configuration files become cross-platform.
 
-Sample ``.wap.yml`` Config File
-*******************************
+.. _sample-config-and-dir-struct:
+
+Sample ``.wap.yml`` Config File and Directory Structure
+*******************************************************
 
 Here's a high-level, commented example of a ``.wap.yml`` file:
 
@@ -154,22 +156,42 @@ Here's a high-level, commented example of a ``.wap.yml`` file:
 
   # If you want to upload to Curseforge
   curseforge:
-    project-id: 123456  # found on your project page
-    changelog: CHANGELOG.md  # a file relative to this config file with recent changes
-    addon-name: myaddon  # found from your CurseForge URL
+    # found on your project page
+    project-id: 123456
+    # a file relative to this config file with recent changes
+    changelog: CHANGELOG.md
+    # found from your CurseForge URL
+    # ex: https://www.curseforge.com/wow/addons/myaddon -> myaddon
+    addon-name: myaddon
 
   # the contents of my addon
   dirs:
-    - path: MyAddon  # a directory relative to this config file
-      toc:  # TOC generation
-        tags:  # metadata about your addon for WoW
+      # a directory relative to this config file
+    - path: MyAddon
+      # TOC generation
+      toc:
+        # metadata about your addon for WoW
+        tags:
           Title: MyAddon
           Notes: A great addon for WoW
           Author: Me
           X-CustomTag: CustomValue
-        files:  # the files to load, in order, for your addon
+        # the files to load, in order, for your addon
+        files:
           - Init.lua
           - Core.lua
+
+And heres a directory structure this config could work with:
+
+.. code-block::
+
+   MyAddon               # your project directory
+   ├── MyAddon           # your addon directory (dirs[*].path in config)
+   |   ├── Init.lua      # A Lua code file
+   │   └── Core.lua      # Another Lua code file
+   ├── CHANGELOG.md      # changelog
+   ├── README.md         # readme documentation
+   └── .wap.yml          # configuration file
 
 Syntax
 ******
@@ -259,6 +281,9 @@ Description
   requirements for the contents of this file -- it just needs to exist. You may leave
   it blank if you're just starting out.
 
+  See the :ref:`Sample config and directory structure <sample-config-and-dir-struct>`_
+  section for an example on where this file is expected to be inside your project.
+
   This field is required because CurseForge requires it. Each file on your Files page
   is accompanied by a changelog.
 
@@ -337,6 +362,9 @@ Description
   The path *relative to this config file* of the directory you'd like to include in your
   packaged addon.
 
+  See the :ref:`Sample config and directory structure <sample-config-and-dir-struct>`_
+  section for an example on where this directory is expected to be inside your project.
+
   This cannot be a file -- only directories are installable into WoW addons folders.
 
 ``dirs[*].toc``
@@ -406,6 +434,9 @@ Type
 Description
   A sequence of paths *relative to the* ``path`` *of this directory* that specify the
   Lua (or XML) files your addon should load. The order of this sequence is respected.
+
+  See the :ref:`Sample config and directory structure <sample-config-and-dir-struct>`_
+  section for an example on where these files are expected to be inside your project.
 
   To demonstrate, a ``files`` section that looks like this:
 
