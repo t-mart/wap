@@ -129,10 +129,11 @@ For new YAML authors, see
   For advanced YAML authors, it may be important to note that *wap* uses a subset of
   YAML called ``strictyaml``. This provides many benefits for users, but does
   `restrict some YAML features. <https://hitchdev.com/strictyaml/#design-justifications>`_.
+  There's a good chance you won't even notice a difference.
 
 .. warning::
   In *wap* configuration files, all paths are treated as POSIX paths. The main highlight
-  of this is that **all path separators (the slashes between directories and **
+  of this is that **all path separators (the slashes between directories and**
   **subdirectories and files) must be FORWARD SLASHES.** By choosing a standard,
   configuration files become cross-platform.
 
