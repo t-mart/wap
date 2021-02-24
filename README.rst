@@ -23,7 +23,7 @@ wap (WoW Addon Packager)
 
 |
 
-.. image:: https://raw.githubusercontent.com/aio-libs/aiohttp/master/docs/demo.gif
+.. image:: https://raw.githubusercontent.com/t-mart/wap/master/docs/demo.gif
    :alt: wap demo
 
 - Builds and uploads your addons to CurseForge
@@ -292,7 +292,7 @@ Type
 Description
   The project id as found on your CurseForge addon's page.
 
-  .. image:: https://raw.githubusercontent.com/aio-libs/aiohttp/master/docs/project-id.png
+  .. image:: https://raw.githubusercontent.com/t-mart/wap/master/docs/project-id.png
     :alt: Where to find your CurseForge project id
 
 ``curseforge.changelog``
