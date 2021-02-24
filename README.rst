@@ -689,13 +689,5 @@ TODOs
 -----
 
 - localization via curseforge?
-- gh actions
-   * mypy
-   * lint?
-   * test
-   * coverage upload
-   * pip release on tag
-- badges for readme
-- little gif that shows how it works
 - Dockerfile
 - Dockerfile github action `<https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action>`_
