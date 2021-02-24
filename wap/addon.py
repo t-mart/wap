@@ -146,7 +146,9 @@ def upload_addon(
     log.info(
         f"Uploaded "
         + click.style(f"{addon_name}", fg="blue")
-        + " to CurseForge at "
+        + " ("
+        + click.style(f"{wow_version.type()}", fg="magenta")
+        + ") at  to CurseForge at "
         + click.style(f"{url}", fg="green")
     )
 
@@ -156,8 +158,8 @@ def upload_addon(
 def dev_install_addon(
     *,
     build_path: Path,
-    addon_name: str,
     wow_addons_path: Path,
+    wow_version: WoWVersion,
 ) -> Sequence[Path]:
     installed_paths = []
 
@@ -171,10 +173,13 @@ def dev_install_addon(
 
         installed_paths.append(install_addon_path)
 
-    log.info(
-        f"Installed addon "
-        + click.style(f"{addon_name}", fg="blue")
-        + " to "
-        + click.style(f"{install_addon_path}", fg="green")
-    )
+        log.info(
+            f"Installed addon directory "
+            + click.style(f"{addon_path.name}", fg="blue")
+            + " ("
+            + click.style(f"{wow_version.type()}", fg="magenta")
+            + ") to "
+            + click.style(f"{install_addon_path}", fg="green")
+        )
+
     return installed_paths

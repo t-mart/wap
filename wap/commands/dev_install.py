@@ -109,7 +109,7 @@ def dev_install(
     dev_install_paths = addon.dev_install_addon(
         build_path=build_path,
         wow_addons_path=wow_addons_path,
-        addon_name=config.name,
+        wow_version=wow_version,
     )
 
     output_map[wow_version.type()] = {
