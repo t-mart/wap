@@ -39,7 +39,10 @@ Features
 - Consolidates all configuration in one easy-to-edit file
 - Supports Windows, macOS, and Linux
 
-.. contents:: Table of Contents
+Table of Contents
+-----------------
+
+.. contents::
 
 Getting started
 ---------------
