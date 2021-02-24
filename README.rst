@@ -23,141 +23,96 @@ wap (WoW Addon Packager)
 
 |
 
+*wap* is a user-friendly World of Warcraft addon packager.
+
 .. image:: https://raw.githubusercontent.com/t-mart/wap/master/docs/demo.gif
    :alt: wap demo
 
+Features
+--------
+
 - Builds and uploads your addons to CurseForge
-- Uploads for retail and/or classic
+- Creates retail or classic WoW addons, or both!
 - Installs your addons to your Addons folder for fast development feedback
-- Generates valid TOC files for you
-- New project command to get started quickly
-- Is easily configurable
-- Tested on Windows, macOS, and Linux
+- Generates valid TOC files automagically
+- Sets up new addon projects quickly, ready to go with one command
+- Consolidates all configuration in one easy-to-edit file
+- Supports Windows, macOS, and Linux
 
 .. contents:: Table of Contents
 
-Usage
------
+Getting started
+---------------
+
+Installation
+************
+
+1. `Download <https://www.python.org/downloads/>`_ and install Python
+2. Install *wap* with pip:
+
+   .. code-block:: console
+
+      $ pip install -U wow-addon-packager
 
 Create a new addon project
 **************************
 
-If you'd like to get started quickly, create a new project fast with:
+.. code-block:: console
 
-.. code-block:: sh
+  wap quickstart MyAddon  # or whatever name you'd like!
 
-  wap quickstart MyAddon
-
-  # replace MyAddon with whatever you'd like
-
-The above command will create a project directory structure like the following:
-
-.. code-block::
-
-  MyAddon               (your project's root directory)
-  ├── MyAddon           (an addon directory that can be build/installed/uploaded)
-  │   └── MyAddon.lua   (a Lua code file)
-  ├── CHANGELOG.md      (where you describe changes over time to your project)
-  ├── README.md         (where you document your project)
-  └── .wap.yml          (the *wap* config file)
-
-After this, you can begin developing your addon and using other *wap* commands.
-
-Migrating from other pacakgers / Creating a new config file in an existing project
-**********************************************************************************
-
-The only file *wap* needs to run is a ``.wap.yml`` file. To create a new  file, run:
-
-.. code-block:: sh
-
-  wap new-config
-
-The generated config file will contain a basic structure to get you started.
-
-There are a few differences between how *wap* works and how other package managers work.
-Please read around this document to learn about them.
+and answer the prompted questions. Don't worry too much about your answers -- you can
+always change them later in your configuration file.
 
 Building
 ********
 
-To build your addon into a single directory (with optional TOC generation) and create a
-zip archive of it, run:
+Building packages up your addon into a single directory and creates a zip file of it.
 
-.. code-block:: sh
+.. code-block:: console
 
   wap build
-
-Uploading
-*********
-
-To upload your addon to CurseForge, run:
-
-.. code-block:: sh
-
-  wap upload --addon-version 1.2.3 --curseforge-token "abc123"
-
-Instead of providing ``--curseforge-token``, you may also set the environment variable
-``WAP_CURSEFORGE_TOKEN``.
-
-You may generate a new token at `<https://authors.curseforge.com/account/api-tokens>`_.
-
-Some may prefer to use the current Git tag name as the version. You can just leverage
-your shell to fill this option in with something like:
-
-.. code-block:: sh
-
-  wap upload \
-    --version "$(git describe --always --tags)" \
-    --release-type release \
-    --curseforge-token "abc123"
 
 Developer Install
 *****************
 
-To quickly test your addons out on your local WoW installation, run:
+Instead of copy-pasting folders into your WoW installation to test out your work, *wap*
+can do that for you:
 
-.. code-block:: sh
+.. code-block:: console
 
-  wap dev-install --wow-addons-path "/path/to/WoW/_retail_/Interface/AddOns"
+  # Windows
+  wap dev-install --wow-addons-path "C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
+
+  # macOS
+  wap dev-install --wow-addons-path "/Applications/World of Warcraft/_retail_/Interface/AddOns"
+
+Change ``_retail_`` to ``_classic_`` if you want to install your classic build.
 
 *wap* is smart in determining from your ``--wow-addons-path`` if it needs to install
 the retail or classic build of your addon.
 
-Instead of providing ``--wow-addons-path``, you may also set the environment variable
-``WAP_WOW_ADDONS_PATH``.
+Uploading
+*********
+
+.. code-block:: console
+
+  wap upload --addon-version 0.0.1 --curseforge-token "<your-token>"
+
+You can generate a new token at `<https://authors.curseforge.com/account/api-tokens>`_.
 
 Further Help
 ************
 
-The *wap* command has more options than what has been shown above, and fully documents
+*wap* has more commands and options than what has been shown above, and fully documents
 that usage in its help text. View it with:
 
-.. code-block:: sh
+.. code-block:: console
 
   wap --help
   wap build --help
   wap upload --help
   # ... etc
-
-Installation
-------------
-
-1. Get Python 3.9 or greater. You can confirm this with ``python --version`` and
-   verifying your version is at least that.
-
-   You can download Python from `<https://www.python.org/downloads/>`_.
-
-2. Install *wap* from PyPI:
-
-   .. code-block:: sh
-
-     pip install wow-addon-packager
-
-3. Verify *wap* can run:
-
-   .. code-block:: sh
-
-     wap --version
 
 The *wap* Configuration File
 ----------------------------
@@ -171,7 +126,6 @@ For new YAML authors, see
   For advanced YAML authors, it may be important to note that *wap* uses a subset of
   YAML called ``strictyaml``. This provides many benefits for users, but does
   `restrict some YAML features. <https://hitchdev.com/strictyaml/#design-justifications>`_.
-  **The vast majority of users will not notice a difference!**
 
 .. warning::
   In *wap* configuration files, all paths are treated as POSIX paths. The main highlight
@@ -179,13 +133,10 @@ For new YAML authors, see
   **subdirectories and files) must be FORWARD SLASHES.** By choosing a standard,
   configuration files become cross-platform.
 
-  All other paths, such as options to the ``wap`` command or outputs of ``wap`` are
-  otherwise unaffected by this rule.
-
 Sample ``.wap.yml`` Config File
 *******************************
 
-Here's a high-level, commented overview of a ``.wap.yml`` file:
+Here's a high-level, commented example of a ``.wap.yml`` file:
 
 .. code-block:: yaml
 
@@ -211,10 +162,7 @@ Here's a high-level, commented overview of a ``.wap.yml`` file:
           Title: MyAddon
           Notes: A great addon for WoW
           Author: Me
-          DefaultState: Enabled
-          LoadOnDemand: 0
-          Dependencies: AnotherAddon
-          X-My-Metadata-Tag: foo
+          X-CustomTag: CustomValue
         files:  # the files to load, in order, for your addon
           - Init.lua
           - Core.lua
@@ -232,11 +180,10 @@ Type
   ``string``
 
 Description
-  The name of your packaged addon. This name will be used to:
+  The name of your packaged addon. This name will be used to name the build directories
+  and zip files for your addon (as well as the zip file users download on CurseForge).
 
-  - To name the build directories for your addon
-  - To name the ``.zip`` files of your addon as they appear on your system and on
-    Curseforge.
+  You can name this anything you want.
 
 ``wow-versions``
 ^^^^^^^^^^^^^^^^
@@ -248,11 +195,11 @@ Type
   ``sequence``
 
 Description
-  The versions of World of Warcraft that your addon targets. *wap* will create different
-  builds for each version in the output directory.
+  The versions of World of Warcraft that your addon supports. *wap* will create
+  different builds for each version in the output directory.
 
   Each version must be in the form "``x.y.z``", where ``x``, ``y``, and ``z`` are
-  integers.
+  non-negative integers.
 
   You must at least supply one of these, and can at most supply two (for retail and
   classic).
@@ -260,13 +207,10 @@ Description
   *wap* uses these versions for a few things:
 
   - To properly generate your TOC file with the right ``## Interface`` tag
-  - To ``dev-install` the right build into the right WoW AddOns path (e.g. a classic
-    addon build should not go into a ``World of Warcraft/_retail_/Interface/AddOns``
-    directory.
-  - To designate which version your addon supports on CurseForge
-
-  *wap* uses simple heuristics to decide if a version is retail or classic. Conversely,
-  it cannot determine if a version actually exists or not.
+  - To mark on CurseForge which version your addon supports
+  - To ``dev-install` the right build into the right WoW AddOns path. For example a
+    classic addon build should not go into a
+    ``World of Warcraft/_retail_/Interface/AddOns`` directory.
 
 ``curseforge``
 ^^^^^^^^^^^^^^
@@ -290,7 +234,8 @@ Type
   ``string``
 
 Description
-  The project id as found on your CurseForge addon's page.
+  The project id as found on your CurseForge addon's page. This field tells wap
+  what addon page to upload to.
 
   .. image:: https://raw.githubusercontent.com/t-mart/wap/master/docs/project-id.png
     :alt: Where to find your CurseForge project id
@@ -305,23 +250,26 @@ Type
   ``string``
 
 Description
-  The path *relative to the config file* of your changelog file. This file should
-  contain a helpful history of changes to your addon over time. (There are no strict
-  requirements for the contents of this file, but it must exist. You may leave it
-  blank if you wish, but it will not help your users.)
+  The path *relative to this config file* of your changelog file. This file should
+  contain a helpful history of changes to your addon over time. There are no
+  requirements for the contents of this file -- it just needs to exist. You may leave
+  it blank if you're just starting out.
 
-  CurseForge requires changelog contents to be provided with file uploads, and will
-  display this content on the file's page.
+  This field is required because CurseForge requires it. Each file on your Files page
+  is accompanied by a changelog.
 
-  The extension of this file is used to determine what ``changelogType`` to provide in
-  the upload request, which is also required. CurseForge currently supports three types:
+  CurseForge aside, maintaining a changelog is a good practice. Not only is this helpful
+  to your users, but it's also helpful to your collaborators. It's extremely common to
+  see changelog files in source code repositories.
+
+  CurseForge supports three changelog formats:
 
   - ``markdown``
   - ``html``
   - ``text``
 
-  *wap* will try to chose the correct ``changelogType`` based on the extension of the
-  file you provide here. It does so according to the following mapping:
+  *wap* will try to chose the correct format based on the extension of the file you
+  provide for this field. It does so according to the following mapping:
 
   +-----------------+-------------------+
   | File Extension  | ``changelogType`` |
@@ -350,13 +298,12 @@ Description
   The string of the name of your addon as it is found in your addon's CurseForge
   URL.
 
-  While not strictly necessary, if this is not provided, *wap* cannot provide a URL for
-  your uploads in its output. (This is a limitation of the CurseForge API. *wap* cannot
-  retrieve this name for you.)
+  While not strictly necessary, this helps *wap* provide better output for you in the
+  form of URLs that you can copy-paste into your browser.
 
   For example, if your addon's URL is
-  ``https://www.curseforge.com/wow/addons/myaddon``, then you would use the string
-  ``myaddon`` here.
+  ``https://www.curseforge.com/wow/addons/dpsbooster``, then you would use the string
+  ``dpsbooster`` here.
 
 ``dirs``
 ^^^^^^^^
@@ -386,8 +333,7 @@ Description
   The path *relative to this config file* of the directory you'd like to include in your
   packaged addon.
 
-  This cannot be a file -- it must be a directory because WoW only recognizes
-  addons in their own directories in ``Interface/AddOns``.
+  This cannot be a file -- only directories are installable into WoW addons folders.
 
 ``dirs[*].toc``
 ^^^^^^^^^^^^^^^
@@ -421,6 +367,7 @@ Description
   any other WoW-specified tags. A full list of supported tags may be found at the
   WoW Gamepedia
   `TOC format article <https://wow.gamepedia.com/TOC_format#Display_in_the_addon_list>`_.
+  Custom tags can be added too, and should be prefixed with ``X-``.
 
   To demonstrate, a ``tags`` section that looks like this:
 
@@ -429,6 +376,7 @@ Description
     tags:
       Title: MyAddon
       Notes: This is my addon
+      X-Custom-Tag: CustomValue
 
   will produce a TOC file with this content:
 
@@ -436,19 +384,11 @@ Description
 
     ## Title: MyAddon
     ## Notes: This is my addon
+    ## X-Custom-Tag: CustomValue
 
-  **Importantly, you do not need to provide the ``Interface`` and ``Version`` tags!**
-  *wap* can generate these for you from the WoW version you specified in
-  ``wow-versions[*].version`` and the version your supply when you ``wap upload``.
-  If you do provide these tags, *wap* will do as you say, but will emit a warning and
-  likely break some of its guarantees.
-
-  You may add custom tags here too, if you wish. Custom tags may be retrieved with the
-  |GetAddOnMetadata function|_, but only if they are prefixed with ``X-``. *wap* will
-  emit a warning about custom tags without this prefix.
-
-  .. |GetAddOnMetadata function| replace:: ``GetAddOnMetadata`` function
-  .. _GetAddOnMetadata function: https://wow.gamepedia.com/API_GetAddOnMetadata
+  .. warning::
+    **You should not provide the ``Interface`` and ``Version`` tags!** *wap* generates
+    those tags for you. You can override them, but it is not recommended.
 
 ``dirs[*].toc.files``
 ^^^^^^^^^^^^^^^^^^^^^
@@ -460,7 +400,7 @@ Type
   ``sequence``
 
 Description
-  An sequence of paths *relative to the* ``path`` *of this directory* that specify the
+  A sequence of paths *relative to the* ``path`` *of this directory* that specify the
   Lua (or XML) files your addon should load. The order of this sequence is respected.
 
   To demonstrate, a ``files`` section that looks like this:
@@ -489,27 +429,31 @@ Why make another addon tool?
 ****************************
 
 *wap* is a reimagining of how developers create addons. The most popular current
-solution in this space is probably the
-`BigWigsMods/packager <https://github.com/BigWigsMods/packager>`_ project. While I do
-think they've done some excellent work (and I think they are just improving on prior
-conventions), there are some pain points:
+solution is probably the `packager <https://github.com/BigWigsMods/packager>`_ project,
+I think there are some design flaws that needed revisiting. Namely, it:
 
-- Substitution directives (e.g. ``--@keyword@``) are
+- Encourages the use substitution directives (e.g. ``--@keyword@``) to solve problems,
+  which are:
 
   * difficult to read, write, and maintain
   * slow to process (some of my builds take
     `7+ minutes at this step <https://github.com/t-mart/ItemVersion/runs/1864902187>`_!)
   * impossible to run `static analysis <https://github.com/mpeterv/luacheck>`_ on
 
-- Dependencies (``externals``) should not be source code repositories
-
-- The complexity of the program has outgrown the Bash scripting language and is
-  therefore difficult to read, write and maintain.
+- Conflates for dependencies (``externals``) and source code repositories. They are not
+  the same thing.
+- Presumes your entire repository should be packaged up, which is awkward and
+  heavy-handed for most modern projects and requires ``ignore``-ing many files.
+- Mandates the use of certain version control processes, which are inaccessible for
+  beginning developers.
+- Reads its configuration from several files (``.pkgmeta`` and ``.toc`` files).
 
 Why not implement/support substitution directives like ``--@retail@``?
 *************************************************************************
 
-Let's compare two examples, one using substitution directives and one using the WoW API:
+Let's compare two examples:
+
+**With substitution directives**
 
 .. code-block:: lua
 
@@ -520,6 +464,16 @@ Let's compare two examples, one using substitution directives and one using the 
   --@end-non-retail@]===]
   print("Hi, I'm running on " .. wowVersion .. " WoW!")
 
+The above code will built differently for retail and classic builds. This makes it easy
+to introduce bugs because developers have to keep in mind how the code differs in each
+case. It is no longer Lua code -- it is an overloading of Lua comments into a
+preprocessing language with its own esoteric syntax and keyword names.
+
+Additionally, you can't run static analyzers like
+`luacheck <https://github.com/mpeterv/luacheck>`_ on this code.
+
+**With pure lua code and the WoW API**
+
 .. code-block:: lua
 
   -- WITH THE WOW API
@@ -529,29 +483,18 @@ Let's compare two examples, one using substitution directives and one using the 
   end
   print("Hi, I'm running on " .. wowVersion .. " WoW!")
 
-With substitution directives, I see:
+This code is clear in its intentions. It's simply Lua code, and it leverages the WoW
+API we have at hand to do the job. And, it can be statically analyzed.
 
-- Lua code comments overloaded into another language with its own special syntax and
-  keyword names.
-- The ability to introduce bugs in the lua code itself, because lua static analyzers
-  like `luacheck <https://github.com/mpeterv/luacheck>`_ obviously do not try to parse
-  comments.
-
-On the other hand, with the WoW API version, I see:
-
-- Clear, parseable Lua code that can be statically analyzed.
-- A leveraging of the API that WoW exposes.
-
-And this is just Lua. Substitution directives also exist for TOC and XML files:
+And this is just the Lua. Substitution directives also exist for TOC and XML files:
 
 - The main case for substitution in TOC files is to handle the ``Interface`` tag, which
   *wap* can do for you.
-- For XML, there may be a valid use case. But I'd counter that you should not be writing
-  it for your addons because WoW Lua code can do everything that WoW XML documents can.
-  So why would you want to put yourself through that?
+- For XML, there may be a valid use case. But, there's almost no reason to be writing
+  XML. Lua can do everything that WoW XML can.
 
-In closing, the main point is here is that there are programmatic ways in your Lua code
-to do everything that substitution directives do, but in a better way, and TOC file
+In closing, the main point is here is that there are programmatic ways to do everything
+substitution directives do in your Lua code, but in a better way. And TOC file
 generation is handled by *wap* itself.
 
 Why generate TOC files?
@@ -565,8 +508,7 @@ There are two main reasons:
 
   So instead, by centralizing TOC contents into the ``.wap.yml``, *wap* can generate
   your TOC file with your tags and files AND the correct ``Interface`` for the version
-  of WoW you are targeting. *wap* also does this for the ``Version`` tag (the version of
-  your addon), which is passed in as a command line argument when you run *wap*.
+  of WoW you are targeting.
 
 - TOC validation. *wap* validates that:
 
@@ -574,31 +516,7 @@ There are two main reasons:
   * Any custom tags are prefixed with ``X-``, which is necessary for them to be
     retrievable by
     `GetAddOnMetadata <https://wowwiki-archive.fandom.com/wiki/API_GetAddOnMetadata>`_.
-    Non-prefixed tags do not cause an error for WoW, but on the other hand, they are
-    also invisible to WoW.
 
-During early development, *optional* TOC generation was considered. But, it was
-ultimately disallowed for the following reasons:
-
-- *wap* would do no validation of the tags and files in your TOC file. For example, you
-  may include a file that does not exist or include a custom tag without the ``X-``
-  prefix. This would likely cause bugs.
-- *wap* would not add your ``## Version: <version>`` tag. Therefore:
-
-  * The version in your TOC file will **not** necessarily be equal to the
-    ``--addon-version`` that you supply with commands.
-  * The version may not even exist in your TOC file, which is not an error, but is
-    a very unconventional software practice.
-
-- *wap* would not add your ``## Interface: <interface>`` tag. Again, it may not even
-  exist in your TOC file, which will probably cause WoW to believe it is out-of-date.
-- If you're uploading a classic and a retail version, but are using a fixed TOC file in
-  the directories that are zipped, then the classic and retail zip files will be
-  identical. CurseForge specifically identifies this case and will reject one of the
-  uploads after processing it.
-
-So, TOC generation is probably a good thing. If you encounter a case where the *wap* TOC
-generation is insufficient for what you are trying to do, please create an issue.
 
 Why not automatically get my addon's version number from my VCS?
 ****************************************************************
@@ -606,8 +524,8 @@ Why not automatically get my addon's version number from my VCS?
 In the spirit of keeping *wap* (and addon development in general!) accessible, I don't
 want to force your hand on your addon's development process and tooling.
 
-Besides, if you insist, you can extract a version from your VCS using a command like the
-uploading_ section suggests.
+Besides, if you insist, you can extract a version from your VCS and use it as the
+argument to any *wap* commands that accept it.
 
 Why not support pulling in dependencies (``externals``) from other repositories?
 ********************************************************************************
@@ -623,9 +541,8 @@ For a variety of reasons:
   owner, cleansed and packaged in a way you can include in your addon.
 
   Unfortunately, Lua does not have a distribution format and/or package repository (e.g.
-  PyPI for Python, Maven Central for Java, Docker Hub for Docker, etc). Maybe you are
-  lucky and the author of your dependency has created a GitHub Release asset that would
-  serve you better than the repository itself.
+  PyPI for Python, Maven Central for Java, Docker Hub for Docker, etc). But source
+  code repositories are not the drop-in replacement.
 
 - Even if you do have dependency repository that's tolerably clean and packaged in its
   natural form, that repository is actually a development-time dependency, not a
@@ -637,14 +554,17 @@ For a variety of reasons:
     cases. Dependencies shouldn't be changing *at all* unless you've deliberately
     upgraded them.
 
-- It slows down your release process to redownload dependencies.
+- It slows down your release process to redownload dependencies. Pulling them into
+  source code once is much faster.
 
 - Finally, this is just feature bloat for *wap*. It's excessive to write a ``git clone``
   and/or ``svn checkout`` runner when you can run those tools better yourself. It opens
-  up a huge surface area of support if *wap* needs to be able to run those tools itself.
+  up a huge surface area of support if *wap* would need to be able to run those tools
+  itself.
 
 TLDR: *wap* could, but it won't. **Copy your dependencies into your project from an
-official release, or from the dependency's repository if that is all they offer.**
+official release of that dependency, or from the its repository if that is all they
+offer.**
 
 Why not support WoWInterface uploads?
 *************************************
@@ -656,19 +576,11 @@ users would want it.
 
 If I'm wrong about that, please create an issue and we can discuss and reassess.
 
-Why not support GitHub Release uploads?
-***************************************
+Why not support GitHub Release asset uploads?
+*********************************************
 
 - It requires that a tag is exists in the repository, which is a prerequisite for a
   GitHub release. I don't want to force your hand on your development process.
-
-- It requires *wap* to interact with your Git repository, which would include at the
-  very least:
-
-  * knowing Git compatible versions
-
-  * requiring *wap* to be run from within the addon repository, or adding another
-    command line option to specify it.
 
 - It adds the GitHub API itself as a dependency, which is a moving target.
 
