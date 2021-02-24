@@ -451,8 +451,8 @@ I think there are some design flaws that needed revisiting. Namely, it:
   beginning developers.
 - Reads its configuration from several files (``.pkgmeta`` and ``.toc`` files).
 
-Why not implement/support substitution directives like ``--@retail@``?
-*************************************************************************
+Why not implement substitution directives like ``--@retail@``?
+**************************************************************
 
 Let's compare two examples:
 
@@ -569,8 +569,8 @@ TLDR: *wap* could, but it won't. **Copy your dependencies into your project from
 official release of that dependency, or from the its repository if that is all they
 offer.**
 
-Why not support WoWInterface uploads?
-*************************************
+Why not upload WoWInterface too?
+********************************
 
 The momentum of the WoW community points towards CurseForge.
 
@@ -579,8 +579,8 @@ users would want it.
 
 If I'm wrong about that, please create an issue and we can discuss and reassess.
 
-Why not support GitHub Release asset uploads?
-*********************************************
+Why not upload GitHub Release assets?
+*************************************
 
 - It requires that a tag is exists in the repository, which is a prerequisite for a
   GitHub release. I don't want to force your hand on your development process.
