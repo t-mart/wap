@@ -145,7 +145,10 @@ def quickstart(
     log.info(
         "  - "
         + click.style(
-            f"wap dev-install --wow-addons-path {default_wow_addons_path_for_system()}",
+            (
+                "wap dev-install --wow-addons-path "
+                f'"{default_wow_addons_path_for_system()}"'
+            ),
             fg="blue",
         )
     )
