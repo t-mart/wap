@@ -2,10 +2,10 @@ from pathlib import Path
 
 import click
 
+from wap import log
 from wap.commands.common import DEFAULT_CONFIG_PATH, PATH_TYPE
 from wap.exception import NewConfigException
 from wap.guided_config import guide
-from wap.log import info
 
 
 @click.command()
@@ -37,7 +37,8 @@ def new_config(
     project_name = Path.cwd().name
 
     config = guide(project_dir_name=project_name)
-    info(f'\nCreating config file at "{config_path}"\n')
+    log.info('\nCreating config file at "' + click.style(f"{config_path}", fg="green"))
+    log.info(click.style("Make sure to edit it to fit your project!", fg="yellow"))
     config.to_path(config_path)
 
     return 0

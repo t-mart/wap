@@ -88,7 +88,7 @@ def guide(project_dir_name: str) -> Config:
 
     toc_config = TocConfig(
         tags={"Title": name, "Author": author, "Notes": notes},
-        files=[PurePosixPath(name + ".lua")],
+        files=[PurePosixPath("Init.lua")],
     )
 
     dir_configs = [DirConfig(path=PurePosixPath(name), toc_config=toc_config)]

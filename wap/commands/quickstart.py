@@ -83,7 +83,7 @@ def quickstart(
       \b
       MyAddon
       ├── MyAddon
-      │   └── MyAddon.lua
+      │   └── Init.lua
       ├── CHANGELOG.md (if uploading to CurseForge)
       ├── README.md
       └── .wap.yml
@@ -130,9 +130,10 @@ def quickstart(
     log.info('Creating readme at "' + click.style(f"{readme_path}", fg="green"))
     write_readme(readme_path, project_name)
 
+    # guided config only puts 1 starter lua file in the toc config's files.
     dir_config = config.dir_configs[0]
-    toc_config_file = dir_config.toc_config.files[0]
-    lua_file = project_dir_path / dir_config.path / toc_config_file
+    starter_lua_file = dir_config.toc_config.files[0]
+    lua_file = project_dir_path / dir_config.path / starter_lua_file
     log.info(
         f"Creating starter lua file at '" + click.style(f"{lua_file}", fg="green") + '"'
     )
