@@ -3,7 +3,7 @@ wow-versions:
   - 9.0.2
 curseforge:
   project-id: 123456
-  changelog: doesnotexist.md
+  changelog-file: doesnotexist.md
   project-slug: myaddon
 dirs:
   - path: Dir1

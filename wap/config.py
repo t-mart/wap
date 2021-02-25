@@ -185,7 +185,7 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
             {
                 "project-id": strictyaml.Str(),
                 "project-slug": strictyaml.Str(),
-                "changelog": strictyaml.Str(),
+                "changelog-file": strictyaml.Str(),
             }
         )
 
@@ -210,7 +210,7 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
 
         project_slug = obj["project-slug"]
 
-        changelog_path = PurePosixPath(obj["changelog"])
+        changelog_path = PurePosixPath(obj["changelog-file"])
 
         return cls(
             project_id=project_id,
@@ -224,7 +224,7 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
         obj: dict[str, Any] = {
             "project-id": self.project_id,
             "project-slug": self.project_slug,
-            "changelog": str(self.changelog_path),
+            "changelog-file": str(self.changelog_path),
         }
         return obj
 

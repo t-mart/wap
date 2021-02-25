@@ -18,7 +18,7 @@ def test_validate(
     assert config_json["name"] == "MyAddon"
     assert set(config_json["wow-versions"]) == {"9.0.2", "1.13.6"}
     assert config_json["curseforge"]["project-id"] == "123456"
-    assert config_json["curseforge"]["changelog"] == "CHANGELOG.md"
+    assert config_json["curseforge"]["changelog-file"] == "CHANGELOG.md"
     assert config_json["curseforge"]["project-slug"] == "myaddon"
     assert config_json["dirs"][0]["path"] == "Dir1"
     assert config_json["dirs"][0]["toc"]["tags"] == {
