@@ -21,8 +21,9 @@ PATH_TYPE = PathType()
 
 VERSION_STRING_TEMPLATE = "wap, version %(version)s"
 
+OUTPUT_PATH = Path("dist")
+
 DEFAULT_CONFIG_PATH = Path(".wap.yml")
-DEFAULT_OUTPUT_PATH = Path("dist")
 DEFAULT_ADDON_VERSION = "dev"
 DEFAULT_RELEASE_TYPE = "alpha"
 
@@ -46,22 +47,6 @@ def config_path_option() -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYP
                 "The path of the configuration file. May also be specified in the "
                 "environment variable WAP_CONFIG_PATH."
             ),
-        )(func)
-
-        return update_wrapper(decorated, func)
-
-    return wrapper
-
-
-def output_path_option() -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYPE]:
-    def wrapper(func: _DECORATED_FUNC_TYPE) -> _DECORATED_FUNC_TYPE:
-        decorated = click.option(
-            "-o",
-            "--output-path",
-            type=PATH_TYPE,
-            default=str(DEFAULT_OUTPUT_PATH),
-            show_default=str(DEFAULT_OUTPUT_PATH),
-            help="The output directory in which to create the build.",
         )(func)
 
         return update_wrapper(decorated, func)

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import json
 from pathlib import Path
 from typing import Optional
@@ -12,7 +10,6 @@ from wap.commands.common import (
     addon_version_option,
     config_path_option,
     json_option,
-    output_path_option,
 )
 from wap.config import Config
 from wap.exception import DevInstallException
@@ -59,7 +56,6 @@ WOW_ADDONS_PATH_TYPE = WowAddonsPathType()
 
 @click.command()
 @config_path_option()
-@output_path_option()
 @addon_version_option()
 @json_option()
 @click.option(
@@ -76,7 +72,6 @@ WOW_ADDONS_PATH_TYPE = WowAddonsPathType()
 def dev_install(
     config_path: Path,
     addon_version: str,
-    output_path: Path,
     wow_addons_path: Path,
     show_json: bool,
 ) -> int:
@@ -97,14 +92,16 @@ def dev_install(
 
     output_map = {}
 
-    build_path = addon.build_addon(
-        config_path=config_path,
+    build_path = addon.get_build_path(
         addon_name=config.name,
-        dir_configs=config.dir_configs,
-        output_path=output_path,
-        addon_version=addon_version,
         wow_version=wow_version,
+        addon_version=addon_version,
     )
+
+    if not build_path.is_dir():
+        raise DevInstallException(
+            f"Expected build directory not found. Have you run `wap build` yet?"
+        )
 
     dev_install_paths = addon.dev_install_addon(
         build_path=build_path,
@@ -113,7 +110,6 @@ def dev_install(
     )
 
     output_map[wow_version.type()] = {
-        "build_dir_path": str(build_path),
         "installed_dir_paths": [str(path) for path in dev_install_paths],
     }
 

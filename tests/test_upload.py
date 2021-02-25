@@ -1,21 +1,12 @@
 import json
-from pathlib import Path
 
 import pytest
 
-from tests.util import (
-    VERSION_ID_MAP,
-    Environment,
-    decode_file_upload_multipart_request,
-    fileset,
-)
-from tests.util import normalized_path_string as ps
-from tests.util import toc_fileset, toc_tagmap, zip_fileset
+from tests.util import VERSION_ID_MAP, Environment, decode_file_upload_multipart_request
 from wap import __version__
 from wap.commands.common import (
     DEFAULT_ADDON_VERSION,
     DEFAULT_CONFIG_PATH,
-    DEFAULT_OUTPUT_PATH,
     WAP_CONFIG_PATH_ENVVAR_NAME,
     WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
 )
@@ -33,11 +24,6 @@ from wap.exception import CurseForgeAPIException, UploadException
     ids=["config path from cli", "config path from env var"],
 )
 @pytest.mark.parametrize(
-    ("default_output_path",),
-    [(True,), (False,)],
-    ids=["default output path", "specified output path"],
-)
-@pytest.mark.parametrize(
     ("release_type",),
     [["alpha"], ["beta"], ["release"]],
 )
@@ -45,11 +31,10 @@ def test_upload(
     env: Environment,
     curseforge_token_from_cli: bool,
     config_path_from_cli: bool,
-    default_output_path: bool,
     release_type: str,
 ) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built-version-1.2.3",
         config_file_name="basic",
         wow_dir_name="retail",
     )
@@ -76,78 +61,22 @@ def test_upload(
     else:
         env_vars[WAP_CONFIG_PATH_ENVVAR_NAME] = str(DEFAULT_CONFIG_PATH)
 
-    if default_output_path:
-        output_path = str(DEFAULT_OUTPUT_PATH)
-    else:
-        output_path = "out/path"
-        run_wap_args.extend(["--output-path", output_path])
-
     result = env.run_wap(*run_wap_args, env_vars=env_vars)
 
     actual_json_output = json.loads(result.stdout)
-    expected_build_files = {
-        Path("Dir1/Dir1.toc"),
-        Path("Dir1/Dir1.lua"),
-        Path("Dir1/Sub/Another.lua"),
-    }
-    expected_toc_files = {
-        "Dir1.lua",
-        "Sub\\Another.lua",
-    }
 
     # request_history_idx refers to the index in the requests_mock.request_history
     # sequence where the file upload was made. we use this to inspect the data that
     # would be posted to CurseForge. Theses indexes are brittle and may change if wap
     # changes how it makes requests to CF, or if the order of the uploads for classic
     # and retail changes in the config file. be warned.
-    for wow_type, interface, request_history_idx in [
-        ("retail", "90002", 1),
-        ("classic", "11306", 2),
+    for wow_type, request_history_idx in [
+        ("retail", 1),
+        ("classic", 2),
     ]:
         # check the stdout json
-        assert actual_json_output[wow_type]["build_dir_path"] == ps(
-            f"{output_path}/MyAddon-{addon_version}-{wow_type}"
-        )
-        assert actual_json_output[wow_type]["zip_file_path"] == ps(
-            f"{output_path}/MyAddon-{addon_version}-{wow_type}.zip"
-        )
         assert actual_json_output[wow_type]["curseforge_upload_url"] == (
             f"https://www.curseforge.com/wow/addons/myaddon/files/{env.UPLOAD_FILE_ID}"
-        )
-
-        # check the files in the build dir
-        actual_build_files = fileset(
-            env.project_dir_path / f"{output_path}/MyAddon-{addon_version}-{wow_type}"
-        )
-        assert expected_build_files == actual_build_files
-
-        # check the files in the zip file
-        zip_path = (
-            env.project_dir_path
-            / f"{output_path}/MyAddon-{addon_version}-{wow_type}.zip"
-        )
-        actual_zip_files = zip_fileset(zip_path)
-        assert expected_build_files == actual_zip_files
-
-        expected_toc_tags = {
-            "Title": "MyAddon Dir1",
-            "Version": addon_version,
-            "Interface": interface,
-            "X-BuildDateTime": env.frozen_time.to("Z").isoformat(),
-            "X-BuildTool": f"wap v{__version__}",
-            "X-Custom-Tag": "foobar",
-        }
-
-        # check the tags in the toc
-        assert expected_toc_files == toc_fileset(
-            env.project_dir_path
-            / f"{output_path}/MyAddon-{addon_version}-{wow_type}/Dir1/Dir1.toc"
-        )
-
-        # check the files in the toc
-        assert expected_toc_tags == toc_tagmap(
-            env.project_dir_path
-            / f"{output_path}/MyAddon-{addon_version}-{wow_type}/Dir1/Dir1.toc"
         )
 
         decoded_req = decode_file_upload_multipart_request(
@@ -158,6 +87,7 @@ def test_upload(
         assert decoded_req.file_name == f"MyAddon-{addon_version}-{wow_type}.zip"
 
         # check the data uploaded
+        zip_path = env.project_dir_path / f"dist/MyAddon-{addon_version}-{wow_type}.zip"
         with zip_path.open("rb") as zip_file:
             zip_contents = zip_file.read()
         assert decoded_req.file_contents == zip_contents
@@ -189,7 +119,7 @@ def test_upload_no_curseforge_config(env: Environment) -> None:
 
 def test_upload_changelog_does_not_exist(env: Environment) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built",
         config_file_name="curseforge_changelog_does_not_exist",
     )
 
@@ -223,7 +153,7 @@ def test_upload_changelog_extensions(
     expected_changelog_type: str,
 ) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built",
         config_file_name=config_file_name,
     )
 
@@ -252,7 +182,7 @@ def test_upload_failed_get_version_id_request(
     env: Environment,
 ) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built",
         config_file_name="basic",
         success_cf_get_version_id=False,
     )
@@ -273,7 +203,7 @@ def test_upload_failed_upload_addon_file_request(
     env: Environment,
 ) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built",
         config_file_name="basic",
         success_cf_upload_addon_file=False,
     )
@@ -294,7 +224,7 @@ def test_upload_version_does_not_exist(
     env: Environment,
 ) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built",
         config_file_name="version_does_not_exist_on_cf",
         success_cf_upload_addon_file=False,
     )
@@ -302,6 +232,23 @@ def test_upload_version_does_not_exist(
     with pytest.raises(
         CurseForgeAPIException, match=r"could not be found on CurseForge"
     ):
+        env.run_wap(
+            "upload",
+            "--addon-version",
+            DEFAULT_ADDON_VERSION,
+            "--curseforge-token",
+            "abc123",
+        )
+
+
+@pytest.mark.parametrize(["wow_dir_name"], [["retail"], ["classic"]])
+def test_upload_without_build(env: Environment, wow_dir_name: str) -> None:
+    env.prepare(
+        project_dir_name="basic",
+        config_file_name="basic",
+    )
+
+    with pytest.raises(UploadException, match=r"zip file not found"):
         env.run_wap(
             "upload",
             "--addon-version",
