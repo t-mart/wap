@@ -4,11 +4,7 @@ from pathlib import Path
 import click
 
 from wap import addon
-from wap.commands.common import (
-    addon_version_option,
-    config_path_option,
-    json_option,
-)
+from wap.commands.common import addon_version_option, config_path_option, json_option
 from wap.config import Config
 
 

@@ -165,17 +165,10 @@ def test_dev_install_no_build_type_for_wow_addons_path_type(
         env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path))
 
 
-@pytest.mark.parametrize(
-    ["wow_dir_name"],
-    [["retail"], ["classic"]]
-)
-def test_dev_install_without_build(
-    env: Environment, wow_dir_name: str
-) -> None:
+@pytest.mark.parametrize(["wow_dir_name"], [["retail"], ["classic"]])
+def test_dev_install_without_build(env: Environment, wow_dir_name: str) -> None:
     env.prepare(
-        project_dir_name="basic",
-        config_file_name="basic",
-        wow_dir_name=wow_dir_name
+        project_dir_name="basic", config_file_name="basic", wow_dir_name=wow_dir_name
     )
 
     assert env.wow_dir_path

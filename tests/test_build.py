@@ -6,13 +6,12 @@ import pytest
 from tests.util import Environment, fileset
 from tests.util import normalized_path_string as ps
 from tests.util import toc_fileset, toc_tagmap, zip_fileset
-from wap import __version__
+from wap import __version__, addon
 from wap.commands.common import (
     DEFAULT_CONFIG_PATH,
     OUTPUT_PATH,
     WAP_CONFIG_PATH_ENVVAR_NAME,
 )
-from wap import addon
 from wap.exception import BuildException, TocException
 
 
@@ -21,9 +20,7 @@ from wap.exception import BuildException, TocException
     [(True,), (False,)],
     ids=["config path from cli", "config path from env var"],
 )
-def test_build(
-    env: Environment, config_path_from_cli: bool
-) -> None:
+def test_build(env: Environment, config_path_from_cli: bool) -> None:
     env.prepare(
         project_dir_name="basic",
         config_file_name="basic",

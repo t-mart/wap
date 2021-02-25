@@ -70,8 +70,8 @@ def upload(
 
         if not zip_path.is_file():
             raise UploadException(
-            f"Expected zip file not found. Have you run `wap build` yet?"
-        )
+                f"Expected zip file not found. Have you run `wap build` yet?"
+            )
 
         upload_url = addon.upload_addon(
             addon_name=config.name,

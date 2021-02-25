@@ -249,13 +249,9 @@ def test_upload_version_does_not_exist(
             "abc123",
         )
 
-@pytest.mark.parametrize(
-    ["wow_dir_name"],
-    [["retail"], ["classic"]]
-)
-def test_upload_without_build(
-    env: Environment, wow_dir_name: str
-) -> None:
+
+@pytest.mark.parametrize(["wow_dir_name"], [["retail"], ["classic"]])
+def test_upload_without_build(env: Environment, wow_dir_name: str) -> None:
     env.prepare(
         project_dir_name="basic",
         config_file_name="basic",
