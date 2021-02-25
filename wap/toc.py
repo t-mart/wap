@@ -1,11 +1,7 @@
-from __future__ import annotations
-
 from collections import ChainMap
 from pathlib import Path, PureWindowsPath
-from typing import ClassVar, Mapping, Sequence
 
 import arrow
-import attr
 
 from wap import __version__, log
 from wap.config import TocConfig
@@ -34,62 +30,48 @@ _OFFICIAL_TAGS = {
 _METADATA_TAG_PREFIX = "X-"
 
 
-@attr.s(kw_only=True, auto_attribs=True, order=False, frozen=True)
-class Toc:
-    tags: Mapping[str, str]
-    files: Sequence[Path]
+def write_toc(
+    toc_config: TocConfig,
+    path: Path,
+    addon_version: str,
+    wow_version: WoWVersion,
+) -> None:
+    for file in toc_config.files:
+        rooted_file = path.parent / file
+        if not rooted_file.is_file():
+            raise TocException(f"TOC file {path} lists {file}, but it does not exist")
 
-    @classmethod
-    def from_toc_config(cls, toc_config: TocConfig) -> Toc:
-        return cls(
-            tags=toc_config.tags,
-            files=[Path(f) for f in toc_config.files],
-        )
+    extra_wap_tags = {
+        "Interface": wow_version.interface_version(),
+        "Version": addon_version,
+        f"{_METADATA_TAG_PREFIX}BuildDateTime": arrow.utcnow().isoformat(),
+        f"{_METADATA_TAG_PREFIX}BuildTool": f"wap v{__version__}",
+    }
 
-    def write(
-        self,
-        path: Path,
-        addon_version: str,
-        wow_version: WoWVersion,
-    ) -> None:
-        for file in self.files:
-            rooted_file = path.parent / file
-            if not rooted_file.is_file():
-                raise TocException(
-                    f"TOC file {path} lists {file}, but it does not exist"
-                )
+    tag_map = ChainMap(toc_config.tags, extra_wap_tags)
 
-        extra_wap_tags = {
-            "Interface": wow_version.interface_version(),
-            "Version": addon_version,
-            f"{_METADATA_TAG_PREFIX}BuildDateTime": arrow.utcnow().isoformat(),
-            f"{_METADATA_TAG_PREFIX}BuildTool": f"wap v{__version__}",
-        }
+    for key, value in extra_wap_tags.items():
+        if key in toc_config.tags:
+            log.warn(
+                f"Overwriting wap-provided tag {key}={value} with {toc_config.tags[key]}"
+            )
 
-        tag_map = ChainMap(self.tags, extra_wap_tags)
+    for key, value in toc_config.tags.items():
+        if key not in _OFFICIAL_TAGS and not key.startswith(_METADATA_TAG_PREFIX):
+            log.warn(
+                f"TOC user-specified tag {key} does not have "
+                f"{_METADATA_TAG_PREFIX} prefix"
+            )
 
-        for key, value in extra_wap_tags.items():
-            if key in self.tags:
-                log.warn(
-                    f"Overwriting wap-provided tag {key}={value} with {self.tags[key]}"
-                )
+    # TOC file use windows path separators
+    windows_files = [PureWindowsPath(f) for f in toc_config.files]
 
-        for key, value in self.tags.items():
-            if key not in _OFFICIAL_TAGS and not key.startswith(_METADATA_TAG_PREFIX):
-                log.warn(
-                    f"TOC user-specified tag {key} does not have "
-                    f"{_METADATA_TAG_PREFIX} prefix"
-                )
+    lines = [
+        *[f"## {key}: {value}\n" for key, value in tag_map.items()],
+        "\n",
+        *[f"{str(file)}\n" for file in windows_files],
+    ]
 
-        # TOC file use windows path separators
-        windows_files = [PureWindowsPath(f) for f in self.files]
-
-        lines = [
-            *[f"## {key}: {value}\n" for key, value in tag_map.items()],
-            "\n",
-            *[f"{str(file)}\n" for file in windows_files],
-        ]
-
-        with path.open("w") as toc_file:
-            for line in lines:
-                toc_file.write(line)
+    with path.open("w") as toc_file:
+        for line in lines:
+            toc_file.write(line)

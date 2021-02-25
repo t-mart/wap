@@ -2,11 +2,7 @@ import json
 
 import pytest
 
-from tests.util import (
-    VERSION_ID_MAP,
-    Environment,
-    decode_file_upload_multipart_request,
-)
+from tests.util import VERSION_ID_MAP, Environment, decode_file_upload_multipart_request
 from wap import __version__
 from wap.commands.common import (
     DEFAULT_ADDON_VERSION,

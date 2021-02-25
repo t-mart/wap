@@ -1,6 +1,5 @@
 import json
 
-
 from tests.util import Environment
 
 

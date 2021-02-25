@@ -9,7 +9,7 @@ from wap import log
 from wap.config import CurseforgeConfig, DirConfig
 from wap.curseforge import CHANGELOG_SUFFIX_MAP, CurseForgeAPI
 from wap.exception import BuildException, UploadException
-from wap.toc import Toc
+from wap.toc import write_toc
 from wap.util import delete_path
 from wap.wowversion import WoWVersion
 
@@ -72,9 +72,8 @@ def build_addon(
             )
             delete_path(toc_path)
 
-        toc_config = dir_config.toc_config
-        toc = Toc.from_toc_config(toc_config)
-        toc.write(
+        write_toc(
+            toc_config=dir_config.toc_config,
             path=toc_path,
             addon_version=addon_version,
             wow_version=wow_version,
