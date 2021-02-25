@@ -74,14 +74,14 @@ class TestQuickstart:
             "Author": author,
             "Notes": description,
         }
-        assert config_json["dirs"][0]["toc"]["files"] == [f"{addon_name}.lua"]
+        assert config_json["dirs"][0]["toc"]["files"] == ["Init.lua"]
 
         # test the files created
         expected_quickstart_files = {
             Path(".wap.yml"),
             Path(changelog_name),
             Path("README.md"),
-            Path(f"{addon_name}/{addon_name}.lua"),
+            Path(f"{addon_name}/Init.lua"),
         }
 
         # unfortunate naming conflict between env.project_dir_path and project_dir_path.

@@ -67,7 +67,7 @@ class TestNewConfig:
             "Author": author,
             "Notes": description,
         }
-        assert config_json["dirs"][0]["toc"]["files"] == [f"{addon_name}.lua"]
+        assert config_json["dirs"][0]["toc"]["files"] == [f"Init.lua"]
 
     def test_new_config_file_already_exists(self, env: Environment) -> None:
         env.prepare(project_dir_name="basic", config_file_name="basic")
