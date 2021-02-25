@@ -6,8 +6,9 @@ from zipfile import ZIP_DEFLATED, ZipFile
 import click
 
 from wap import log
+from wap.changelog import Changelog
 from wap.config import CurseforgeConfig, DirConfig
-from wap.curseforge import CHANGELOG_SUFFIX_MAP, CurseForgeAPI
+from wap.curseforge import CurseForgeAPI
 from wap.exception import BuildException, UploadException
 from wap.toc import write_toc
 from wap.util import delete_path
@@ -133,8 +134,8 @@ def zip_addon(addon_name: str, addon_version: str, wow_version: WoWVersion) -> P
 def upload_addon(
     *,
     addon_name: str,
-    config_path: Path,
     curseforge_config: CurseforgeConfig,
+    changelog: Changelog,
     wow_version: WoWVersion,
     zip_file_path: Path,
     addon_version: str,
@@ -143,35 +144,12 @@ def upload_addon(
 ) -> str:
     cf_wow_version_id = curseforge_api.get_version_id(version=wow_version.dot_version())
 
-    changelog_path = config_path.parent / curseforge_config.changelog_path
-    if not changelog_path.is_file():
-        raise UploadException(
-            f'Curseforge config has changelog path "{changelog_path}", but it is not a '
-            "file. This path must point to a file, must be relative to "
-            f'the parent of the config file ("{config_path.resolve()}") and, '
-            'if it is in a subdirectory, must only use forward slashes ("/").'
-        )
-
-    with changelog_path.open("r") as changelog_file:
-        changelog_contents = changelog_file.read()
-
-    normalized_changelog_suffix = changelog_path.suffix.lower()
-    if normalized_changelog_suffix in CHANGELOG_SUFFIX_MAP:
-        changelog_type = CHANGELOG_SUFFIX_MAP[normalized_changelog_suffix]
-    else:
-        log.warn(
-            "Unable to determine changelog type from extension for"
-            f'"{changelog_path}", so assuming "text"'
-        )
-        changelog_type = "text"
-
     with zip_file_path.open("rb") as package_archive_file:
         file_id = curseforge_api.upload_addon_file(
             project_id=curseforge_config.project_id,
             archive_file=package_archive_file,
             display_name=f"{addon_version}-{wow_version.type()}",
-            changelog_contents=changelog_contents,
-            changelog_type=changelog_type,
+            changelog=changelog,
             wow_version_id=cf_wow_version_id,
             release_type=release_type,
             file_name=f"{addon_name}-{addon_version}-{wow_version.type()}.zip",

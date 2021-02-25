@@ -176,7 +176,7 @@ class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
 @attr.s(kw_only=True, auto_attribs=True, order=False)
 class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
     project_id: str
-    changelog_path: PurePosixPath = attr.ib()
+    changelog_path: Optional[PurePosixPath] = attr.ib()
     project_slug: str
 
     @classmethod
@@ -185,7 +185,7 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
             {
                 "project-id": strictyaml.Str(),
                 "project-slug": strictyaml.Str(),
-                "changelog-file": strictyaml.Str(),
+                strictyaml.Optional("changelog-file"): strictyaml.Str(),
             }
         )
 
@@ -210,7 +210,9 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
 
         project_slug = obj["project-slug"]
 
-        changelog_path = PurePosixPath(obj["changelog-file"])
+        changelog_path: Optional[PurePosixPath] = None
+        if "changelog-file" in obj:
+            changelog_path = PurePosixPath(obj["changelog-file"])
 
         return cls(
             project_id=project_id,
@@ -224,8 +226,9 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
         obj: dict[str, Any] = {
             "project-id": self.project_id,
             "project-slug": self.project_slug,
-            "changelog-file": str(self.changelog_path),
         }
+        if self.changelog_path is not None:
+            obj["changelog-file"] = str(self.changelog_path)
         return obj
 
 

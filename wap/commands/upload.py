@@ -1,9 +1,11 @@
 import json
 from pathlib import Path
+from typing import Optional
 
 import click
 
 from wap import addon, log
+from wap.changelog import CHANGELOG_TYPES, Changelog
 from wap.commands.common import (
     DEFAULT_RELEASE_TYPE,
     WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
@@ -13,7 +15,7 @@ from wap.commands.common import (
 )
 from wap.config import Config
 from wap.curseforge import CurseForgeAPI
-from wap.exception import UploadException
+from wap.exception import ChangelogException, UploadException
 
 
 @click.command()
@@ -37,12 +39,31 @@ from wap.exception import UploadException
         "environment variable WAP_CURSEFORGE_TOKEN."
     ),
 )
+@click.option(
+    "--changelog-contents",
+    help=(
+        "The contents of your changelog that will be displayed with your upload on "
+        "CurseForge. If you have also provided a changelog-file in your config, "
+        "this option will take precedence. --changelog-type must also be provided if "
+        "using this option."
+    ),
+)
+@click.option(
+    "--changelog-type",
+    type=click.Choice(list(CHANGELOG_TYPES), case_sensitive=False),
+    help=(
+        "The format of your changelog contents. --changelog-contents must also be "
+        "provided if using this option."
+    ),
+)
 def upload(
     config_path: Path,
     addon_version: str,
     release_type: str,
     curseforge_token: str,
     show_json: bool,
+    changelog_contents: Optional[str],
+    changelog_type: Optional[str],
 ) -> int:
     """
     Uploads packages to CurseForge.
@@ -54,6 +75,31 @@ def upload(
         raise UploadException(
             'A "curseforge" configuration section must be provided in config to upload'
         )
+
+    if (changelog_contents is None) ^ (changelog_type is None):
+        raise ChangelogException(
+            "--changelog-contents and --changelog-type must be used together or "
+            "not at all."
+        )
+    else:
+
+        if changelog_contents is not None:
+            changelog = Changelog(
+                contents=changelog_contents,
+                type=changelog_type,  # type: ignore
+            )
+        elif curseforge_config.changelog_path is not None:
+            changelog_path = config_path.parent / curseforge_config.changelog_path
+            if not changelog_path.is_file():
+                raise UploadException(
+                    f'Curseforge config has changelog path "{changelog_path}", but it '
+                    "is not a file. This path must point to a file, must be relative "
+                    f'to the parent of the config file ("{config_path.resolve()}") '
+                    "and, if it is in a subdirectory, must only use forward slashes "
+                    '("/"). Or, you may use the --changelog-contents and '
+                    "--changelog-type options "
+                )
+            changelog = Changelog.from_path(changelog_path)
 
     output_map = {}
 
@@ -77,7 +123,7 @@ def upload(
         upload_url = addon.upload_addon(
             addon_name=config.name,
             curseforge_config=curseforge_config,
-            config_path=config_path,
+            changelog=changelog,
             wow_version=wow_version,
             zip_file_path=zip_path,
             addon_version=addon_version,

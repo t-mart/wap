@@ -6,14 +6,8 @@ from typing import BinaryIO, ClassVar, Optional
 import attr
 import requests
 
+from wap.changelog import Changelog
 from wap.exception import CurseForgeAPIException
-
-CHANGELOG_SUFFIX_MAP = {
-    ".md": "markdown",
-    ".markdown": "markdown",
-    ".html": "html",
-    ".txt": "text",
-}
 
 
 @attr.s(kw_only=True, order=False, auto_attribs=True)
@@ -26,7 +20,6 @@ class CurseForgeAPI:
 
     _SESSION: ClassVar[requests.Session] = requests.Session()
     _TOKEN_HEADER_NAME: ClassVar[str] = "X-Api-Token"
-    _CHANGELOG_TYPES: ClassVar[set[str]] = {"markdown", "text", "html"}
     _UPLOADED_FILE_URL_TEMPLATE: ClassVar[
         str
     ] = "https://www.curseforge.com/wow/addons/{slug}/files/{file_id}"
@@ -43,21 +36,20 @@ class CurseForgeAPI:
         project_id: str,
         archive_file: BinaryIO,
         display_name: str,
-        changelog_contents: str,
+        changelog: Changelog,
         wow_version_id: int,
         release_type: str,
-        changelog_type: str,
         file_name: str,
     ) -> int:
         """
         Uploads an addon file to Curseforge's WoW addon index.
         """
         metadata = self._create_release_metadata(
-            changelog_contents=changelog_contents,
+            changelog_contents=changelog.contents,
             display_name=display_name,
             version_id=wow_version_id,
             release_type=release_type,
-            changelog_type=changelog_type,
+            changelog_type=changelog.type,
         )
 
         resp = self._SESSION.post(

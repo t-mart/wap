@@ -161,7 +161,7 @@ Here's a high-level, commented example of a ``.wap.yml`` file:
   curseforge:
     # found on your project page
     project-id: 123456
-    # change history file
+    # change history file, optional
     changelog: CHANGELOG.md
     # found from your CurseForge URL
     # ex: https://www.curseforge.com/wow/addons/myaddon -> "myaddon"
@@ -266,11 +266,11 @@ Description
   .. image:: https://raw.githubusercontent.com/t-mart/wap/master/docs/project-id.png
     :alt: Where to find your CurseForge project id
 
-``curseforge.changelog``
-^^^^^^^^^^^^^^^^^^^^^^^^
+``curseforge.changelog-file``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Required
-  Yes
+  No
 
 Type
   ``string``
@@ -284,14 +284,8 @@ Description
   See the `Sample Config File and Directory Structure`_ section for an example on where
   this file is expected to be inside your project.
 
-  This field is required because CurseForge requires it. Each file on your Files page
-  is accompanied by a changelog.
-
-  CurseForge aside, maintaining a changelog is a good practice. Not only is this helpful
-  to your users, but it's also helpful to your collaborators. It's extremely common to
-  see changelog files in source code repositories.
-
-  CurseForge supports three changelog formats:
+  CurseForge also requires a changelog type, which indicates the format of your
+  log contents. They support the following three:
 
   - ``markdown``
   - ``html``
@@ -314,7 +308,14 @@ Description
   | All other cases | ``text``          |
   +-----------------+-------------------+
 
-``curseforge.addon-name``
+  Also note that this field is optional. But if you do not provide it, you must use the
+  ``--changelog-contents`` and ``--changelog-type`` options when you run the upload
+  command: Curseforge requires this data. It accompanies each file uploaded to the site.
+
+  (CurseForge aside, maintaining a changelog file is a good practice. This is helpful
+  information for both your users and collaborators.)
+
+``curseforge.slug``
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Required
@@ -331,8 +332,8 @@ Description
   form of URLs that you can copy-paste into your browser.
 
   For example, if your addon's URL is
-  ``https://www.curseforge.com/wow/addons/dpsbooster``, then you would use the string
-  ``dpsbooster`` here.
+  ``https://www.curseforge.com/wow/addons/mycooladdon``, then you would use the string
+  ``mycooladdon`` here.
 
 ``dirs``
 ^^^^^^^^

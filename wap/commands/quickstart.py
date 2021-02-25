@@ -115,6 +115,9 @@ def quickstart(
     config.to_path(config_path)
 
     if config.curseforge_config:
+        # quickstart mandates changelog creation
+        assert config.curseforge_config.changelog_path is not None
+
         changelog_path = project_dir_path / config.curseforge_config.changelog_path
         log.info(
             "Creating changelog file at '"

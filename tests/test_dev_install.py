@@ -20,14 +20,19 @@ from wap.exception import DevInstallException
     ids=["retail", "classic"],
 )
 @pytest.mark.parametrize(
-    ("wow_addons_path_from_cli",),
-    [(True,), (False,)],
+    "wow_addons_path_from_cli",
+    [True, False],
     ids=["addons path from cli", "addons path from env var"],
 )
 @pytest.mark.parametrize(
-    ("config_path_from_cli",),
-    [(True,), (False,)],
+    "config_path_from_cli",
+    [True, False],
     ids=["config path from cli", "config path from env var"],
+)
+@pytest.mark.parametrize(
+    "use_addon_default_version",
+    [True, False],
+    ids=["default version", "specified version"],
 )
 def test_dev_install(
     env: Environment,
@@ -35,9 +40,18 @@ def test_dev_install(
     wow_type: str,
     wow_addons_path_from_cli: bool,
     config_path_from_cli: bool,
+    use_addon_default_version: bool,
 ) -> None:
+
+    if use_addon_default_version:
+        addon_version = "dev"
+        project_dir_name = "basic-built"
+    else:
+        addon_version = "1.2.3"
+        project_dir_name = "basic_built_version_1.2.3"
+
     env.prepare(
-        project_dir_name="basic-built",
+        project_dir_name=project_dir_name,
         config_file_name="basic",
         wow_dir_name=wow_dir_name,
     )
@@ -58,6 +72,9 @@ def test_dev_install(
     else:
         env_vars[WAP_CONFIG_PATH_ENVVAR_NAME] = str(DEFAULT_CONFIG_PATH)
 
+    if not use_addon_default_version:
+        run_wap_args.extend(["--addon-version", addon_version])
+
     result = env.run_wap(*run_wap_args, env_vars=env_vars)
 
     actual_json_output = json.loads(result.stdout)
@@ -68,7 +85,7 @@ def test_dev_install(
     }
 
     assert fileset(
-        env.project_dir_path / "dist" / f"MyAddon-dev-{wow_type}"
+        env.project_dir_path / "dist" / f"MyAddon-{addon_version}-{wow_type}"
     ) == fileset(env.wow_dir_path)
 
 

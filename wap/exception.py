@@ -46,8 +46,12 @@ class CurseForgeAPIException(WAPException):
 
 
 class QuickstartException(WAPException):
-    """Indicates a creating a new project"""
+    """Indicates a problem creating a new project"""
 
 
 class NewConfigException(WAPException):
-    """Indicates a creating a new configuration file"""
+    """Indicates a problem creating a new configuration file"""
+
+
+class ChangelogException(WAPException):
+    """Indicates a problem building a changelog"""
