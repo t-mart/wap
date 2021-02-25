@@ -1,9 +1,7 @@
 import json
 
-import pytest
 
 from tests.util import Environment
-from wap.exception import ConfigException
 
 
 def test_validate(

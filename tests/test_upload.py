@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 import pytest
 
@@ -7,15 +6,11 @@ from tests.util import (
     VERSION_ID_MAP,
     Environment,
     decode_file_upload_multipart_request,
-    fileset,
 )
-from tests.util import normalized_path_string as ps
-from tests.util import toc_fileset, toc_tagmap, zip_fileset
 from wap import __version__
 from wap.commands.common import (
     DEFAULT_ADDON_VERSION,
     DEFAULT_CONFIG_PATH,
-    OUTPUT_PATH,
     WAP_CONFIG_PATH_ENVVAR_NAME,
     WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
 )

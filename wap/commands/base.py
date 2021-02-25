@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import click
 
 from wap import __version__, log

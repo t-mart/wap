@@ -1,7 +1,6 @@
 from collections.abc import Iterable
 
 import pytest
-from pyfakefs.fake_filesystem import FakeFilesystem
 
 from tests.fixtures import wow_dir_path
 from tests.util import Environment

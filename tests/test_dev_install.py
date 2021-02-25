@@ -1,16 +1,13 @@
 import json
-from pathlib import Path
 
 import pytest
 from click.exceptions import BadParameter
 
 from tests.util import Environment, fileset
 from tests.util import normalized_path_string as ps
-from tests.util import toc_fileset, toc_tagmap
 from wap import __version__
 from wap.commands.common import (
     DEFAULT_CONFIG_PATH,
-    OUTPUT_PATH,
     WAP_CONFIG_PATH_ENVVAR_NAME,
     WAP_WOW_ADDONS_PATH_ENVVAR_NAME,
 )
