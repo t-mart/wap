@@ -29,7 +29,7 @@ class CurseForgeAPI:
     _CHANGELOG_TYPES: ClassVar[set[str]] = {"markdown", "text", "html"}
     _UPLOADED_FILE_URL_TEMPLATE: ClassVar[
         str
-    ] = "https://www.curseforge.com/wow/addons/{addon_name}/files/{file_id}"
+    ] = "https://www.curseforge.com/wow/addons/{slug}/files/{file_id}"
 
     RELEASE_TYPES: ClassVar[set[str]] = {"alpha", "beta", "release"}
     VERSION_ENDPOINT_URL: ClassVar[str] = "https://wow.curseforge.com/api/game/versions"
@@ -130,8 +130,8 @@ class CurseForgeAPI:
         )
 
     @classmethod
-    def uploaded_file_url(cls, addon_name: str, file_id: int) -> str:
+    def uploaded_file_url(cls, slug: str, file_id: int) -> str:
         return cls._UPLOADED_FILE_URL_TEMPLATE.format(
-            addon_name=addon_name,
+            slug=slug,
             file_id=file_id,
         )

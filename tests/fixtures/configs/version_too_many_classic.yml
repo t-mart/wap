@@ -6,7 +6,7 @@ wow-versions:
 curseforge:
   project-id: 123456
   changelog: CHANGELOG.md
-  addon-name: myaddon
+  project-slug: myaddon
 dirs:
   - path: Dir1
     toc:

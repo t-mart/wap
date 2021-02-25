@@ -67,7 +67,7 @@ class TestQuickstart:
         }
         assert config_json["curseforge"]["project-id"] == "123456"
         assert config_json["curseforge"]["changelog"] == changelog_name
-        assert config_json["curseforge"]["addon-name"] == cf_addon_name
+        assert config_json["curseforge"]["project-slug"] == cf_addon_name
         assert config_json["dirs"][0]["path"] == addon_name
         assert config_json["dirs"][0]["toc"]["tags"] == {
             "Title": addon_name,

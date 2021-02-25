@@ -166,7 +166,7 @@ def upload_addon(
         )
 
     url = curseforge_api.uploaded_file_url(
-        addon_name=curseforge_config.addon_name,
+        slug=curseforge_config.project_slug,
         file_id=file_id,
     )
     log.info(
@@ -174,7 +174,7 @@ def upload_addon(
         + click.style(f"{addon_name}", fg="blue")
         + " ("
         + click.style(f"{wow_version.type()}", fg="magenta")
-        + ") at  to CurseForge at "
+        + ") to CurseForge at "
         + click.style(f"{url}", fg="green")
     )
 
