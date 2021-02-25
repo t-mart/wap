@@ -3,7 +3,7 @@ wow-versions:
   - 9.0.2
 curseforge:
   project-id: 123456
-  changelog: CHANGELOG.html
+  changelog-file: CHANGELOG.html
   project-slug: myaddon
 dirs:
   - path: Dir1
