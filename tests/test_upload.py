@@ -10,7 +10,7 @@ from wap.commands.common import (
     WAP_CONFIG_PATH_ENVVAR_NAME,
     WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
 )
-from wap.exception import CurseForgeAPIException, UploadException
+from wap.exception import ChangelogException, CurseForgeAPIException, UploadException
 
 
 @pytest.mark.parametrize(
@@ -27,19 +27,26 @@ from wap.exception import CurseForgeAPIException, UploadException
     ("release_type",),
     [["alpha"], ["beta"], ["release"]],
 )
+@pytest.mark.parametrize(
+    ("changelog_from_cli_options"),
+    [(False,), (True,)],
+    ids=["changelog from config", "changelog from cli options"],
+)
 def test_upload(
     env: Environment,
     curseforge_token_from_cli: bool,
     config_path_from_cli: bool,
     release_type: str,
+    changelog_from_cli_options: bool,
 ) -> None:
     env.prepare(
-        project_dir_name="basic-built-version-1.2.3",
+        project_dir_name="basic_built_version_1.2.3",
         config_file_name="basic",
         wow_dir_name="retail",
     )
 
     addon_version = "1.2.3"
+
     run_wap_args = [
         "upload",
         "--addon-version",
@@ -48,6 +55,23 @@ def test_upload(
         release_type,
         "--json",
     ]
+
+    if changelog_from_cli_options:
+        changelog_type = "text"
+        changelog_contents = "hello, there"
+        run_wap_args.extend(
+            [
+                "--changelog-contents",
+                changelog_contents,
+                "--changelog-type",
+                changelog_type,
+            ]
+        )
+    else:
+        # this is from the file
+        changelog_contents = "This is my changelog.\n"
+        changelog_type = "markdown"
+
     env_vars: dict[str, str] = {}
 
     curseforge_token = "abcd-1234"
@@ -94,8 +118,8 @@ def test_upload(
 
         # check the metadata
         json_metadata = decoded_req.json_metadata
-        assert json_metadata["changelog"] == "This is my changelog.\n"
-        assert json_metadata["changelogType"] == "markdown"
+        assert json_metadata["changelog"] == changelog_contents
+        assert json_metadata["changelogType"] == changelog_type
         assert json_metadata["displayName"] == f"{addon_version}-{wow_type}"
         assert json_metadata["gameVersions"] == [VERSION_ID_MAP[wow_type]]
         assert json_metadata["releaseType"] == release_type
@@ -241,8 +265,7 @@ def test_upload_version_does_not_exist(
         )
 
 
-@pytest.mark.parametrize(["wow_dir_name"], [["retail"], ["classic"]])
-def test_upload_without_build(env: Environment, wow_dir_name: str) -> None:
+def test_upload_without_build(env: Environment) -> None:
     env.prepare(
         project_dir_name="basic",
         config_file_name="basic",
@@ -256,3 +279,42 @@ def test_upload_without_build(env: Environment, wow_dir_name: str) -> None:
             "--curseforge-token",
             "abc123",
         )
+
+
+@pytest.mark.parametrize(
+    "cl_options",
+    [("--changelog-type", "text"), ("--changelog-contents", "hello")],
+    ids=["just type", "just contents"],
+)
+def test_upload_changelog_options_xor(env: Environment, cl_options: list[str]) -> None:
+    env.prepare(
+        project_dir_name="basic",
+        config_file_name="basic",
+    )
+
+    with pytest.raises(ChangelogException, match=r"must be used together or"):
+        env.run_wap(
+            "upload",
+            "--addon-version",
+            DEFAULT_ADDON_VERSION,
+            "--curseforge-token",
+            "abc123",
+            *cl_options,
+        )
+
+
+# def test_upload_no_changelog(env: Environment, cl_options: list[str]) -> None:
+#     env.prepare(
+#         project_dir_name="basic",
+#         config_file_name="basic",
+#     )
+
+#     with pytest.raises(ChangelogException, match=r"must be used together or"):
+#         env.run_wap(
+#             "upload",
+#             "--addon-version",
+#             DEFAULT_ADDON_VERSION,
+#             "--curseforge-token",
+#             "abc123",
+#             *cl_options
+#         )
