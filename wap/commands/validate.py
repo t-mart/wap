@@ -25,13 +25,13 @@ def validate(
     try:
         config = Config.from_path(config_path)
 
-        log.info(f"✔️ {config_path} is valid")
+        log.info(f'✔️ "{config_path}" is valid')
 
         if show_json:
             click.echo(json.dumps(config.to_python_object(), indent=2))
 
         return 0
     except ConfigException as ce:
-        log.error(f"❌ {config_path} is not valid")
+        log.error(f'❌ "{config_path}" is not valid')
         log.error(str(ce))
         return 1

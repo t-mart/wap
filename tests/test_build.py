@@ -143,7 +143,7 @@ def test_build_toc_file_does_not_exist(env: Environment) -> None:
         wow_dir_name="retail",
     )
 
-    with pytest.raises(TocException, match=r"but it does not exist"):
+    with pytest.raises(TocException, match=r"but it is not a file"):
         env.run_wap("build")
 
 

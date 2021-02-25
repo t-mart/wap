@@ -4,7 +4,7 @@ from typing import Optional
 
 import click
 
-from wap import addon
+from wap import addon, log
 from wap.commands.common import (
     WAP_WOW_ADDONS_PATH_ENVVAR_NAME,
     addon_version_option,
@@ -86,7 +86,7 @@ def dev_install(
             break
     else:
         raise DevInstallException(
-            f"No build exists for WoW addons path {wow_addons_path} (which is a "
+            f'No build exists for WoW addons path "{wow_addons_path}" (which is a '
             f"{wow_addons_path_type} installation). "
         )
 
@@ -99,9 +99,12 @@ def dev_install(
     )
 
     if not build_path.is_dir():
-        raise DevInstallException(
-            f"Expected build directory not found. Have you run `wap build` yet?"
+        log.error(
+            "Expected build directory not found. Have you run `"
+            + click.style(f"wap build --addon-version {addon_version}", fg="blue")
+            + "` yet?"
         )
+        raise DevInstallException(f'Build directory "{build_path}" not found.')
 
     dev_install_paths = addon.dev_install_addon(
         build_path=build_path,

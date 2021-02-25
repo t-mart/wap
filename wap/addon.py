@@ -56,25 +56,30 @@ def build_addon(
 
         if not src_dir.is_dir():
             raise BuildException(
-                f"{src_dir} is not a directory",
+                f'Dir config has path "{src_dir}", but it is not a directory. '
+                "This path must point to a directory, must be relative to "
+                f'the parent of the config file ("{config_path.resolve()}") and, '
+                'if it is in a subdirectory, must only use forward slashes ("/").'
             )
 
         dst_dir = build_path / src_dir.name
 
         shutil.copytree(src_dir, dst_dir)
 
+        source_toc_path = src_dir / (src_dir.name + ".toc")
         toc_path = dst_dir / (src_dir.name + ".toc")
 
         if toc_path.exists():
             log.warn(
-                f"A TOC file at {toc_path.name} exists in {dir_config.path}, but will "
-                "be overwritten."
+                f'TOC file "{source_toc_path}" exists, and will '
+                "be overwritten with a generated one."
             )
             delete_path(toc_path)
 
         write_toc(
             toc_config=dir_config.toc_config,
-            path=toc_path,
+            dir_path=src_dir,
+            write_path=toc_path,
             addon_version=addon_version,
             wow_version=wow_version,
         )
@@ -84,8 +89,9 @@ def build_addon(
         + click.style(f"{addon_name}", fg="blue")
         + " ("
         + click.style(f"{wow_version.type()}", fg="magenta")
-        + ") at "
+        + ') at "'
         + click.style(f"{build_path}", fg="green")
+        + '"'
     )
 
     return build_path
@@ -116,8 +122,9 @@ def zip_addon(addon_name: str, addon_version: str, wow_version: WoWVersion) -> P
         + click.style(f"{addon_name}", fg="blue")
         + " ("
         + click.style(f"{wow_version.type()}", fg="magenta")
-        + ") at "
+        + ') at "'
         + click.style(f"{zip_path}", fg="green")
+        + '"'
     )
 
     return zip_path
@@ -138,7 +145,12 @@ def upload_addon(
 
     changelog_path = config_path.parent / curseforge_config.changelog_path
     if not changelog_path.is_file():
-        raise UploadException(f"Changelog file {changelog_path} is not a file")
+        raise UploadException(
+            f'Curseforge config has changelog path "{changelog_path}", but it is not a '
+            "file. This path must point to a file, must be relative to "
+            f'the parent of the config file ("{config_path.resolve()}") and, '
+            'if it is in a subdirectory, must only use forward slashes ("/").'
+        )
 
     with changelog_path.open("r") as changelog_file:
         changelog_contents = changelog_file.read()
@@ -148,8 +160,8 @@ def upload_addon(
         changelog_type = CHANGELOG_SUFFIX_MAP[normalized_changelog_suffix]
     else:
         log.warn(
-            f"Unable to determine changelog type from extension for {changelog_path}, "
-            'so assuming "text"'
+            "Unable to determine changelog type from extension for"
+            f'"{changelog_path}", so assuming "text"'
         )
         changelog_type = "text"
 
@@ -204,8 +216,9 @@ def dev_install_addon(
             + click.style(f"{addon_path.name}", fg="blue")
             + " ("
             + click.style(f"{wow_version.type()}", fg="magenta")
-            + ") to "
+            + ') to "'
             + click.style(f"{install_addon_path}", fg="green")
+            + '"'
         )
 
     return installed_paths

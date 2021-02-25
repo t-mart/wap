@@ -103,29 +103,36 @@ def quickstart(
     project_name = config.name
 
     log.info(
-        "\nCreating project directory at "
+        '\nCreating project directory at "'
         + click.style(f"{project_dir_path}", fg="green")
+        + '"'
     )
     project_dir_path.mkdir(parents=True)
     config_path = project_dir_path / DEFAULT_CONFIG_PATH
-    log.info("Writing config file at " + click.style(f"{config_path}", fg="green"))
+    log.info(
+        'Writing config file at "' + click.style(f"{config_path}", fg="green") + '"'
+    )
     config.to_path(config_path)
 
     if config.curseforge_config:
         changelog_path = project_dir_path / config.curseforge_config.changelog_path
         log.info(
-            "Creating changelog file at " + click.style(f"{changelog_path}", fg="green")
+            "Creating changelog file at '"
+            + click.style(f"{changelog_path}", fg="green")
+            + '"'
         )
         write_changelog(changelog_path, project_name)
 
     readme_path = project_dir_path / "README.md"
-    log.info("Creating readme at " + click.style(f"{readme_path}", fg="green"))
+    log.info('Creating readme at "' + click.style(f"{readme_path}", fg="green"))
     write_readme(readme_path, project_name)
 
     dir_config = config.dir_configs[0]
     toc_config_file = dir_config.toc_config.files[0]
     lua_file = project_dir_path / dir_config.path / toc_config_file
-    log.info(f"Creating starter lua file at " + click.style(f"{lua_file}", fg="green"))
+    log.info(
+        f"Creating starter lua file at '" + click.style(f"{lua_file}", fg="green") + '"'
+    )
     lua_file.parent.mkdir()
     write_lua_file(lua_file, project_name)
 
@@ -138,7 +145,7 @@ def quickstart(
     )
     log.info(
         "After you `"
-        + click.style(f"cd {project_dir_path}", fg="magenta")
+        + click.style(f'cd "{project_dir_path}"', fg="magenta")
         + "`, you can get started running some wap commands immediately, such as:"
     )
     log.info("  - " + click.style("wap build", fg="blue"))
@@ -156,7 +163,7 @@ def quickstart(
         log.info(
             "  - "
             + click.style(
-                'wap upload --addon-version 0.0.1 --curseforge-token "<your-token>"',
+                'wap upload --addon-version "0.0.1" --curseforge-token "<your-token>"',
                 fg="blue",
             )
         )

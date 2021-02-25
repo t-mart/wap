@@ -3,7 +3,7 @@ from pathlib import Path
 
 import click
 
-from wap import addon
+from wap import addon, log
 from wap.commands.common import (
     DEFAULT_RELEASE_TYPE,
     WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
@@ -67,9 +67,12 @@ def upload(
         )
 
         if not zip_path.is_file():
-            raise UploadException(
-                f"Expected zip file not found. Have you run `wap build` yet?"
+            log.error(
+                "Expected zip file not found. Have you run `"
+                + click.style(f'wap build --addon-version "{addon_version}"', fg="blue")
+                + "` yet?"
             )
+            raise UploadException(f'Zip file "{zip_path}" not found.')
 
         upload_url = addon.upload_addon(
             addon_name=config.name,
