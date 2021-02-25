@@ -177,3 +177,18 @@ def test_build_toc_custom_tag_without_prefix(env: Environment) -> None:
     result = env.run_wap("build")
 
     assert "TOC user-specified tag" in result.stderr
+
+
+def test_build_cleanup_on_exception(env: Environment) -> None:
+    env.prepare(
+        project_dir_name="basic",
+        config_file_name="multi_dir_one_not_exist",
+        wow_dir_name="retail",
+    )
+
+    with pytest.raises(BuildException, match=r"it is not a directory"):
+        env.run_wap("build")
+
+    dist_dir = env.project_dir_path / "dist"
+    dist_dir_files = list(dist_dir.iterdir())
+    assert len(dist_dir_files) == 0
