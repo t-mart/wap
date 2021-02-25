@@ -62,7 +62,7 @@ Create a new addon project
 
 .. code-block:: console
 
-  wap quickstart MyAddon  # or whatever name you'd like!
+   $ wap quickstart MyAddon  # or whatever name you'd like!
 
 and answer the prompted questions. Don't worry too much about your answers -- you can
 always change them later in your configuration file.
@@ -74,7 +74,7 @@ Building your addon packages it up into a single directory and creates a zip fil
 
 .. code-block:: console
 
-  wap build
+   $ wap build
 
 Developer Install
 *****************
@@ -84,11 +84,11 @@ can do that for you:
 
 .. code-block:: console
 
-  # Windows
-  wap dev-install --wow-addons-path "C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
+   # Windows
+   $ wap dev-install --wow-addons-path "C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
 
-  # macOS
-  wap dev-install --wow-addons-path "/Applications/World of Warcraft/_retail_/Interface/AddOns"
+   # macOS
+   $ wap dev-install --wow-addons-path "/Applications/World of Warcraft/_retail_/Interface/AddOns"
 
 Change ``_retail_`` to ``_classic_`` if you want to install your classic build.
 
@@ -100,7 +100,7 @@ Uploading
 
 .. code-block:: console
 
-  wap upload --addon-version 0.0.1 --curseforge-token "<your-token>"
+   $ wap upload --addon-version 0.0.1 --curseforge-token "<your-token>"
 
 You can generate a new token at `<https://authors.curseforge.com/account/api-tokens>`_.
 
@@ -112,10 +112,10 @@ that usage in its help text. View it with:
 
 .. code-block:: console
 
-  wap --help
-  wap build --help
-  wap upload --help
-  # ... etc
+   $ wap --help
+   $ wap build --help
+   $ wap upload --help
+   # ... etc
 
 The *wap* Configuration File
 ----------------------------
@@ -576,14 +576,10 @@ For a variety of reasons:
   That Lua code belongs in a deliberate release asset (file/zip/etc) by the project
   owner, cleansed and packaged in a way you can include in your addon.
 
-  Unfortunately, Lua does not have a distribution format and/or package repository (e.g.
-  PyPI for Python, Maven Central for Java, Docker Hub for Docker, etc). But source
-  code repositories are not the drop-in replacement.
-
 - Even if you do have dependency repository that's tolerably clean and packaged in its
   natural form, that repository is actually a development-time dependency, not a
   release-time dependency like other addon packagers imply. It needs to be *inside* your
-  codebase while you write your code. Otherwise, you're coding on hope.
+  environment while you write your code. Otherwise, you're coding on hope.
 
   * Other addon packagers don't even require a commit hash/tag to be specified, so you
     can't even be sure what of what code will be included with your addon in those

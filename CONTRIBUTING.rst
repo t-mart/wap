@@ -1,6 +1,56 @@
 Contributing
 ============
 
+Environment Setup
+-----------------
+
+1. Install `poetry <https://python-poetry.org/docs/#installation>`_. There are many
+   installation methods, but you should **not** choose any that install poetry into the
+   same virtualenv as wap itself -- packages of either may conflict with the packages
+   of the other.
+2. Within the repository, install the project dependencies:
+
+   .. code-block:: console
+
+      $ cd to/the/wap/repo
+      $ poetry install
+
+
+Linting
+-------
+
+New commits are checked to ensure style and consistency. You should run the following
+command locally and ensure they return 0 exit codes. Otherwise, your commits will fail
+the PR status checks.
+
+.. code-block:: console
+
+   $ poetry run mypy
+   $ poetry run isort wap tests
+   $ poetry run black wap tests
+
+Additionally, if updating the README.rst, make sure to check twine too. The README.rst
+is reused as the package ``long_description``, which is used on the PyPI page, and
+therefore, must be valid:
+
+.. code-block:: console
+
+   $ poetry build
+   $ poetry run twine check dist/*
+
+
+Testing
+-------
+
+wap uses ``pytest``. Run it (and generate a coverage report) with:
+
+.. code-block:: console
+
+   $ poetry run pytest tests --cov=wap --cov-report=xml
+
+There is no code coverage requirement at the moment, but that may change in the future.
+See `.coveragerc` for its configuration
+
 Versioning
 ----------
 
@@ -13,8 +63,8 @@ To increment versions and propogate them around the repository for *wap* to use,
 ``bumpversion`` command. Its configuration file is located at ``.bumpversion.cfg``.
 
 An important note is that between releases, the source code will contain the last
-version released. Therefore, this version number is meaningless on unreleased project
-states.
+version released. This version number should be considered meaningless on unreleased
+project states.
 
 Release Process
 ---------------
@@ -25,10 +75,10 @@ Release Process
 
 2. On the master branch, this new version is incremented to with the ``bumpversion``.
 
-   .. code-block:: sh
+   .. code-block:: console
 
-     # replace <part> with one of "major", "minor", or "patch".
-     bumpversion <part>
+      # replace <part> with one of "major", "minor", or "patch".
+      $ bumpversion <part>
 
   This command:
 
@@ -36,9 +86,8 @@ Release Process
   b. Creates a commit with this change
   c. Tags that commit with this new version as the tag name
 
-3. Any release-related actions are carried out, such as publishing to PyPI, creating a
-   GitHub release, etc.
+3. The new commit and tag are pushed back to GitHub.
 
-4. The commit and tag are pushed back to the repostiory on GitHub.
-
-5. Development continues and the cycle starts again.
+4. The CI workflow will run, and because the git ref is a tag, additional deploy
+   steps will be taken, such as publishing to PyPI and creating a GitHub release
+   asset.
