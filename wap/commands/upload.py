@@ -5,14 +5,13 @@ from pathlib import Path
 
 import click
 
-from wap import addon, log
+from wap import addon
 from wap.commands.common import (
     DEFAULT_RELEASE_TYPE,
     WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
     addon_version_option,
     config_path_option,
     json_option,
-    output_path_option,
 )
 from wap.config import Config
 from wap.curseforge import CurseForgeAPI
@@ -21,7 +20,6 @@ from wap.exception import UploadException
 
 @click.command()
 @config_path_option()
-@output_path_option()
 @json_option()
 @addon_version_option(required=True)
 @click.option(
@@ -43,7 +41,6 @@ from wap.exception import UploadException
 )
 def upload(
     config_path: Path,
-    output_path: Path,
     addon_version: str,
     release_type: str,
     curseforge_token: str,
@@ -65,19 +62,15 @@ def upload(
     curseforge_api = CurseForgeAPI(api_token=curseforge_token)
 
     for wow_version in config.wow_versions:
-        build_path = addon.build_addon(
-            config_path=config_path,
+        zip_path = addon.get_zip_path(
             addon_name=config.name,
-            dir_configs=config.dir_configs,
-            output_path=output_path,
-            addon_version=addon_version,
             wow_version=wow_version,
+            addon_version=addon_version,
         )
 
-        zip_path = addon.zip_addon(
-            addon_name=config.name,
-            wow_version=wow_version,
-            build_path=build_path,
+        if not zip_path.is_file():
+            raise UploadException(
+            f"Expected zip file not found. Have you run `wap build` yet?"
         )
 
         upload_url = addon.upload_addon(
@@ -92,8 +85,6 @@ def upload(
         )
 
         output_map[wow_version.type()] = {
-            "build_dir_path": str(build_path),
-            "zip_file_path": str(zip_path),
             "curseforge_upload_url": upload_url,
         }
 

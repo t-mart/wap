@@ -1,0 +1,9 @@
+## Interface: 11306
+## Version: dev
+## X-BuildDateTime: 2021-02-25T05:05:59.786617+00:00
+## X-BuildTool: wap v0.5.2
+## Title: MyAddon Dir1
+## X-Custom-Tag: foobar
+
+Dir1.lua
+Sub\Another.lua

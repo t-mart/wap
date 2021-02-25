@@ -10,7 +10,7 @@ from tests.util import toc_fileset, toc_tagmap
 from wap import __version__
 from wap.commands.common import (
     DEFAULT_CONFIG_PATH,
-    DEFAULT_OUTPUT_PATH,
+    OUTPUT_PATH,
     WAP_CONFIG_PATH_ENVVAR_NAME,
     WAP_WOW_ADDONS_PATH_ENVVAR_NAME,
 )
@@ -18,8 +18,8 @@ from wap.exception import DevInstallException
 
 
 @pytest.mark.parametrize(
-    ("wow_dir_name", "wow_type", "interface"),
-    [("retail", "retail", "90002"), ("classic", "classic", "11306")],
+    ("wow_dir_name", "wow_type"),
+    [("retail", "retail"), ("classic", "classic")],
     ids=["retail", "classic"],
 )
 @pytest.mark.parametrize(
@@ -32,22 +32,15 @@ from wap.exception import DevInstallException
     [(True,), (False,)],
     ids=["config path from cli", "config path from env var"],
 )
-@pytest.mark.parametrize(
-    ("default_output_path",),
-    [(True,), (False,)],
-    ids=["default output path", "specified output path"],
-)
 def test_dev_install(
     env: Environment,
     wow_dir_name: str,
     wow_type: str,
-    interface: str,
     wow_addons_path_from_cli: bool,
     config_path_from_cli: bool,
-    default_output_path: bool,
 ) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built",
         config_file_name="basic",
         wow_dir_name=wow_dir_name,
     )
@@ -68,65 +61,25 @@ def test_dev_install(
     else:
         env_vars[WAP_CONFIG_PATH_ENVVAR_NAME] = str(DEFAULT_CONFIG_PATH)
 
-    if default_output_path:
-        output_path = str(DEFAULT_OUTPUT_PATH)
-    else:
-        output_path = "out/path"
-        run_wap_args.extend(["--output-path", output_path])
-
     result = env.run_wap(*run_wap_args, env_vars=env_vars)
 
     actual_json_output = json.loads(result.stdout)
-    expected_build_files = {
-        Path("Dir1/Dir1.toc"),
-        Path("Dir1/Dir1.lua"),
-        Path("Dir1/Sub/Another.lua"),
-    }
-    expected_toc_files = {
-        "Dir1.lua",
-        "Sub\\Another.lua",
-    }
-    expected_toc_tags = {
-        "Title": "MyAddon Dir1",
-        "Version": "dev",
-        "Interface": interface,
-        "X-BuildDateTime": env.frozen_time.to("Z").isoformat(),
-        "X-BuildTool": f"wap v{__version__}",
-        "X-Custom-Tag": "foobar",
-    }
 
     # check the stdout json
-    assert actual_json_output[wow_type]["build_dir_path"] == ps(
-        f"{output_path}/MyAddon-dev-{wow_type}"
-    )
     assert set(actual_json_output[wow_type]["installed_dir_paths"]) == {
         (ps(str(env.wow_dir_path / "Dir1")))
     }
 
-    # check the files in the build dir
-    actual_build_files = fileset(
-        env.project_dir_path / f"{output_path}/MyAddon-dev-{wow_type}"
-    )
-    assert expected_build_files == actual_build_files
-
-    # check the tags in the toc
-    assert expected_toc_files == toc_fileset(
-        env.project_dir_path / f"{output_path}/MyAddon-dev-{wow_type}/Dir1/Dir1.toc"
-    )
-    assert expected_toc_files == toc_fileset(env.wow_dir_path / "Dir1/Dir1.toc")
-
-    # check the files in the toc
-    assert expected_toc_tags == toc_tagmap(
-        env.project_dir_path / f"{output_path}/MyAddon-dev-{wow_type}/Dir1/Dir1.toc"
-    )
-    assert expected_toc_tags == toc_tagmap(env.wow_dir_path / "Dir1/Dir1.toc")
+    assert fileset(
+        env.project_dir_path / "dist" / f"MyAddon-dev-{wow_type}"
+    ) == fileset(env.wow_dir_path)
 
 
 def test_dev_install_overwrites(
     env: Environment,
 ) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built",
         config_file_name="basic",
         wow_dir_name="retail",
     )
@@ -151,13 +104,13 @@ def test_dev_install_bad_wow_addons_dir_format(
     wow_dir_name: str,
 ) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built",
         config_file_name="basic",
         wow_dir_name=wow_dir_name,
     )
 
     with pytest.raises(BadParameter, match=r"does not look like a WoW addons"):
-        env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path), "--json")
+        env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path))
 
 
 @pytest.mark.parametrize(
@@ -170,12 +123,12 @@ def test_dev_install_wow_addons_dir_is_not_dir(
     wow_dir_path: str,
 ) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built",
         config_file_name="basic",
     )
 
     with pytest.raises(BadParameter, match=r"is not a directory"):
-        env.run_wap("dev-install", "--wow-addons-path", wow_dir_path, "--json")
+        env.run_wap("dev-install", "--wow-addons-path", wow_dir_path)
 
 
 @pytest.mark.parametrize(
@@ -201,7 +154,7 @@ def test_dev_install_no_build_type_for_wow_addons_path_type(
     wow_dir_name: str,
 ) -> None:
     env.prepare(
-        project_dir_name="basic",
+        project_dir_name="basic-built",
         config_file_name=config_file_name,
         wow_dir_name=wow_dir_name,
     )
@@ -209,4 +162,23 @@ def test_dev_install_no_build_type_for_wow_addons_path_type(
     with pytest.raises(
         DevInstallException, match=r"No build exists for WoW addons path"
     ):
-        env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path), "--json")
+        env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path))
+
+
+@pytest.mark.parametrize(
+    ["wow_dir_name"],
+    [["retail"], ["classic"]]
+)
+def test_dev_install_without_build(
+    env: Environment, wow_dir_name: str
+) -> None:
+    env.prepare(
+        project_dir_name="basic",
+        config_file_name="basic",
+        wow_dir_name=wow_dir_name
+    )
+
+    assert env.wow_dir_path
+
+    with pytest.raises(DevInstallException, match=r"build directory not found"):
+        env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path))

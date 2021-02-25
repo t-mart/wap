@@ -14,15 +14,37 @@ from wap.util import delete_path
 from wap.wowversion import WoWVersion
 
 
+def get_output_path() -> Path:
+    return Path("dist")
+
+
+def get_build_path(
+    addon_name: str, addon_version: str, wow_version: WoWVersion
+) -> Path:
+    return get_output_path() / f"{addon_name}-{addon_version}-{wow_version.type()}"
+
+
+def get_zip_path(addon_name: str, addon_version: str, wow_version: WoWVersion) -> Path:
+    bp = get_build_path(
+        addon_name=addon_name,
+        addon_version=addon_version,
+        wow_version=wow_version,
+    )
+    return bp.with_name(bp.name + ".zip")
+
+
 def build_addon(
     config_path: Path,
     addon_name: str,
     dir_configs: Sequence[DirConfig],
-    output_path: Path,
     addon_version: str,
     wow_version: WoWVersion,
 ) -> Path:
-    build_path = output_path / f"{addon_name}-{addon_version}-{wow_version.type()}"
+    build_path = get_build_path(
+        addon_name=addon_name,
+        addon_version=addon_version,
+        wow_version=wow_version,
+    )
 
     if build_path.exists():
         delete_path(build_path)
@@ -70,8 +92,13 @@ def build_addon(
     return build_path
 
 
-def zip_addon(addon_name: str, wow_version: WoWVersion, build_path: Path) -> Path:
-    zip_path = build_path.parent / (build_path.name + ".zip")
+def zip_addon(addon_name: str, addon_version: str, wow_version: WoWVersion) -> Path:
+    build_path = get_build_path(
+        addon_name=addon_name, addon_version=addon_version, wow_version=wow_version
+    )
+    zip_path = get_zip_path(
+        addon_name=addon_name, addon_version=addon_version, wow_version=wow_version
+    )
 
     if zip_path.exists():
         delete_path(zip_path)

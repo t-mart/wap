@@ -142,26 +142,13 @@ class TestConfigUsingCommands:
             env.run_wap(*run_args)
 
 
-@pytest.mark.parametrize(
-    ("run_args",),
-    [
-        [
-            ("build",),
-        ],
-        [
-            ("dev-install", "--wow-addons-path", str(wow_dir_path("retail"))),
-        ],
-    ],
-    ids=["build", "dev-install"],
-)
-def test_commands_config_no_curseforge_required(
-    env: Environment, run_args: Iterable[str]
-) -> None:
-    # curseforge section is optional for builds
+def test_commands_config_no_curseforge_required(env: Environment) -> None:
+    # curseforge section is optional for build and dev-install
     env.prepare(
         project_dir_name="basic",
         config_file_name="no_curseforge",
         wow_dir_name="retail",
     )
 
-    env.run_wap(*run_args)
+    env.run_wap("build")
+    env.run_wap("dev-install", "--wow-addons-path", str(wow_dir_path("retail")))
