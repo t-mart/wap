@@ -176,15 +176,15 @@ class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
 class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
     project_id: str
     changelog_path: PurePosixPath = attr.ib()
-    addon_name: str
+    project_slug: str
 
     @classmethod
     def _yaml_schema(cls) -> Validator:
         return strictyaml.Map(
             {
                 "project-id": strictyaml.Str(),
+                "project-slug": strictyaml.Str(),
                 "changelog": strictyaml.Str(),
-                "addon-name": strictyaml.Str(),
             }
         )
 
@@ -206,14 +206,14 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
     ) -> CurseforgeConfig:
         project_id = obj["project-id"]
 
-        changelog_path = PurePosixPath(obj["changelog"])
+        project_slug = obj["project-slug"]
 
-        addon_name = obj["addon-name"]
+        changelog_path = PurePosixPath(obj["changelog"])
 
         return cls(
             project_id=project_id,
             changelog_path=changelog_path,
-            addon_name=addon_name,
+            project_slug=project_slug,
         )
 
     def to_python_object(
@@ -221,8 +221,8 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
     ) -> Mapping[str, Any]:
         obj: dict[str, Any] = {
             "project-id": self.project_id,
+            "project-slug": self.project_slug,
             "changelog": str(self.changelog_path),
-            "addon-name": self.addon_name,
         }
         return obj
 

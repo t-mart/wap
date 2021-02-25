@@ -119,7 +119,7 @@ def guide(project_dir_name: str) -> Config:
             default="CHANGELOG.md",
         )[0]
 
-        cf_addon_name = _prompt_until_matching(
+        project_slug = _prompt_until_matching(
             curseforge_url_pattern,
             text="CurseForge URL",
         )["addon_name"]
@@ -127,7 +127,7 @@ def guide(project_dir_name: str) -> Config:
         curseforge_config = CurseforgeConfig(
             project_id=project_id,
             changelog_path=PurePosixPath(changelog_path),
-            addon_name=cf_addon_name,
+            project_slug=project_slug,
         )
 
     return Config(
