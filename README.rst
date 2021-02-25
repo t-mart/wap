@@ -627,7 +627,7 @@ much bloat for too little gain.
 Contributing
 ------------
 
-See `CONTRIBUTING.rst <CONTRIBUTING.rst>`_.
+See `CONTRIBUTING.rst <docs/CONTRIBUTING.rst>`_.
 
 TODOs
 -----
