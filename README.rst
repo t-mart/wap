@@ -127,7 +127,7 @@ For new YAML authors, see `What is YAML? <https://blog.stackpath.com/yaml/>`_.
 .. warning::
   For advanced YAML authors, it may be important to note that *wap* uses a subset of
   YAML called ``strictyaml``. This provides many benefits for users, but does
-  `restrict some YAML features. <https://hitchdev.com/strictyaml/#design-justifications>`_.
+  `restrict some buggy YAML features. <https://hitchdev.com/strictyaml/#design-justifications>`_.
   There's a good chance you won't even notice a difference.
 
 .. warning::

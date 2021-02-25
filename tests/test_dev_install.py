@@ -170,5 +170,5 @@ def test_dev_install_without_build(env: Environment, wow_dir_name: str) -> None:
 
     assert env.wow_dir_path
 
-    with pytest.raises(DevInstallException, match=r"build directory not found"):
+    with pytest.raises(DevInstallException, match=r"Build directory .+ not found"):
         env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path))

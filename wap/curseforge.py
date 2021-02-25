@@ -6,7 +6,7 @@ from typing import BinaryIO, ClassVar, Optional
 import attr
 import requests
 
-from wap.exception import CurseForgeAPIException, UploadException
+from wap.exception import CurseForgeAPIException
 
 CHANGELOG_SUFFIX_MAP = {
     ".md": "markdown",
@@ -70,7 +70,7 @@ class CurseForgeAPI:
         if resp.status_code != requests.codes.ok:
             raise CurseForgeAPIException(
                 f"Response from CurseForge during file upload has error status code "
-                f"{resp.status_code}. Response body: {resp.json()}"
+                f"{resp.status_code}. Response body: {resp.text}"
             )
 
         return resp.json()["id"]  # type: ignore
@@ -87,7 +87,7 @@ class CurseForgeAPI:
             if resp.status_code != requests.codes.ok:
                 raise CurseForgeAPIException(
                     f"Response from CurseForge during version lookup has error status "
-                    f"code {resp.status_code}. Response body: {resp.json()}"
+                    f"code {resp.status_code}. Response body: {resp.text}"
                 )
 
             # this is a weird hoop, but the big wigs packager does the same thing:
@@ -105,7 +105,7 @@ class CurseForgeAPI:
 
         if version not in self._version_map_cache:
             raise CurseForgeAPIException(
-                f"Version {version} could not be found on CurseForge"
+                f'Version "{version}" could not be found on CurseForge'
             )
 
         return self._version_map_cache[version]

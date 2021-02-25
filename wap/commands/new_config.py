@@ -28,12 +28,16 @@ def new_config(
     started and may be changed at will.
     """
     if config_path.exists():
-        raise NewConfigException(f"{config_path} exists. Aborting to avoid data loss.")
+        raise NewConfigException(
+            f'"'
+            + click.style(f"{config_path}", fg="green")
+            + '" exists. Aborting to avoid data loss.'
+        )
 
     project_name = Path.cwd().name
 
     config = guide(project_dir_name=project_name)
-    info(f"\nCreating config file at {config_path}")
+    info(f'\nCreating config file at "{config_path}"\n')
     config.to_path(config_path)
 
     return 0

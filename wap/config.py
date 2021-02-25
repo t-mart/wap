@@ -98,7 +98,7 @@ class TocConfig(YamlType["TocConfig", Mapping[str, Any]]):
     ) -> None:
         if any(path.is_absolute() for path in value):
             raise ConfigSemanticException(
-                f"File path {value} in TOC must be relative (not absolute)"
+                f'File path "{value}" in TOC config must be relative (not absolute)'
             )
 
     @classmethod
@@ -137,7 +137,8 @@ class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
     ) -> None:
         if value.is_absolute():
             raise ConfigSemanticException(
-                f"Directory path {value} must be relative (not absolute)"
+                f'Directory path "{value}" in dirs config must be relative (not '
+                "absolute)"
             )
 
     @classmethod
@@ -196,7 +197,8 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
     ) -> None:
         if value.is_absolute():
             raise ConfigSemanticException(
-                f"Changelog path {value} must be relative (not absolute)"
+                f'Changelog path "{value}" in curseforge config must be relative '
+                "(not absolute)"
             )
 
     @classmethod
@@ -247,7 +249,7 @@ class Config(YamlType["Config", Mapping[str, Any]]):
         for type, versions in type_versions.items():
             if len(versions) > 1:
                 raise ConfigSemanticException(
-                    f"There must be at most one {type} version. Found {versions}"
+                    f"There must be at most one {type} version. Found {versions}."
                 )
 
     @classmethod
@@ -284,7 +286,9 @@ class Config(YamlType["Config", Mapping[str, Any]]):
 
         dir_configs = [DirConfig.from_python_object(dir_) for dir_ in obj["dirs"]]
         if len({dir_config.path for dir_config in dir_configs}) < len(dir_configs):
-            raise ConfigSemanticException(f"Dirs in config must have unique paths")
+            raise ConfigSemanticException(
+                f"Directory paths in dir configs must have unique paths"
+            )
 
         return cls(
             name=name,

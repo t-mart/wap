@@ -14,7 +14,7 @@ def delete_path(path: Path) -> None:
         shutil.rmtree(path)
     else:  # pragma: no cover
         # don't measure code coverage here because it's a really esoteric case:
-        # it could be a pipe or socket or some other non-file thing.
+        # it could be a pipe, link, socket or some other non-file thing.
         raise ValueError(
             f"Cannot delete path {path} because it is not a file or directory"
         )

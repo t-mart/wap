@@ -32,14 +32,20 @@ _METADATA_TAG_PREFIX = "X-"
 
 def write_toc(
     toc_config: TocConfig,
-    path: Path,
+    dir_path: Path,
+    write_path: Path,
     addon_version: str,
     wow_version: WoWVersion,
 ) -> None:
     for file in toc_config.files:
-        rooted_file = path.parent / file
+        rooted_file = write_path.parent / file
         if not rooted_file.is_file():
-            raise TocException(f"TOC file {path} lists {file}, but it does not exist")
+            raise TocException(
+                f'TOC config lists file path "{file}", but it is not a file. This path '
+                "must point to a file, must be relative to the path in the dir "
+                f'config ("{dir_path.resolve()}") and, if it is in a subdirectory, '
+                'must only use forward slashes ("/").'
+            )
 
     extra_wap_tags = {
         "Interface": wow_version.interface_version(),
@@ -53,7 +59,8 @@ def write_toc(
     for key, value in extra_wap_tags.items():
         if key in toc_config.tags:
             log.warn(
-                f"Overwriting wap-provided tag {key}={value} with {toc_config.tags[key]}"
+                f"Overwriting wap-provided tag {key}={value} with "
+                "{toc_config.tags[key]}"
             )
 
     for key, value in toc_config.tags.items():
@@ -72,6 +79,6 @@ def write_toc(
         *[f"{str(file)}\n" for file in windows_files],
     ]
 
-    with path.open("w") as toc_file:
+    with write_path.open("w") as toc_file:
         for line in lines:
             toc_file.write(line)

@@ -123,7 +123,7 @@ def test_upload_changelog_does_not_exist(env: Environment) -> None:
         config_file_name="curseforge_changelog_does_not_exist",
     )
 
-    with pytest.raises(UploadException, match=r"Changelog file [^ ]+ is not a file"):
+    with pytest.raises(UploadException, match=r"but it is not a file"):
         env.run_wap(
             "upload",
             "--addon-version",
@@ -248,7 +248,7 @@ def test_upload_without_build(env: Environment, wow_dir_name: str) -> None:
         config_file_name="basic",
     )
 
-    with pytest.raises(UploadException, match=r"zip file not found"):
+    with pytest.raises(UploadException, match=r"Zip file .+ not found"):
         env.run_wap(
             "upload",
             "--addon-version",
