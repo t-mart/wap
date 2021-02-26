@@ -1,5 +1,5 @@
 import re
-from pathlib import PurePosixPath
+from pathlib import PurePosixPath, Path
 from typing import Any, Optional, Pattern, cast
 
 import click
@@ -113,11 +113,11 @@ def guide(project_dir_name: str) -> Config:
             text="CurseForge project id (found in top-right of addon page)",
         )[0]
 
-        changelog_path = _prompt_until_matching(
+        changelog_path = Path(_prompt_until_matching(
             changelog_path_pattern,
             text="Name of changelog file (used during uploads)",
             default="CHANGELOG.md",
-        )[0]
+        )[0])
 
         project_slug = _prompt_until_matching(
             curseforge_url_pattern,

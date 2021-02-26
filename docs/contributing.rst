@@ -23,6 +23,8 @@ New commits are checked to ensure style and consistency. You should run the foll
 command locally and ensure they return 0 exit codes. Otherwise, your commits will fail
 the PR status checks.
 
+
+
 .. code-block:: console
 
    $ poetry run mypy
@@ -42,23 +44,23 @@ therefore, must be valid:
 Testing
 -------
 
-wap uses ``pytest``. Run it (and generate a coverage report) with:
+``wap`` uses ``pytest``. Run it (and generate a coverage report) with:
 
 .. code-block:: console
 
    $ poetry run pytest tests --cov=wap --cov-report=xml
 
-There is no code coverage requirement at the moment, but that may change in the future.
-See `.coveragerc` for its configuration
+All new commits need to be 100% covered by tests. We use `Codecov`_ status checks to
+enforce this. See `.coveragerc` for its configuration
 
 Versioning
 ----------
 
-*wap* adheres to `Semantic Versioning <https://semver.org/>`_ for its releases. The
+``wap`` adheres to `Semantic Versioning <https://semver.org/>`_ for its releases. The
 version will take the form ``x.y.z``. The commit from which the release is created will
 be tagged with this version as its tag name.
 
-To increment versions and propogate them around the repository for *wap* to use, we use
+To increment versions and propogate them around the repository for ``wap`` to use, we use
 `bump2version <https://github.com/c4urself/bump2version>`_, which provides the
 ``bumpversion`` command. Its configuration file is located at ``.bumpversion.cfg``.
 
@@ -91,3 +93,5 @@ Release Process
 4. The CI workflow will run, and because the git ref is a tag, additional deploy
    steps will be taken, such as publishing to PyPI and creating a GitHub release
    asset.
+
+.. _`Codecov`: https://about.codecov.io/

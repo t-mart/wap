@@ -51,10 +51,10 @@ jobs:
           poetry run mypy
       - name: Check import formatting
         run: |
-          poetry run isort --check wap tests
+          poetry run isort --check wap tests docs/conf.py
       - name: Check black style formatting
         run: |
-          poetry run black --check wap tests
+          poetry run black --check wap tests docs/conf.py
       - name: Check twine
         run: |
           poetry build
