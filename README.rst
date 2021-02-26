@@ -44,6 +44,7 @@ Features
 - Sets up new addon projects quickly, ready to go with one command
 - Consolidates all configuration in one easy-to-edit file
 - Supports Windows, macOS, and Linux
+- Documented awesomely
 
 .. teaser-end
 

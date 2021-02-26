@@ -1,4 +1,8 @@
-fix-and-check: isort-fix black-fix mypy-check twine-check
+pre-commit: fix check test
+
+fix: isort-fix black-fix
+
+check: mypy-check twine-check
 
 sphinx-autobuild:
 	sphinx-autobuild docs docs/_build/html
@@ -15,5 +19,8 @@ black-fix:
 twine-check:
 	poetry build
 	poetry run twine check dist/*
+
+test:
+	poetry run pytest tests --cov=wap --cov-report=xml
 
 .PHONY: autobuild check mypy-check isort-fix black-fix twine-check
