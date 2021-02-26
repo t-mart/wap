@@ -27,6 +27,7 @@ wap (WoW Addon Packager)
    :target: https://wow-addon-packager.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
+|
 
 ``wap`` is a user-friendly World of Warcraft addon packager.
 
@@ -63,8 +64,8 @@ Getting started
 
       $ wap quickstart MyAddon  # or whatever name you'd like!
 
-  and answer the prompted questions. Don't worry too much about your answers -- you can
-  always change them later in your configuration file.
+   and answer the prompted questions. Don't worry too much about your answers -- you can
+   always change them later in your configuration file.
 
 4. Build your addon
 
