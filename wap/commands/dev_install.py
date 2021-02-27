@@ -4,7 +4,7 @@ from typing import Optional
 
 import click
 
-from wap import addon, log
+from wap import addon
 from wap.commands.common import (
     WAP_WOW_ADDONS_PATH_ENVVAR_NAME,
     addon_version_option,
@@ -13,6 +13,7 @@ from wap.commands.common import (
 )
 from wap.config import Config
 from wap.exception import DevInstallException
+from wap.util import DEFAULT_DARWIN_WOW_ADDONS_PATH, DEFAULT_WIN32_WOW_ADDONS_PATH
 from wap.wowversion import WoWVersion
 
 
@@ -65,8 +66,8 @@ WOW_ADDONS_PATH_TYPE = WowAddonsPathType()
     required=True,
     type=WOW_ADDONS_PATH_TYPE,
     help=(
-        'Your WoW addons path, such as "/path/to/WoW/Interface/Addons". May also be '
-        "specified in the environment variable WAP_WOW_ADDONS_PATH."
+        "Your WoW addons path. May also be specified in the environment variable "
+        "WAP_WOW_ADDONS_PATH."
     ),
 )
 def dev_install(
@@ -74,7 +75,34 @@ def dev_install(
     addon_version: str,
     wow_addons_path: Path,
     show_json: bool,
-) -> int:
+) -> None:
+    f"""
+    Install a built addon to the provided WoW addons directory. (wap build must have
+    been run before this.)
+
+    This command assists you in testing your addons quickly.
+
+    wap is smart in determining which addon build to install (retail or classic). It
+    looks at the components of the WoW addons directory path provided and chooses the
+    appropriate one.
+
+    The provided WoW addons directory must appear to be valid, or else wap will not
+    perform the installation. This is to avoid data loss in unintended directories.
+    The actual logic for this is to inspect the path components of the directory
+    provided, which must end with the following in order:
+
+        1. "World of Warcraft"
+        2. either "_retail_" or "_classic_"
+        3. "Interface"
+        4. "AddOns"
+
+    For example, "{DEFAULT_WIN32_WOW_ADDONS_PATH}" (Windows) or
+    "{DEFAULT_DARWIN_WOW_ADDONS_PATH}" (macOS) are acceptable.
+
+    If your addon's directories already exist in the WoW addons directory, they will
+    first be deleted to ensure a clean install. Keep this in mind if you have somehow
+    put important data in that directory.
+    """
     config = Config.from_path(config_path)
 
     wow_addons_path_type = WoWVersion.addons_path_type(wow_addons_path.parts[-3])
@@ -92,23 +120,10 @@ def dev_install(
 
     output_map = {}
 
-    build_path = addon.get_build_path(
-        addon_name=config.name,
-        wow_version=wow_version,
-        addon_version=addon_version,
-    )
-
-    if not build_path.is_dir():
-        log.error(
-            "Expected build directory not found. Have you run `"
-            + click.style(f"wap build --addon-version {addon_version}", fg="blue")
-            + "` yet?"
-        )
-        raise DevInstallException(f'Build directory "{build_path}" not found.')
-
     dev_install_paths = addon.dev_install_addon(
-        build_path=build_path,
         wow_addons_path=wow_addons_path,
+        addon_name=config.name,
+        addon_version=addon_version,
         wow_version=wow_version,
     )
 
@@ -118,5 +133,3 @@ def dev_install(
 
     if show_json:
         click.echo(json.dumps(output_map, indent=2))
-
-    return 0

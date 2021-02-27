@@ -15,9 +15,12 @@ from wap.exception import ConfigException
 def validate(
     config_path: Path,
     show_json: bool,
-) -> int:
+) -> None:
     """
-    Validates a wap config file. An exit code of 0 means the validation was successful.
+    Validates a wap configuration file.
+
+    An exit code of 0 means the validation was successful. Otherwise, the error
+    encountered is displayed and the exit code is non-zero.
 
     Successful validation does not indicate that you can use all the wap commands. It
     merely means that there were no errors parsing it.
@@ -30,8 +33,6 @@ def validate(
         if show_json:
             click.echo(json.dumps(config.to_python_object(), indent=2))
 
-        return 0
-    except ConfigException as ce:
+    except ConfigException:
         log.error(f'❌ "{config_path}" is not valid')
-        log.error(str(ce))
-        return 1
+        raise

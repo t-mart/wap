@@ -6,15 +6,22 @@
 Welcome to wap's documentation!
 ===============================
 
+.. include:: ../README.rst
+   :start-after: teaser-begin
+   :end-before: teaser-end
+
+
+Full Table of Contents
+----------------------
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   five-minutes
+   installation
+   commands
+   config
+   toc-gen
+   project-structure
+   why
+   contributing

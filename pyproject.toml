@@ -40,6 +40,9 @@ freezegun = "^1.1.0"
 pip-tools = "^5.5.0"
 pytest-timeout = "^1.4.2"
 Sphinx = "^3.5.1"
+furo = "^2021.2.21-beta.25"
+sphinx-autobuild = "^2020.9.1"
+sphinx-inline-tabs = "^2020.10.19-beta.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -47,3 +50,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 wap = 'wap.__main__:main'
+
+[tool.black]
+line-length = 88
+target-version = ['py38']

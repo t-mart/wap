@@ -15,21 +15,27 @@ from wap.guided_config import guide
     type=PATH_TYPE,
     default=str(DEFAULT_CONFIG_PATH),
     show_default=str(DEFAULT_CONFIG_PATH),
-    help=("The path of the configuration file."),
+    help=("The path of the configuration file to create."),
 )
 def new_config(
     config_path: Path,
-) -> int:
+) -> None:
     """
-    Creates a new configuration file with some pre-filled data.
+    Create a new configuration file with some pre-filled data.
 
-    The name of the current directory will be used as the name of the addon and as the
-    configured directory and lua code file: These are merely suggestions to get you
-    started and may be changed at will.
+    To avoid data loss, this path must not exist.
+
+    This command is interactive, and will ask you some questions about your project.
+
+    This command targeted towards existing projects that want to start using wap or
+    projects that want to migrate from another packager.
+
+    More than likely, you will need to edit this configuration file to fit to your
+    project. This just provides a starting point.
     """
     if config_path.exists():
         raise NewConfigException(
-            f'"'
+            'Path "'
             + click.style(f"{config_path}", fg="green")
             + '" exists. Aborting to avoid data loss.'
         )
@@ -40,5 +46,3 @@ def new_config(
     log.info('\nCreating config file at "' + click.style(f"{config_path}", fg="green"))
     log.info(click.style("Make sure to edit it to fit your project!", fg="yellow"))
     config.to_path(config_path)
-
-    return 0

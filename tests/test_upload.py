@@ -3,7 +3,6 @@ import json
 import pytest
 
 from tests.util import VERSION_ID_MAP, Environment, decode_file_upload_multipart_request
-from wap import __version__
 from wap.commands.common import (
     DEFAULT_ADDON_VERSION,
     DEFAULT_CONFIG_PATH,
@@ -120,7 +119,7 @@ def test_upload(
         json_metadata = decoded_req.json_metadata
         assert json_metadata["changelog"] == changelog_contents
         assert json_metadata["changelogType"] == changelog_type
-        assert json_metadata["displayName"] == f"{addon_version}-{wow_type}"
+        assert json_metadata["displayName"] == f"MyAddon-{addon_version}-{wow_type}"
         assert json_metadata["gameVersions"] == [VERSION_ID_MAP[wow_type]]
         assert json_metadata["releaseType"] == release_type
 
@@ -301,20 +300,3 @@ def test_upload_changelog_options_xor(env: Environment, cl_options: list[str]) -
             "abc123",
             *cl_options,
         )
-
-
-# def test_upload_no_changelog(env: Environment, cl_options: list[str]) -> None:
-#     env.prepare(
-#         project_dir_name="basic",
-#         config_file_name="basic",
-#     )
-
-#     with pytest.raises(ChangelogException, match=r"must be used together or"):
-#         env.run_wap(
-#             "upload",
-#             "--addon-version",
-#             DEFAULT_ADDON_VERSION,
-#             "--curseforge-token",
-#             "abc123",
-#             *cl_options
-#         )

@@ -5,7 +5,7 @@ import click
 from wap import log
 from wap.commands.common import DEFAULT_CONFIG_PATH, PATH_TYPE
 from wap.exception import QuickstartException
-from wap.guided_config import guide
+from wap.guided_config import DEFAULT_CHANGELOG_PATH, guide
 from wap.util import default_wow_addons_path_for_system
 from wap.wowversion import WoWVersion
 
@@ -57,7 +57,7 @@ def write_lua_file(path: Path, name: str) -> None:
         lua_file.write("-- but you can erase it if you wish.\n\n")
         lua_file.write(f'local title = GetAddOnMetadata("{name}", "Title")\n')
         lua_file.write(f'local version = GetAddOnMetadata("{name}", "Version")\n')
-        lua_file.write(f'print(title .. " version " .. version .. " has loaded.")\n')
+        lua_file.write('print(title .. " version " .. version .. " has loaded.")\n')
 
 
 @click.command()
@@ -67,12 +67,15 @@ def write_lua_file(path: Path, name: str) -> None:
 )
 def quickstart(
     project_dir_path: Path,
-) -> int:
+) -> None:
     """
     Creates a new addon project directory at PROJECT_DIR_PATH with a default structure.
-    PROJECT_DIR_PATH must not exist. The final path component of PROJECT_DIR_PATH will
-    be used as the addon's name, the name of the directory in `dirs`, and the Lua file
-    created. These are merely suggestions to get you started and may be changed at will.
+    PROJECT_DIR_PATH must not exist.
+
+    This command is interactive, and will ask you some questions about your project.
+
+    If you later decide you want to change something about how you answered these
+    question, edit your config file.
 
     For example, running:
 
@@ -84,7 +87,7 @@ def quickstart(
       MyAddon
       ├── MyAddon
       │   └── Init.lua
-      ├── CHANGELOG.md (if uploading to CurseForge)
+      ├── CHANGELOG.md
       ├── README.md
       └── .wap.yml
     """
@@ -114,35 +117,30 @@ def quickstart(
     )
     config.to_path(config_path)
 
-    if config.curseforge_config:
-        # quickstart mandates changelog creation
-        assert config.curseforge_config.changelog_path is not None
-
-        changelog_path = project_dir_path / config.curseforge_config.changelog_path
-        log.info(
-            "Creating changelog file at '"
-            + click.style(f"{changelog_path}", fg="green")
-            + '"'
-        )
-        write_changelog(changelog_path, project_name)
+    log.info(
+        "Creating changelog file at '"
+        + click.style(f"{DEFAULT_CHANGELOG_PATH}", fg="green")
+        + '"'
+    )
+    write_changelog(project_dir_path / DEFAULT_CHANGELOG_PATH, project_name)
 
     readme_path = project_dir_path / "README.md"
     log.info('Creating readme at "' + click.style(f"{readme_path}", fg="green"))
     write_readme(readme_path, project_name)
 
-    # guided config only puts 1 starter lua file in the toc config's files.
+    # guided config puts 1 starter lua file in the toc config's files.
     dir_config = config.dir_configs[0]
     starter_lua_file = dir_config.toc_config.files[0]
     lua_file = project_dir_path / dir_config.path / starter_lua_file
     log.info(
-        f"Creating starter lua file at '" + click.style(f"{lua_file}", fg="green") + '"'
+        "Creating starter lua file at '" + click.style(f"{lua_file}", fg="green") + '"'
     )
     lua_file.parent.mkdir()
     write_lua_file(lua_file, project_name)
 
     log.info(
         click.style(
-            f"\nProject created! You can now begin developing your project.\n",
+            "\nProject created! You can now begin developing your project.\n",
             fg="green",
             bold=True,
         )
@@ -167,11 +165,9 @@ def quickstart(
         log.info(
             "  - "
             + click.style(
-                'wap upload --addon-version "0.0.1" --curseforge-token "<your-token>"',
+                'wap upload --addon-version "dev" --curseforge-token "<your-token>"',
                 fg="blue",
             )
         )
 
     log.info("\nHave fun!")
-
-    return 0

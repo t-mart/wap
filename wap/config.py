@@ -290,7 +290,7 @@ class Config(YamlType["Config", Mapping[str, Any]]):
         dir_configs = [DirConfig.from_python_object(dir_) for dir_ in obj["dirs"]]
         if len({dir_config.path for dir_config in dir_configs}) < len(dir_configs):
             raise ConfigSemanticException(
-                f"Directory paths in dir configs must have unique paths"
+                "Directory paths in dir configs must have unique paths"
             )
 
         return cls(
