@@ -25,11 +25,3 @@ Full Table of Contents
    project-structure
    why
    contributing
-
-
-Indices and tables
-------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
