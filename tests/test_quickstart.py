@@ -33,7 +33,7 @@ class TestQuickstart:
         author = "John Doe"
         description = "My description"
         cf_addon_name = "mycooladdon"
-        changelog_name = "changes.md"
+        changelog_name = "CHANGELOG.md"
 
         input_lines = [
             addon_name,  # addon name (default)
@@ -43,7 +43,6 @@ class TestQuickstart:
             "y",  # yes to classic wow
             "yes",  # yes to having a curseforge project
             "123456",  # project id
-            changelog_name,  # changelog file name
             f"https://www.curseforge.com/wow/addons/{cf_addon_name}",  # CF url
         ]
 
@@ -85,17 +84,17 @@ class TestQuickstart:
         }
 
         # unfortunate naming conflict between env.project_dir_path and project_dir_path.
-        # the former is the environment "project directory", but in this case, is just an
-        # empty directory. the latter is where the user has quickstarted the new project.
-        # the Environment class wasn't really written with this use case in mind, but offers
-        # too nice a test fixture to pass up.
+        # the former is the environment "project directory", but in this case, is just
+        # an # empty directory. the latter is where the user has quickstarted the new
+        # project. the Environment class wasn't really written with this use case in
+        # mind, but offers too nice a test fixture to pass up.
         full_project_dir_path = env.project_dir_path / project_dir_path
         actual_quickstart_files = fileset(full_project_dir_path)
 
         assert expected_quickstart_files == actual_quickstart_files
 
-        # do a simple wap build in the new project dir. this essentially "roundtrips" the
-        # output of quickstart to ensure it is functional
+        # do a simple wap build in the new project dir. this essentially "roundtrips"
+        # the output of quickstart to ensure it is functional
         env.run_wap("build", cwd=full_project_dir_path)
 
     def test_quickstart_interactive_prompt_retries(self, env: Environment) -> None:
@@ -116,7 +115,7 @@ class TestQuickstart:
             "",  # default changelog
             "not a url",  # test the retry
             "still not a url",  # test the retry
-            f"https://www.curseforge.com/wow/addons/someaddon",  # CF url
+            "https://www.curseforge.com/wow/addons/someaddon",  # CF url
         ]
 
         env.run_wap("quickstart", "MyAddon", input_lines=input_lines)

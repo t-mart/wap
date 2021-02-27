@@ -8,7 +8,7 @@ Why make another addon tool?
 solution is probably the `packager`_ project,
 and I think there are things that could be improved about it. Namely, it:
 
-- Encourages the use :ref:`substitution directives <substitution-directives>` (e.g. ``--@keyword@``)
+- Encourages the use :ref:`substitution directives <why-not-substitution-directives>` (e.g. ``--@keyword@``)
 - Conflates :ref:`dependencies and source code repositories <why-not-externals>`. They are not
   the same thing.
 - Presumes your entire repository should be packaged up, which is awkward and
@@ -17,7 +17,7 @@ and I think there are things that could be improved about it. Namely, it:
   which are inaccessible for beginning developers.
 - Reads its configuration from several files (``.pkgmeta`` and ``.toc`` files).
 
-.. _substitution-directives:
+.. _why-not-substitution-directives:
 
 Why not implement substitution directives like ``--@retail@``?
 **************************************************************
@@ -60,7 +60,8 @@ Finally, you can't run static analyzers like `luacheck`_ on this code.
   print("Hi, I'm running on " .. wowVersion .. " WoW!")
 
 This code is clear in its intentions. It's simply Lua code, and it leverages the WoW
-API we have at hand to do the job. And, it can be statically analyzed.
+API we have at hand to do the job. It's also fast to build because it has no
+directives and it can be statically analyzed.
 
 And this is just the Lua. `packager`_ has similar constructs for TOC and XML files
 (albeit, in a slightly different syntax for *each language*). Here's why you wouldn't
@@ -74,25 +75,6 @@ want to use substitution directives in those cases either:
 The main point is here is that you can do everything substitution directives can do
 with Lua code, ``wap``, or a combination of the two.
 
-Why generate TOC files?
-***********************
-
-There are two main reasons:
-
-- Cut down on duplication. If you need to upload a retail AND a classic version, you'd
-  otherwise need to create 2 nearly identical TOC files that only differ in their
-  ``Interface`` tags.
-
-  So instead, by centralizing TOC contents into a single configuration file, ``wap`` can generate
-  your TOC file with your tags and files AND the correct ``Interface`` for the version
-  of WoW you are targeting.
-
-- TOC validation. ``wap`` validates that:
-
-  * Any files listed actually exist within that folder
-  * Any custom tags are prefixed with ``X-``, which is necessary for them to be
-    retrievable by
-    `GetAddOnMetadata`_.
 
 .. _why-not-get-version-from-vcs:
 
@@ -118,7 +100,8 @@ Why not support pulling in dependencies (``externals``) from other repositories?
 ********************************************************************************
 
 `packager`_ allows you to define ``externals`` in its configuration file. These
-are links to source code repositories. This is bad for a few reasons:
+are links to source code repositories that are downloaded into your project when you
+build it. This is bad for a few reasons:
 
 - Source code repositories are not released software. That is not their purpose. Source code
   repositories are filled with all sorts of things like READMEs and ``.gitignore`` files
@@ -128,17 +111,20 @@ are links to source code repositories. This is bad for a few reasons:
   That Lua code belongs in a deliberate release asset (file/zip/etc) by the project
   owner, cleansed and packaged in a way you can include in your addon.
 
-- Even if you do have dependency repository that's tolerably clean and packaged in its
-  natural form, that repository is actually a development-time dependency, not a
-  release-time dependency like packager implies. It needs to be *inside* your
-  environment while you write your code. Otherwise, you're coding on hope.
+  *(Other software systems solve this problem with package managers, but alas, there is
+  none for World of Warcraft.)*
 
-  * packager doesn't even require a commit hash/tag to be specified, so you
+- Even if you do have dependency repository that's tolerably clean and packaged in its
+  natural form, that repository is actually a development dependency, not a
+  build dependency like packager implies. It needs to be *inside* your
+  environment while you write your addon. Otherwise, you're coding on hope.
+
+  * packager doesn't even require a commit hash or tag to be specified, so you
     can't even be sure what of what code will be included with your addon in those
     cases. Dependencies shouldn't be changing *at all* unless you've deliberately
     upgraded them.
 
-- It slows down your release process to redownload dependencies. Pulling them into
+- It slows down your development processes to redownload dependencies. Pulling them into
   source code once is much faster than pulling them in each time you build your addon.
 
 - Finally, this is just feature bloat for ``wap``. It's excessive to write a ``git clone``
@@ -146,8 +132,9 @@ are links to source code repositories. This is bad for a few reasons:
   up a huge surface area of support if ``wap`` would need to be able to run those tools
   itself.
 
-**TLDR:** ``wap`` **could, but it won't**. Instead, copy your dependencies into your project from an
-official release, or from the its repository if that is all they offer.
+**TLDR:** ``wap`` **could, but it won't**. Instead, the recommended way to get
+dependencies into your project is to copy your them from an official release (or from
+a cloned repository if that's all that's offered) and add them to your source code.
 
 Why not upload WoWInterface too?
 ********************************
@@ -171,12 +158,11 @@ Why not upload GitHub Release assets?
 
 Instead, I kindly suggest you incorporate something like `Github CLI`_ or
 `upload-release-asset`_ into your
-build process in conjunction with ``wap`` if you want this feature. For ``wap``, it's too
+release process in conjunction with ``wap`` if you want this feature. For ``wap``, it's too
 much bloat for too little gain.
 
 .. _`packager`: https://github.com/BigWigsMods/packager
 .. _`luacheck`: https://github.com/mpeterv/luacheck
 .. _`7+ minutes at this step`: https://github.com/t-mart/ItemVersion/runs/1864902187
-.. _GetAddOnMetadata: https://wow.gamepedia.com/API_GetAddOnMetadata
 .. _upload-release-asset: https://github.com/actions/upload-release-asset
 .. _`Github CLI`: https://cli.github.com/

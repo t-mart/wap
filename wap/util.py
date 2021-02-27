@@ -2,6 +2,13 @@ import shutil
 import sys
 from pathlib import Path
 
+DEFAULT_WIN32_WOW_ADDONS_PATH = (
+    R"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
+)
+DEFAULT_DARWIN_WOW_ADDONS_PATH = (
+    "/Applications/World of Warcraft/_retail_/Interface/AddOns"
+)
+
 
 def delete_path(path: Path) -> None:
     """
@@ -25,10 +32,11 @@ def default_wow_addons_path_for_system() -> str:
     # where a user's addons path.
     platform = sys.platform
 
-    # don't measure code coverage here because the testing system will only
+    # don't measure code coverage here because the testing system is only one platform
+    # TODO: write unit test that mocks out sys.platform?
     if platform == "win32":  # pragma: no cover
-        return R"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
+        return DEFAULT_WIN32_WOW_ADDONS_PATH
     elif platform == "darwin":  # pragma: no cover
-        return "/Applications/World of Warcraft/_retail_/Interface/AddOns"
+        return DEFAULT_DARWIN_WOW_ADDONS_PATH
     else:  # pragma: no cover
         return "</path/to/WoW/Interface/AddOns>"

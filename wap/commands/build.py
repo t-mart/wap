@@ -17,10 +17,30 @@ def build(
     config_path: Path,
     addon_version: str,
     show_json: bool,
-) -> int:
+) -> None:
     """
-    Builds packages, creating a directory with your packaged addon and a zip archive.
-    Outputs a JSON object describing the locations of the built files.
+    Build your addon.
+
+    For each wow-version specified in your config, create a build directory and zip file
+    containing your packaged addon in the dist/ directory (relative to your current
+    directory). The contents of the build directory and zip file will be the same as the
+    dirs you provide in your config and an additional generated TOC file.
+
+    The format of the name of the build directory will be
+    "<addon-name>-<addon-version>-<wow-version-type>". It is the same for the zip file,
+    except a ".zip" extension is added.
+
+    Each TOC file generated
+    will have the same name as the directory (plus the .toc extension). If this file
+    exists in your source directory, it will be overrwritten.
+
+    The contents of the TOC file will be those as specified in your toc tags and toc
+    files.
+
+    Unless they are overriden in your config, the tags "Interface" and "Version" in the
+    generated TOC will correspond to the WoW version and addon version being built,
+    respectively. wap also adds "X-BuildDateTime" and "X-BuildTool" tags with
+    appropriate values.
     """
     config = Config.from_path(config_path)
 
@@ -42,7 +62,7 @@ def build(
                 addon_version=addon_version,
             )
 
-        except BaseException as exc:
+        except BaseException:
             # catch any exception, keyboard interrupts included, and delete the
             # build path because it may be incomplete. this cleans up the build
             # and helps users not use broken builds in other commands
@@ -71,5 +91,3 @@ def build(
 
     if show_json:
         click.echo(json.dumps(output_map, indent=2))
-
-    return 0

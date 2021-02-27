@@ -5,7 +5,6 @@ from pathlib import Path
 import attr
 
 from wap import log
-from wap.exception import ChangelogException
 
 CHANGELOG_SUFFIX_MAP = {
     ".md": "markdown",

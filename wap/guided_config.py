@@ -1,5 +1,5 @@
 import re
-from pathlib import Path, PurePosixPath
+from pathlib import PurePosixPath
 from typing import Any, Optional, Pattern, cast
 
 import click
@@ -7,6 +7,8 @@ import click
 from wap import log
 from wap.config import Config, CurseforgeConfig, DirConfig, TocConfig
 from wap.wowversion import LATEST_CLASSIC_VERSION, LATEST_RETAIL_VERSION
+
+DEFAULT_CHANGELOG_PATH = PurePosixPath("CHANGELOG.md")
 
 
 def _prompt_until_matching(
@@ -56,7 +58,6 @@ def guide(project_dir_name: str) -> Config:
     author_pattern = re.compile(r".+")
     notes_pattern = re.compile(r".+")
     project_id_pattern = re.compile(r"\d+")
-    changelog_path_pattern = re.compile(r"\S+.\S+")
     curseforge_url_pattern = re.compile(
         r"https:\/\/www\.curseforge\.com\/wow\/addons\/(?P<addon_name>\S+)"
     )
@@ -113,14 +114,6 @@ def guide(project_dir_name: str) -> Config:
             text="CurseForge project id (found in top-right of addon page)",
         )[0]
 
-        changelog_path = Path(
-            _prompt_until_matching(
-                changelog_path_pattern,
-                text="Name of changelog file (used during uploads)",
-                default="CHANGELOG.md",
-            )[0]
-        )
-
         project_slug = _prompt_until_matching(
             curseforge_url_pattern,
             text="CurseForge URL",
@@ -128,7 +121,7 @@ def guide(project_dir_name: str) -> Config:
 
         curseforge_config = CurseforgeConfig(
             project_id=project_id,
-            changelog_path=PurePosixPath(changelog_path),
+            changelog_path=DEFAULT_CHANGELOG_PATH,
             project_slug=project_slug,
         )
 

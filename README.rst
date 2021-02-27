@@ -37,27 +37,34 @@ wap (WoW Addon Packager)
 Features
 --------
 
-- Builds and uploads your addons to CurseForge
-- Creates retail or classic WoW addons, or both!
+- Builds retail or classic WoW addons (or both!)
+- Uploads your addons to CurseForge
 - Installs your addons to your Addons folder for fast development feedback
 - Generates valid TOC files automagically
 - Sets up new addon projects quickly, ready to go with one command
 - Consolidates all configuration in one easy-to-edit file
-- Supports Windows, macOS, and Linux
-- Documented awesomely
+- Supports and is tested on Windows, macOS, and Linux
+- Has awesome `documentation`_
+
+.. _`documentation`: https://wow-addon-packager.readthedocs.io/en/stable
 
 .. teaser-end
 
-Getting started
----------------
 
-1. `Download <https://www.python.org/downloads/>`_ and install Python 3.9 or greater.
+``wap`` in 5 minutes
+--------------------
+
+.. five-minutes-begin
+
+This entire set of instructions is runnable without editing a single line of code!
+
+1. `Download Python 3.9 or greater`_ and install it.
 
 2. Install ``wap`` with pip:
 
    .. code-block:: console
 
-      $ pip install -U wow-addon-packager
+      $ pip install --upgrade --user wow-addon-packager
 
 3. Create a new project:
 
@@ -68,20 +75,26 @@ Getting started
    and answer the prompted questions. Don't worry too much about your answers -- you can
    always change them later in your configuration file.
 
+   Then change to your new project's directory
+
+   .. code-block:: console
+
+      $ cd "MyAddon"
+
 4. Build your addon
 
    .. code-block:: console
 
       $ wap build
 
-5. Test your addon out in your local WoW installation:
+5. Install your addon so you can test it out in your local WoW installation:
 
    .. code-block:: console
 
-      # Windows
+      on Windows
       $ wap dev-install --wow-addons-path "C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
 
-      # macOS
+      on macOS
       $ wap dev-install --wow-addons-path "/Applications/World of Warcraft/_retail_/Interface/AddOns"
 
 6. Upload your project to CurseForge
@@ -90,12 +103,17 @@ Getting started
 
       $ wap upload --addon-version "dev" --curseforge-token "<your-token>"
 
-   You can generate a new token at `<https://authors.curseforge.com/account/api-tokens>`_.
+   You can generate a new token at Curseforge's `My API Tokens`_ page.
+
+.. _`My API Tokens`: https://authors.curseforge.com/account/api-tokens
+.. _`Download Python 3.9 or greater`: https://www.python.org/downloads/
+
+.. five-minutes-end
 
 Further Help
 ------------
 
-See the official documentation site. There's a lot more information there!
+See the `official documentation site`_. There's a lot more information there!
 
 Also, the ``wap`` command is fully documented in its help text. View it with:
 
@@ -104,16 +122,18 @@ Also, the ``wap`` command is fully documented in its help text. View it with:
    $ wap --help
    $ wap build --help
    $ wap upload --help
-   # ... etc
+   ... etc
 
 Contributing
 ------------
 
-See `CONTRIBUTING.rst <docs/CONTRIBUTING.rst>`_.
+See `how to contribute`_ in the official docs.
 
 TODOs
 -----
 
 - localization via curseforge?
-- Dockerfile
 - Dockerfile github action `<https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action>`_
+
+.. _`how to contribute`: https://wow-addon-packager.readthedocs.io/en/stable/contributing.html
+.. _`official documentation site`: https://wow-addon-packager.readthedocs.io/en/stable

@@ -27,6 +27,8 @@ def test_validate(
     }
     assert config_json["dirs"][0]["toc"]["files"] == ["Dir1.lua", "Sub/Another.lua"]
 
+    assert result.exit_code == 0
+
     assert "is valid" in result.stderr
 
 
@@ -38,6 +40,8 @@ def test_validate_fail(
         config_file_name="does_not_follow_schema",
     )
 
-    result = env.run_wap("validate", "--json")
+    result = env.run_wap("validate", "--json", catch_exceptions=True)
+
+    assert result.exit_code != 0
 
     assert "is not valid" in result.stderr

@@ -4,7 +4,7 @@ from typing import Optional
 
 import click
 
-from wap import addon, log
+from wap import addon
 from wap.changelog import CHANGELOG_TYPES, Changelog
 from wap.commands.common import (
     DEFAULT_RELEASE_TYPE,
@@ -44,19 +44,22 @@ from wap.exception import ChangelogException, UploadException
     help=(
         "The contents of your changelog that will be displayed with your upload on "
         "CurseForge. If you have also provided a changelog-file in your config, "
-        "this option will take precedence. --changelog-type must also be provided if "
-        "using this option."
+        "this option will take precedence. There are no requirements for these "
+        "contents -- they may be blank if you wish. Must be used in conjunction with "
+        "--changelog-type."
     ),
 )
 @click.option(
     "--changelog-type",
     type=click.Choice(list(CHANGELOG_TYPES), case_sensitive=False),
     help=(
-        "The format of your changelog contents. --changelog-contents must also be "
-        "provided if using this option."
+        "The format of your changelog contents. Must be used in conjunction with "
+        "--changelog-contents."
     ),
 )
+@click.pass_context
 def upload(
+    ctx: click.Context,
     config_path: Path,
     addon_version: str,
     release_type: str,
@@ -64,9 +67,22 @@ def upload(
     show_json: bool,
     changelog_contents: Optional[str],
     changelog_type: Optional[str],
-) -> int:
+) -> None:
     """
-    Uploads packages to CurseForge.
+    Upload built addons to your addons Curseforge page. (wap build must have been run
+    before this.)
+
+    Each build of your addon (retail and/or classic) with the given addon version will
+    be uploaded. An addon version is **required** from you for this command. This is to
+    ensure that your uploads are intentional, which are released to the Internet.
+
+    In addition to the options set for this command and your configuration, wap
+    automatically sets some metadata to send with the request.
+        - The display name. This is the name of the file as it appears on your addon's
+          files page. wap sets this to
+          <addon-name>-<addon-version>-<wow-version-type>
+        - The zip file name. This is the file name of the that users download. wap sets
+          this to <addon-name>-<addon-version>-<wow-version-type>.zip
     """
     config = Config.from_path(config_path)
 
@@ -106,26 +122,11 @@ def upload(
     curseforge_api = CurseForgeAPI(api_token=curseforge_token)
 
     for wow_version in config.wow_versions:
-        zip_path = addon.get_zip_path(
-            addon_name=config.name,
-            wow_version=wow_version,
-            addon_version=addon_version,
-        )
-
-        if not zip_path.is_file():
-            log.error(
-                "Expected zip file not found. Have you run `"
-                + click.style(f'wap build --addon-version "{addon_version}"', fg="blue")
-                + "` yet?"
-            )
-            raise UploadException(f'Zip file "{zip_path}" not found.')
-
         upload_url = addon.upload_addon(
             addon_name=config.name,
             curseforge_config=curseforge_config,
             changelog=changelog,
             wow_version=wow_version,
-            zip_file_path=zip_path,
             addon_version=addon_version,
             release_type=release_type,
             curseforge_api=curseforge_api,
@@ -137,5 +138,3 @@ def upload(
 
     if show_json:
         click.echo(json.dumps(output_map, indent=2))
-
-    return 0

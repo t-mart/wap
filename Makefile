@@ -1,26 +1,49 @@
+.PHONY: all
+all: pre-commit
+
+.PHONY: pre-commit
 pre-commit: fix check test
 
+.PHONY: fix
 fix: isort-fix black-fix
 
-check: mypy-check twine-check
+.PHONY: check
+check: flake8-check mypy-check twine-check
 
-sphinx-autobuild:
-	sphinx-autobuild docs docs/_build/html
-
+.PHONY: mypy-check
 mypy-check:
 	poetry run mypy
 
+.PHONY: flake8-check
+flake8-check:
+	poetry run flake8 wap tests docs
+
+.PHONY: isort-fix
 isort-fix:
-	poetry run isort wap tests docs/conf.py
+	poetry run isort wap tests docs
 
+.PHONY: black-fix
 black-fix:
-	poetry run black wap tests docs/conf.py
+	poetry run black wap tests docs
 
+.PHONY: twine-check
 twine-check:
 	poetry build
 	poetry run twine check dist/*
 
+.PHONY: test
 test:
 	poetry run pytest tests --cov=wap --cov-report=xml
 
-.PHONY: autobuild check mypy-check isort-fix black-fix twine-check
+.PHONY: sphinx-autobuild
+sphinx-autobuild:
+	sphinx-autobuild docs docs/_build/html
+
+.PHONY: clean
+clean:
+	rm -rf `find . -name __pycache__`
+	rm -f `find . -type f -name '*.py[co]' `
+	rm -f .coverage
+	make -C docs clean
+
+

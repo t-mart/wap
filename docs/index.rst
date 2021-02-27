@@ -17,7 +17,12 @@ Full Table of Contents
 .. toctree::
    :maxdepth: 2
 
-   wap-config
+   five-minutes
+   installation
+   commands
+   config
+   toc-gen
+   project-structure
    why
    contributing
 

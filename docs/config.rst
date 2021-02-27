@@ -1,5 +1,7 @@
-The ``wap`` Configuration File
-------------------------------
+.. _configuration:
+
+Configuration
+-------------
 
 ``wap`` only needs one file to operate: a YAML file named ``.wap.yml``.
 
@@ -7,13 +9,17 @@ This file should be placed at the root of your project directory.
 
 For new YAML authors, see `What is YAML?`_.
 
-.. warning::
-  For advanced YAML authors, it may be important to note that ``wap`` uses a subset of
-  YAML called `strictyaml`_. This provides many benefits for users, but does
-  `restrict some buggy YAML features`_. There's a good chance you won't even notice a difference.
+For advanced YAML authors, it may be important to note that ``wap`` uses a subset of
+YAML called `strictyaml`_. This provides benefits for both you and ``wap``, but does
+`restrict some buggy YAML features`_.
 
-.. warning::
-  In ``wap`` configuration files, all paths are treated as POSIX paths. The main takeaway
+Paths in your configuration file
+********************************
+
+Some of your configuration will include paths to files related to your project. It
+is important to note the following:
+
+* All paths are treated as POSIX paths. The main takeaway
   of this is that path separators (the slashes between directories and subdirectories
   and files) are **forward slashes** (``/``). By choosing a standard, configuration
   files become cross-platform, so developers on any other system can contribute to your
@@ -21,9 +27,12 @@ For new YAML authors, see `What is YAML?`_.
 
   .. code-block:: yaml
 
-     path/to/my.lua    # GOOD, only forward slashes
-     path\to\my.lua    # bad, uses backslashes
-     path/to\my.lua    # bad, uses mixed slashes
+    path/to/my.lua    # GOOD, only forward slashes
+    path\to\my.lua    # bad, uses backslashes
+    path/to\my.lua    # bad, uses mixed slashes
+
+* All paths are relative paths. (Absolute paths are not allowed because they would be
+  unique to your system).
 
 Sample Config File and Directory Structure
 ******************************************
@@ -42,36 +51,47 @@ Here's a commented sample ``.wap.yml`` file:
 
   # if you want to upload to CurseForge, include this section
   curseforge:
+
     # found on your project page
     project-id: 123456
+
     # change history file, optional
-    changelog: CHANGELOG.md
+    changelog-file: CHANGELOG.md
+
     # found from your CurseForge URL
     # ex: https://www.curseforge.com/wow/addons/myaddon -> "myaddon"
-    addon-name: myaddon
+    project-slug: myaddon
 
   # a list of directories that will be packaged up
   dirs:
+
+      # an addon directory
     - path: MyDir  # an addon directory
-      toc:  # TOC generation
-        tags:  # metadata about your addon for WoW
+
+      # TOC generation
+      toc:
+
+        # metadata about your addon for WoW
+        tags:
           Title: MyAddon
           Notes: A great addon for WoW
           Author: Me
           X-CustomTag: CustomValue
-        files:  # the files to load, in order, for your addon, as found inside MyDir
+
+        # the files to load, in order, for your addon, as found inside MyDir
+        files:
           - Init.lua
           - MySubDir/Sub.lua
 
-And heres a directory structure that this config could work with:
+And heres a project structure that this config could work with:
 
-.. code-block::
+.. code-block:: text
 
-   MyProject                # your project directory
-   ├── MyDir                # your addon directory (dirs[*].path in config)
-   |   ├── Init.lua         # A Lua code file (dirs[*].toc.files in config)
-   |   └── MySubDir         # A subdirectory in your addon directory
-   │       └── Sub.lua      # Another Lua code file (dirs[*].toc.files in config)
+   MyAddon                  # your project directory
+   ├── MyDir                # an addon directory (dirs[*].path in config)
+   |   ├── Init.lua         # a Lua code file (dirs[*].toc.files in config)
+   |   └── MySubDir         # a subdirectory in your addon directory
+   │       └── Sub.lua      # another Lua code file (dirs[*].toc.files in config)
    ├── CHANGELOG.md         # changelog file (curseforge.changelog in config)
    ├── README.md            # readme documentation
    └── .wap.yml             # configuration file
@@ -79,11 +99,14 @@ And heres a directory structure that this config could work with:
 Syntax
 ******
 
+.. _config-name:
+
 ``name``
 ^^^^^^^^
 
-**Required**. The name of your packaged addon. This name will be used to name the build directories
-and zip files for your addon (as well as the zip file users download on CurseForge).
+**Required**. The name of your packaged addon. This name will be used to name the build
+directories and zip files for your addon (as well as the zip file users download on
+CurseForge).
 
 You can name this anything you want.
 
@@ -92,6 +115,8 @@ Example:
 .. code-block:: yaml
 
   name: MyAwesomeAddon
+
+.. _config-wow-versions:
 
 ``wow-versions``
 ^^^^^^^^^^^^^^^^
@@ -105,10 +130,13 @@ non-negative integers.
 You must at least supply one of these, and can at most supply two (for retail and
 classic).
 
+You should list **current** WoW versions. Otherwise, your addon may
+be disabled when users install it.
+
 ``wap`` uses these versions for a few things:
 
-- To properly generate your TOC file with the right ``## Interface`` tag
-- To mark on CurseForge which version your addon supports
+- To build you addon for each version (with the correct ``## Interface`` tag in TOC files).
+- To mark on CurseForge which version your addon supports.
 - To ``dev-install`` the right build into the right WoW AddOns path. For example a
   classic addon build should not go into a
   ``World of Warcraft/_retail_/Interface/AddOns`` directory.
@@ -135,8 +163,8 @@ Examples:
     - 1.13.6
 
 .. warning::
-  You do need to ensure these versions are actaully valid WoW versions, or else your
-  upload to CurseForge will fail.
+  You do need to ensure these versions are actaully valid WoW versions, or else
+  uploads to CurseForge will fail.
 
   One surefire way of getting a valid version is looking at the Battle.net Launcher
   and looking at the first 3 digits of the version list there:
@@ -159,7 +187,6 @@ what addon page to upload to.
 .. image:: _static/where-to-find-project-id.png
   :alt: Where to find your CurseForge project id
 
-
 Example:
 
 .. code-block:: yaml
@@ -171,15 +198,15 @@ Example:
 ``curseforge.changelog-file``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The path, relative the project root directory, of your changelog file. This file should
-contain a helpful history of changes to your addon over time. There are no
+The path, relative the parent directory of the configuration file, of your changelog file.
+This file should contain a helpful history of changes to your addon over time. There are no
 requirements for the contents of this file -- it just needs to exist. You may leave
 it blank if you're just starting out.
 
 .. note::
-  This field is optional. But if you do not provide it, you must use the
-  ``--changelog-contents`` and ``--changelog-type`` options when you run the upload
-  command: Curseforge requires this data. It accompanies each file uploaded to the site.
+  **This field is optional in your configuration**. But if you do not provide it, you must use the
+  ``--changelog-contents`` and ``--changelog-type`` options when you run the
+  :ref:`upload command <wap-upload>`: Curseforge requires this data. It accompanies each file uploaded to the site.
 
   CurseForge aside, maintaining a changelog file is a good practice. This is helpful
   information for both your users and collaborators.
@@ -188,13 +215,13 @@ See the `Sample Config File and Directory Structure`_ section for an example on 
 this file is expected to be inside your project.
 
 The CurseForge API also requires a changelog type, which indicates the format of your
-log contents. They support the following three:
+log contents. They support the following:
 
 - ``markdown``
 - ``html``
 - ``text``
 
-``wap`` will try to chose the correct format based on the extension of the file you
+``wap`` will try to choose the correct format based on the extension of the file you
 provide for this field. It does so according to the following mapping:
 
 +-----------------+-------------------+
@@ -254,16 +281,19 @@ would fill in this field like this:
 ``dirs``
 ^^^^^^^^
 
-**Required**. A list of directories to include in your packaged addon.
+**Required**. A ``list`` of directories to include in your packaged addon and their
+TOC file data.
 
-Many small addons will only contain a single ``dirs`` item, but more complex ones
-will have many.
+Many addons will only contain a single ``dirs`` item, but more complex ones
+can have many.
+
+.. _config-dirs-path:
 
 ``dirs[*].path``
 ^^^^^^^^^^^^^^^^
 
-**Required**. The path, relative to the project root directory, of the directory you'd
-like to include in your packaged addon.
+**Required**. The path, relative the parent directory of the configuration file, of the
+directory to include in your packaged addon.
 
 This cannot be a file -- it must be a directory because only directories are installable
 into WoW addons folders.
@@ -289,6 +319,9 @@ then you would fill in this field like this:
     - path: MyOtherDir
     # ...
 
+
+.. _config-dirs-toc:
+
 ``dirs[*].toc``
 ^^^^^^^^^^^^^^^
 
@@ -296,8 +329,9 @@ then you would fill in this field like this:
 TOC file will have the same name as the directory (plus the ``.toc`` extension) and be
 placed at the root of that directory.
 
-For more information on why TOC file generation is a good thing, see
-`Why generate TOC files?`_.
+See :ref:`toc-gen` for more information.
+
+.. _config-dirs-toc-tags:
 
 ``dirs[*].toc.tags``
 ^^^^^^^^^^^^^^^^^^^^
@@ -307,61 +341,27 @@ will be interpreted as strings.
 
 Use this section to provide things like the ``Title``, ``Notes`` (description), and
 any other WoW-specified tags. A full list of supported tags may be found at the
-WoW Gamepedia
-`TOC format article <https://wow.gamepedia.com/TOC_format#Display_in_the_addon_list>`_.
+`WoW Gamepedia TOC format article`_.
+
 Custom tags can be added too, and should be prefixed with ``X-``.
 
-To demonstrate, a ``tags`` section that looks like this:
-
-.. code-block:: yaml
-
-  tags:
-    Title: MyAddon
-    Notes: This is my addon
-    X-Custom-Tag: CustomValue
-
-will produce a TOC file with this content:
-
-.. code-block::
-
-  ## Title: MyAddon
-  ## Notes: This is my addon
-  ## X-Custom-Tag: CustomValue
-
-.. warning::
+.. note::
   **You should not provide the** ``Interface`` **and** ``Version`` **tags!** ``wap`` generates
   those tags for you. You can override them, but it is not recommended.
+
+.. _config-dirs-toc-files:
 
 ``dirs[*].toc.files``
 ^^^^^^^^^^^^^^^^^^^^^
 
-**Required**. A sequence of paths, relative to the ``path`` of the item in ``dirs``, that specify
-the Lua (or XML) files
-your addon should load. The order of this sequence is respected in the generated TOC
-file.
+**Required**. A ``list`` of file paths, relative to the ``path`` of the item in ``dirs``,
+that specify the Lua (or XML) files your addon should load. The order of this sequence
+is respected in the generated TOC file.
 
 See the `Sample Config File and Directory Structure`_ section for an example on where
-these files are expected to be inside your project.
-
-To demonstrate, a ``files`` section that looks like this:
-
-.. code-block:: yaml
-
-  files:
-    - Init.lua
-    - Core.lua
-
-will produce a TOC file with this content:
-
-.. code-block::
-
-  Init.lua
-  Core.lua
-
-Additionally, the files here are validated to ensure they actually exist. File that do
-not exist almost certainly indicate an bug, so ``wap`` will abort if such a case is
-found and print the missing file.
+these files are expected to be inside your project and how to write their paths.
 
 .. _`strictyaml`: https://hitchdev.com/strictyaml/
 .. _`What is YAML?`:  https://blog.stackpath.com/yaml/
 .. _`restrict some buggy YAML features`: https://hitchdev.com/strictyaml/#design-justifications
+.. _`WoW Gamepedia TOC format article`: https://wow.gamepedia.com/TOC_format#Display_in_the_addon_list

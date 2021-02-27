@@ -15,12 +15,10 @@ from wap.commands.validate import validate
     version=__version__,
     message=VERSION_STRING_TEMPLATE,
 )
-def base() -> int:
+def base() -> None:
     """Build and upload your WoW addons."""
     # always print out version info on run (will help with issue reports)
     log.info((VERSION_STRING_TEMPLATE + "\n") % {"version": __version__})
-
-    return 0
 
 
 SUBCOMMANDS = [

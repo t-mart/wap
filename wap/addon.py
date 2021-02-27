@@ -9,7 +9,7 @@ from wap import log
 from wap.changelog import Changelog
 from wap.config import CurseforgeConfig, DirConfig
 from wap.curseforge import CurseForgeAPI
-from wap.exception import BuildException, UploadException
+from wap.exception import BuildException, DevInstallException, UploadException
 from wap.toc import write_toc
 from wap.util import delete_path
 from wap.wowversion import WoWVersion
@@ -86,7 +86,7 @@ def build_addon(
         )
 
     log.info(
-        f"Built addon "
+        "Built addon "
         + click.style(f"{addon_name}", fg="blue")
         + " ("
         + click.style(f"{wow_version.type()}", fg="magenta")
@@ -119,7 +119,7 @@ def zip_addon(addon_name: str, addon_version: str, wow_version: WoWVersion) -> P
             )
 
     log.info(
-        f"Zipped addon "
+        "Zipped addon "
         + click.style(f"{addon_name}", fg="blue")
         + " ("
         + click.style(f"{wow_version.type()}", fg="magenta")
@@ -137,22 +137,33 @@ def upload_addon(
     curseforge_config: CurseforgeConfig,
     changelog: Changelog,
     wow_version: WoWVersion,
-    zip_file_path: Path,
     addon_version: str,
     release_type: str,
     curseforge_api: CurseForgeAPI,
 ) -> str:
     cf_wow_version_id = curseforge_api.get_version_id(version=wow_version.dot_version())
 
+    zip_file_path = get_zip_path(
+        addon_name=addon_name, addon_version=addon_version, wow_version=wow_version
+    )
+
+    if not zip_file_path.is_file():
+        log.error(
+            "Expected zip file not found. Have you run `"
+            + click.style(f'wap build --addon-version "{addon_version}"', fg="blue")
+            + "` yet?"
+        )
+        raise UploadException(f'Zip file "{zip_file_path}" not found.')
+
     with zip_file_path.open("rb") as package_archive_file:
         file_id = curseforge_api.upload_addon_file(
             project_id=curseforge_config.project_id,
             archive_file=package_archive_file,
-            display_name=f"{addon_version}-{wow_version.type()}",
+            display_name=f"{addon_name}-{addon_version}-{wow_version.type()}",
             changelog=changelog,
             wow_version_id=cf_wow_version_id,
             release_type=release_type,
-            file_name=f"{addon_name}-{addon_version}-{wow_version.type()}.zip",
+            file_name=zip_file_path.name,
         )
 
     url = curseforge_api.uploaded_file_url(
@@ -160,7 +171,7 @@ def upload_addon(
         file_id=file_id,
     )
     log.info(
-        f"Uploaded "
+        "Uploaded "
         + click.style(f"{addon_name}", fg="blue")
         + " ("
         + click.style(f"{wow_version.type()}", fg="magenta")
@@ -173,11 +184,24 @@ def upload_addon(
 
 def dev_install_addon(
     *,
-    build_path: Path,
+    addon_name: str,
+    addon_version: str,
     wow_addons_path: Path,
     wow_version: WoWVersion,
 ) -> Sequence[Path]:
     installed_paths = []
+
+    build_path = get_build_path(
+        addon_name=addon_name, addon_version=addon_version, wow_version=wow_version
+    )
+
+    if not build_path.is_dir():
+        log.error(
+            "Expected build directory not found. Have you run `"
+            + click.style(f"wap build --addon-version {addon_version}", fg="blue")
+            + "` yet?"
+        )
+        raise DevInstallException(f'Build directory "{build_path}" not found.')
 
     for addon_path in build_path.iterdir():
         install_addon_path = wow_addons_path / addon_path.name
@@ -190,7 +214,7 @@ def dev_install_addon(
         installed_paths.append(install_addon_path)
 
         log.info(
-            f"Installed addon directory "
+            "Installed addon directory "
             + click.style(f"{addon_path.name}", fg="blue")
             + " ("
             + click.style(f"{wow_version.type()}", fg="magenta")
