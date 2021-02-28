@@ -46,23 +46,25 @@ Python typing. PRs that fail status checks will not be merged.
 
 The checks run are:
 
-* ``isort``, sorting of your ``import`` statements
-* ``black``, consistent style
-* ``flake8``, compliance to PEP8 (and some other helpful things like unused imports)
-* ``mypy``, Python type checking
-* ``twine``, to ensure the package can be uploaded to PyPI. This is mostly for
+* ``isort`` to ensure ``import`` statements are sorted.
+* ``black`` for consistent code styling.
+* ``flake8`` for PEP8 compliance (and some other helpful things like unused imports).
+* ``mypy`` for Python type checking throughout the code.
+* ``twine`` to ensure the package can be uploaded to PyPI. This is mostly for
   the README.rst, which can contain errant syntax and break the publish of a release.
 
   .. note::
 
-     We do not use ``twine`` for publishing. ``poetry`` does that, but does not have this
-     check feature.
+     We do not use ``twine`` for publishing. ``poetry`` does that, but does not have a
+     "check" feature.
 
-* ``pytest``, to ensure tests pass. The CI workflow will run tests on Windows, macOS and
+* ``pytest`` to ensure tests pass. The CI workflow will run tests on Windows, macOS and
   Linux (all of our supported platforms).
 
-  - All new commits need to be 100% covered by tests. We use `Codecov`_ status checks to
-    enforce this. See `.coveragerc` for its configuration.
+* `Codecov`_ for code coverage. All new commits need to be 100% covered by tests. See
+  `.coveragerc` for its configuration.
+
+* `Read the Docs`_ to ensure documentation can be built (no reStructuredText/Sphinx errors)
 
 Running the checks locally
 **************************
@@ -77,7 +79,7 @@ You can run a local version of these checks with:
 While this ``make`` command is kept in sync with the CI workflow (as best we can), there
 are some caveats:
 
-* Locally, ``isort`` and ``black`` will actually update your code, instead of just
+* ``isort`` and ``black`` will actually update your code, instead of just
   checking for correctness. This is what you want.
 * Locally, there is no way to easily check your commit's code coverage.
 
@@ -121,6 +123,7 @@ Release Process
    asset.
 
 .. _`Codecov`: https://about.codecov.io/
+.. _`Read the Docs`: https://readthedocs.org/
 .. _`CI workflow`: https://github.com/t-mart/wap/actions/workflows/ci.yml
 .. _`Semantic Versioning`: https://semver.org/
 .. _`SemVer rules`: https://semver.org/#summary

@@ -112,6 +112,7 @@ This entire set of instructions is runnable without editing a single line of cod
 
 .. five-minutes-end
 
+
 Further Help
 ------------
 
@@ -126,6 +127,32 @@ Also, the ``wap`` command is fully documented in its help text. View it with:
    $ wap upload --help
    ... etc
 
+.. badge-begin
+
+Badge
+-----
+
+If you'd like to show others in your documentation that you are using ``wap`` to package
+your addon, you can include the following official badge (hosted by https://shields.io/):
+
+.. image:: https://img.shields.io/badge/packaged%20by-wap-d33682
+   :target: https://github.com/t-mart/wap
+   :alt: Packaged by wap
+
+Markdown
+   .. code-block:: markdown
+
+      [![Packaged by wap](https://img.shields.io/badge/packaged%20by-wap-d33682)](https://github.com/t-mart/wap)
+
+reStructuredText
+   .. code-block:: rst
+
+      .. image:: https://img.shields.io/badge/packaged%20by-wap-d33682
+         :target: https://github.com/t-mart/wap
+         :alt: Packaged by wap
+
+.. badge-end
+
 Contributing
 ------------
 
@@ -139,3 +166,5 @@ TODOs
 
 .. _`how to contribute`: https://wow-addon-packager.readthedocs.io/en/stable/contributing.html
 .. _`official documentation site`: https://wow-addon-packager.readthedocs.io/en/stable
+
+Copyright (c) 2021 Tim Martin

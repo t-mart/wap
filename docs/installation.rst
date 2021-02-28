@@ -20,10 +20,9 @@ Installation
       You can also use this command to upgrade ``wap`` from a previous version if you have
       already installed it.
 
-   .. note::
-      Advanced Python users should consider installing ``wap`` into a virtual
-      environment. I really like `pipx`_ for global commands like this that need
-      isolation.
+   Advanced Python users should consider installing ``wap`` into a virtual
+   environment. I really like `pipx`_ for global commands like this that need
+   isolation.
 
 #. Ensure you can run ``wap``:
 

@@ -28,10 +28,12 @@ Start your new addon project by creating a directory structure suitable for most
    Options:
    --help  Show this message and exit.
 
-This command is interactive, and will ask you some questions about your project. If you
+This command is interactive, and will ask you some questions about your project.
+
+If you
 plan on uploading to CurseForge, make sure you have project page open as reference.
 ``wap`` will ask you questions that you should answer from data on that page. Or,
-`create a new one`_.
+`create a new project`_.
 
 Example:
 
@@ -345,4 +347,4 @@ encountered is displayed and the exit code is non-zero.
    Successful validation does not indicate that any other ``wap`` command will work. It
    merely means that there were no errors parsing the configuration file.
 
-.. _`create a new one`: https://www.curseforge.com/project/1/1/create
+.. _`create a new project`: https://www.curseforge.com/project/1/1/create

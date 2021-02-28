@@ -10,12 +10,13 @@ Welcome to wap's documentation!
    :start-after: teaser-begin
    :end-before: teaser-end
 
-
-Full Table of Contents
-----------------------
+.. include:: ../README.rst
+   :start-after: badge-begin
+   :end-before: badge-end
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
 
    five-minutes
    installation
@@ -25,3 +26,12 @@ Full Table of Contents
    project-structure
    why
    contributing
+   license
+
+.. toctree::
+   :caption: Related Links
+   :maxdepth: 2
+   :hidden:
+
+   GitHub Repository <https://github.com/t-mart/wap>
+   Package on PyPI <https://pypi.org/project/wow-addon-packager/>
