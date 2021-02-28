@@ -22,6 +22,7 @@ _OFFICIAL_TAGS = {
     "LoadWith",
     "LoadManagers",
     "SavedVariables",
+    "SavedVariablesPerCharacter",
     "DefaultState",
     "Secure",
 }
