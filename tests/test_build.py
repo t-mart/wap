@@ -230,3 +230,15 @@ def test_config_toc_tag_with_unknown_localizations(env: Environment) -> None:
     result = env.run_wap("build")
 
     assert "TOC user-specified tag" in result.stderr
+
+
+def test_config_toc_tag_secure(env: Environment) -> None:
+    env.prepare(
+        project_dir_name="basic",
+        config_file_name="toc_tags_secure",
+        wow_dir_name="retail",
+    )
+
+    result = env.run_wap("build")
+
+    assert "Only Blizzard-signed addons" in result.stderr
