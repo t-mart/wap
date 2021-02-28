@@ -29,7 +29,7 @@ wap (WoW Addon Packager)
 
 |
 
-``wap`` is a user-friendly World of Warcraft addon packager.
+``wap`` is a developer-friendly World of Warcraft addon packager.
 
 .. image:: https://raw.githubusercontent.com/t-mart/wap/master/docs/_static/demo.gif
    :alt: wap demo
@@ -89,13 +89,15 @@ This entire set of instructions is runnable without editing a single line of cod
 
 5. Install your addon so you can test it out in your local WoW installation:
 
-   .. code-block:: console
+   Windows
+      .. code-block:: console
 
-      on Windows
-      $ wap dev-install --wow-addons-path "C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
+         $ wap dev-install --wow-addons-path "C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
 
-      on macOS
-      $ wap dev-install --wow-addons-path "/Applications/World of Warcraft/_retail_/Interface/AddOns"
+   macOS
+      .. code-block:: console
+
+         $ wap dev-install --wow-addons-path "/Applications/World of Warcraft/_retail_/Interface/AddOns"
 
 6. Upload your project to CurseForge
 
