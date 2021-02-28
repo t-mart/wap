@@ -3,7 +3,7 @@ import json
 import pytest
 from click.exceptions import BadParameter
 
-from tests.util import Environment, fileset
+from tests.util import Environment, contains_warn_error, fileset
 from tests.util import normalized_path_string as ps
 from wap.commands.common import (
     DEFAULT_CONFIG_PATH,
@@ -75,6 +75,8 @@ def test_dev_install(
         run_wap_args.extend(["--addon-version", addon_version])
 
     result = env.run_wap(*run_wap_args, env_vars=env_vars)
+
+    assert not contains_warn_error(result.stderr)
 
     actual_json_output = json.loads(result.stdout)
 

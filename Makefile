@@ -28,6 +28,7 @@ black-fix:
 
 .PHONY: twine-check
 twine-check:
+	rm -rf dist
 	poetry build
 	poetry run twine check dist/*
 
@@ -42,8 +43,12 @@ sphinx-autobuild:
 .PHONY: clean
 clean:
 	rm -rf `find . -name __pycache__`
+	rm -rf `find . -name .mypy_cache`
+	rm -rf `find . -name .pytest_cache`
 	rm -f `find . -type f -name '*.py[co]' `
 	rm -f .coverage
+	rm -f coverage.xml
 	make -C docs clean
+	rm -rf dist
 
 

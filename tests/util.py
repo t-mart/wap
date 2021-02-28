@@ -23,6 +23,17 @@ from tests import fixtures
 from wap.commands import base
 from wap.commands.common import DEFAULT_CONFIG_PATH
 from wap.curseforge import CurseForgeAPI
+from wap.log import ERROR_LABEL, WARN_LABEL
+
+
+def contains_warn_error(text: str) -> bool:
+    """
+    Cursory check if wap.log.error or .warn has been called.
+    """
+    # Works by checking text for ERROR_LABEL or WARN_LABEL, which included in stderr
+    # if either of those functions have been called. Make be unreliable because commands
+    # may included that text for non-error/warn reasons.
+    return WARN_LABEL in text or ERROR_LABEL in text
 
 
 def normalized_path_string(path: str) -> str:

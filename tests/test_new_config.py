@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from tests.util import Environment
+from tests.util import Environment, contains_warn_error
 from wap.commands.common import DEFAULT_CONFIG_PATH
 from wap.exception import NewConfigException
 from wap.wowversion import LATEST_CLASSIC_VERSION
@@ -43,7 +43,9 @@ class TestNewConfig:
 
         assert not config_path.exists()
 
-        env.run_wap(*run_wap_args, *additional_args, input_lines=input_lines)
+        result = env.run_wap(*run_wap_args, *additional_args, input_lines=input_lines)
+
+        assert not contains_warn_error(result.stderr)
 
         assert config_path.exists()
 

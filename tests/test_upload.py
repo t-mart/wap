@@ -2,7 +2,12 @@ import json
 
 import pytest
 
-from tests.util import VERSION_ID_MAP, Environment, decode_file_upload_multipart_request
+from tests.util import (
+    VERSION_ID_MAP,
+    Environment,
+    contains_warn_error,
+    decode_file_upload_multipart_request,
+)
 from wap.commands.common import (
     DEFAULT_ADDON_VERSION,
     DEFAULT_CONFIG_PATH,
@@ -85,6 +90,8 @@ def test_upload(
         env_vars[WAP_CONFIG_PATH_ENVVAR_NAME] = str(DEFAULT_CONFIG_PATH)
 
     result = env.run_wap(*run_wap_args, env_vars=env_vars)
+
+    assert not contains_warn_error(result.stderr)
 
     actual_json_output = json.loads(result.stdout)
 
