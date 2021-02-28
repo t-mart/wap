@@ -44,7 +44,7 @@ preprocessing language with its own esoteric syntax and keyword names.
 
 And, I'd also argue its ugly. It's hard to read, write and maintain.
 
-Sometimes too, `packager`_ can be quite slow at this step. Some of my builds
+Sometimes too, `packager`_ can be quite slow at doing these substitutions. Some of my builds
 take `7+ minutes at this step`_!
 
 Finally, you can't run static analyzers like `luacheck`_ on this code.
@@ -64,17 +64,7 @@ API we have at hand to do the job. It's also fast to build because it has no
 directives and it can be statically analyzed.
 
 And this is just the Lua. `packager`_ has similar constructs for TOC and XML files
-(albeit, in a slightly different syntax for *each language*). Here's why you wouldn't
-want to use substitution directives in those cases either:
-
-- For XML, the same comment-overloading exists. (Even so, there's almost no reason to be writing
-  XML in addons these days. Lua can do everything that WoW XML can.)
-- The main case for substitution in TOC files is to handle the ``Interface`` tag, which
-  ``wap`` can do for you.
-
-The main point is here is that you can do everything substitution directives can do
-with Lua code, ``wap``, or a combination of the two.
-
+(albeit, in a slightly different syntax for *each language*).
 
 .. _why-not-get-version-from-vcs:
 
@@ -127,14 +117,23 @@ build it. This is bad for a few reasons:
 - It slows down your development processes to redownload dependencies. Pulling them into
   source code once is much faster than pulling them in each time you build your addon.
 
-- Finally, this is just feature bloat for ``wap``. It's excessive to write a ``git clone``
+- This is feature bloat for ``wap``. It's excessive to write a ``git clone``
   and/or ``svn checkout`` runner when you can run those tools better yourself. It opens
   up a huge surface area of support if ``wap`` would need to be able to run those tools
-  itself.
+  itself. ``wap`` wants to `do one thing and do it well`_.
 
-**TLDR:** ``wap`` **could, but it won't**. Instead, the recommended way to get
-dependencies into your project is to copy your them from an official release (or from
-a cloned repository if that's all that's offered) and add them to your source code.
+**TLDR:** ``wap`` **could, but it won't**.
+
+.. note::
+
+   Instead, the recommended way to get dependencies into your project is to copy your them
+   from an official release (or from a cloned repository if that's all that's offered) and
+   add them to your source code.
+
+.. note::
+
+   If you still really want to automate pulling in repositories, you can write a script
+   with tooling known to be present in your environment.
 
 Why not upload WoWInterface too?
 ********************************
@@ -166,3 +165,4 @@ much bloat for too little gain.
 .. _`7+ minutes at this step`: https://github.com/t-mart/ItemVersion/runs/1864902187
 .. _upload-release-asset: https://github.com/actions/upload-release-asset
 .. _`Github CLI`: https://cli.github.com/
+.. _`do one thing and do it well`: https://en.wikipedia.org/wiki/Unix_philosophy#Do_One_Thing_and_Do_It_Well

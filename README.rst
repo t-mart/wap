@@ -29,7 +29,7 @@ wap (WoW Addon Packager)
 
 |
 
-``wap`` is a user-friendly World of Warcraft addon packager.
+``wap`` is a developer-friendly World of Warcraft addon packager.
 
 .. image:: https://raw.githubusercontent.com/t-mart/wap/master/docs/_static/demo.gif
    :alt: wap demo
@@ -89,13 +89,15 @@ This entire set of instructions is runnable without editing a single line of cod
 
 5. Install your addon so you can test it out in your local WoW installation:
 
-   .. code-block:: console
+   Windows
+      .. code-block:: console
 
-      on Windows
-      $ wap dev-install --wow-addons-path "C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
+         $ wap dev-install --wow-addons-path "C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
 
-      on macOS
-      $ wap dev-install --wow-addons-path "/Applications/World of Warcraft/_retail_/Interface/AddOns"
+   macOS
+      .. code-block:: console
+
+         $ wap dev-install --wow-addons-path "/Applications/World of Warcraft/_retail_/Interface/AddOns"
 
 6. Upload your project to CurseForge
 
@@ -109,6 +111,7 @@ This entire set of instructions is runnable without editing a single line of cod
 .. _`Download Python 3.9 or greater`: https://www.python.org/downloads/
 
 .. five-minutes-end
+
 
 Further Help
 ------------
@@ -124,6 +127,32 @@ Also, the ``wap`` command is fully documented in its help text. View it with:
    $ wap upload --help
    ... etc
 
+.. badge-begin
+
+Badge
+-----
+
+If you'd like to show others in your documentation that you are using ``wap`` to package
+your addon, you can include the following official badge (hosted by https://shields.io/):
+
+.. image:: https://img.shields.io/badge/packaged%20by-wap-d33682
+   :target: https://github.com/t-mart/wap
+   :alt: Packaged by wap
+
+Markdown
+   .. code-block:: markdown
+
+      [![Packaged by wap](https://img.shields.io/badge/packaged%20by-wap-d33682)](https://github.com/t-mart/wap)
+
+reStructuredText
+   .. code-block:: rst
+
+      .. image:: https://img.shields.io/badge/packaged%20by-wap-d33682
+         :target: https://github.com/t-mart/wap
+         :alt: Packaged by wap
+
+.. badge-end
+
 Contributing
 ------------
 
@@ -137,3 +166,5 @@ TODOs
 
 .. _`how to contribute`: https://wow-addon-packager.readthedocs.io/en/stable/contributing.html
 .. _`official documentation site`: https://wow-addon-packager.readthedocs.io/en/stable
+
+Copyright (c) 2021 Tim Martin
