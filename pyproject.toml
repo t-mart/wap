@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wow-addon-packager"
-version = "0.7.0"
+version = "0.7.1"
 description = "A developer-friendly World of Warcraft addon packager"
 license = "MIT"
 authors = ["Tim Martin <tim@timmart.in>"]
