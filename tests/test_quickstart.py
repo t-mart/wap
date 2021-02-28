@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from tests.util import Environment, fileset
+from tests.util import Environment, contains_warn_error, fileset
 from wap.exception import QuickstartException
 from wap.wowversion import LATEST_CLASSIC_VERSION, LATEST_RETAIL_VERSION
 
@@ -46,7 +46,9 @@ class TestQuickstart:
             f"https://www.curseforge.com/wow/addons/{cf_addon_name}",  # CF url
         ]
 
-        env.run_wap("quickstart", project_dir_path, input_lines=input_lines)
+        result = env.run_wap("quickstart", project_dir_path, input_lines=input_lines)
+
+        assert not contains_warn_error(result.stderr)
 
         full_project_dir_path = env.project_dir_path / project_dir_path
 

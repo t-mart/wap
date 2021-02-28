@@ -1,6 +1,6 @@
 import json
 
-from tests.util import Environment
+from tests.util import Environment, contains_warn_error
 
 
 def test_validate(
@@ -12,6 +12,8 @@ def test_validate(
     )
 
     result = env.run_wap("validate", "--json")
+
+    assert not contains_warn_error(result.stderr)
 
     config_json = json.loads(result.stdout)
 

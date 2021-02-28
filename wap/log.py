@@ -24,6 +24,10 @@ import click
 # exercised by wap currently. I'd rather retain the full set of logging functions
 # in case we need them in the future. Hopefully, their simplicity should be self-evident
 
+DEBUG_LABEL = "DEBUG"
+WARN_LABEL = "WARN"
+ERROR_LABEL = "ERROR"
+
 
 def _log(*, label: Optional[str] = None, msg: str) -> None:
     out = msg
@@ -33,7 +37,7 @@ def _log(*, label: Optional[str] = None, msg: str) -> None:
 
 
 def debug(msg: str) -> None:
-    _log(label=click.style("DEBUG", fg="cyan"), msg=msg)  # pragma: no cover
+    _log(label=click.style(DEBUG_LABEL, fg="cyan"), msg=msg)  # pragma: no cover
 
 
 def info(msg: str) -> None:
@@ -42,8 +46,8 @@ def info(msg: str) -> None:
 
 
 def warn(msg: str) -> None:
-    _log(label=click.style("WARN", fg="yellow"), msg=msg)  # pragma: no cover
+    _log(label=click.style(WARN_LABEL, fg="yellow"), msg=msg)  # pragma: no cover
 
 
 def error(msg: str) -> None:
-    _log(label=click.style("ERROR", fg="red"), msg=msg)  # pragma: no cover
+    _log(label=click.style(ERROR_LABEL, fg="red"), msg=msg)  # pragma: no cover

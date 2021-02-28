@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from tests.util import Environment, fileset
+from tests.util import Environment, contains_warn_error, fileset
 from tests.util import normalized_path_string as ps
 from tests.util import toc_fileset, toc_tagmap, zip_fileset
 from wap import __version__
@@ -31,6 +31,8 @@ def test_build(env: Environment, config_path_from_cli: bool) -> None:
         env_vars[WAP_CONFIG_PATH_ENVVAR_NAME] = str(DEFAULT_CONFIG_PATH)
 
     result = env.run_wap(*run_wap_args, env_vars=env_vars)
+
+    assert not contains_warn_error(result.stderr)
 
     actual_json_output = json.loads(result.stdout)
     expected_build_files = {
@@ -192,3 +194,39 @@ def test_build_cleanup_on_exception(env: Environment) -> None:
     dist_dir = env.project_dir_path / "dist"
     dist_dir_files = list(dist_dir.iterdir())
     assert len(dist_dir_files) == 0
+
+
+def test_config_toc_tag_too_long(env: Environment) -> None:
+    env.prepare(
+        project_dir_name="basic",
+        config_file_name="toc_custom_tag_too_long",
+        wow_dir_name="retail",
+    )
+
+    result = env.run_wap("build")
+
+    assert "Line length for TOC tag" in result.stderr
+
+
+def test_config_toc_tag_with_localizations(env: Environment) -> None:
+    env.prepare(
+        project_dir_name="basic",
+        config_file_name="toc_tags_localized",
+        wow_dir_name="retail",
+    )
+
+    result = env.run_wap("build")
+
+    assert not contains_warn_error(result.stderr)
+
+
+def test_config_toc_tag_with_unknown_localizations(env: Environment) -> None:
+    env.prepare(
+        project_dir_name="basic",
+        config_file_name="toc_tags_unknown_localizations",
+        wow_dir_name="retail",
+    )
+
+    result = env.run_wap("build")
+
+    assert "TOC user-specified tag" in result.stderr
