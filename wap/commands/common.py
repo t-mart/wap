@@ -24,7 +24,7 @@ VERSION_STRING_TEMPLATE = "wap, version %(version)s"
 OUTPUT_PATH = Path("dist")
 
 DEFAULT_CONFIG_PATH = Path(".wap.yml")
-DEFAULT_ADDON_VERSION = "dev"
+DEFAULT_PROJECT_VERSION = "dev"
 DEFAULT_RELEASE_TYPE = "alpha"
 
 WAP_CURSEFORGE_TOKEN_ENVVAR_NAME = "WAP_CURSEFORGE_TOKEN"
@@ -54,17 +54,17 @@ def config_path_option() -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYP
     return wrapper
 
 
-def addon_version_option(
-    *, required: bool = False
+def version_option(
+    *, help: str, required: bool = False
 ) -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYPE]:
     def wrapper(func: _DECORATED_FUNC_TYPE) -> _DECORATED_FUNC_TYPE:
         decorated = click.option(
             "-v",
-            "--addon-version",
+            "--version",
             required=required,
-            default=None if required else DEFAULT_ADDON_VERSION,
+            default=None if required else DEFAULT_PROJECT_VERSION,
             show_default=not required,
-            help="The developer-defined version of your addon package.",
+            help=help,
         )(func)
 
         return update_wrapper(decorated, func)

@@ -3,9 +3,8 @@
 Configuration
 -------------
 
-``wap`` only needs one file to operate: a YAML file named ``.wap.yml``.
-
-This file should be placed at the root of your project directory.
+``wap`` only needs one file to operate: a YAML file named ``.wap.yml``. This file should
+ be placed at the root of your project directory.
 
 For new YAML authors, see `What is YAML?`_.
 
@@ -41,7 +40,7 @@ Here's a commented sample ``.wap.yml`` file:
 
 .. code-block:: yaml
 
-  # the name of your addon, can be anything you like
+  # the name of your package, can be anything you like
   name: MyAddon
 
   # a list of versions of WoW your addon works on
@@ -62,8 +61,8 @@ Here's a commented sample ``.wap.yml`` file:
     # ex: https://www.curseforge.com/wow/addons/myaddon -> "myaddon"
     project-slug: myaddon
 
-  # a list of directories that will be packaged up
-  dirs:
+  # a list of addons that will be packaged up
+  addons:
 
       # an addon directory
     - path: MyDir  # an addon directory
@@ -87,11 +86,11 @@ And heres a project structure that this config could work with:
 
 .. code-block:: text
 
-   MyAddon                  # your project directory
-   ├── MyDir                # an addon directory (dirs[*].path in config)
-   |   ├── Init.lua         # a Lua code file (dirs[*].toc.files in config)
+   MyProject                # your project directory
+   ├── MyAddon              # an addon directory (addons[*].path in config)
+   |   ├── Init.lua         # a Lua code file (addons[*].toc.files in config)
    |   └── MySubDir         # a subdirectory in your addon directory
-   │       └── Sub.lua      # another Lua code file (dirs[*].toc.files in config)
+   │       └── Sub.lua      # another Lua code file (addons[*].toc.files in config)
    ├── CHANGELOG.md         # changelog file (curseforge.changelog in config)
    ├── README.md            # readme documentation
    └── .wap.yml             # configuration file
@@ -104,8 +103,8 @@ Syntax
 ``name``
 ^^^^^^^^
 
-**Required**. The name of your packaged addon. This name will be used to name the build
-directories and zip files for your addon (as well as the zip file users download on
+**Required**. The name of your project. This will be used to name the build
+directories and zip files for your package (as well as the zip file users download on
 CurseForge).
 
 You can name this anything you want.
@@ -121,8 +120,8 @@ Example:
 ``wow-versions``
 ^^^^^^^^^^^^^^^^
 
-**Required**. A ``list`` of the versions of World of Warcraft that your addon supports.
-``wap`` will create different builds for each version in the output directory.
+**Required**. A ``list`` of the versions of World of Warcraft that your package supports.
+``wap`` will create different package builds for each version in the output directory.
 
 Each version must be in the form ``x.y.z``, where ``x``, ``y``, and ``z`` are
 non-negative integers.
@@ -135,11 +134,10 @@ be disabled when users install it.
 
 ``wap`` uses these versions for a few things:
 
-- To build you addon for each version (with the correct ``## Interface`` tag in TOC files).
-- To mark on CurseForge which version your addon supports.
-- To ``dev-install`` the right build into the right WoW AddOns path. For example a
-  classic addon build should not go into a
-  ``World of Warcraft/_retail_/Interface/AddOns`` directory.
+- To build your package for each version (with the correct ``## Interface`` tag in TOC files).
+- To mark on CurseForge which version your package supports.
+- To ``dev-install`` the right package build into the right WoW AddOns path. For example a
+  *classic* addon build should not go into a *retail* AddOns directory.
 
 Examples:
 
@@ -245,7 +243,7 @@ If you had a project structure like this:
 .. code-block::
 
    MyProject
-   ├── MyDir
+   ├── MyAddon
    ├── CHANGELOG.md
    └── .wap.yml
 
@@ -256,7 +254,6 @@ then you would fill in this field like this:
   curseforge:
     changelog-file: CHANGELOG.md
     # ...
-
 
 ``curseforge.project-slug``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -269,7 +266,7 @@ form of URLs that you can copy-paste into your browser after you upload.
 
 Example:
 
-If your addon's URL is ``https://www.curseforge.com/wow/addons/mycooladdon``, then you
+If your projects's URL is ``https://www.curseforge.com/wow/addons/mycooladdon``, then you
 would fill in this field like this:
 
 .. code-block:: yaml
@@ -278,19 +275,28 @@ would fill in this field like this:
     project-slug: mycooladdon
     # ...
 
-``dirs``
-^^^^^^^^
+``addons``
+^^^^^^^^^^
 
-**Required**. A ``list`` of directories to include in your packaged addon and their
-TOC file data.
+**Required**. A ``list`` of addons to include in your build.
 
-Many addons will only contain a single ``dirs`` item, but more complex ones
-can have many.
+.. warning::
 
-.. _config-dirs-path:
+   You only need multiple ``addons`` entries when you want to package **multiple addons
+   that have different TOC files**. Some authors use this structure when they need to
+   give an addon different `loading conditions`_, for example. This is, more or less,
+   an advanced concept.
 
-``dirs[*].path``
-^^^^^^^^^^^^^^^^
+   **Most projects only need a single** ``addons`` **entry.** If you do not know if
+   you need multiple ``addons``, you more than likely **do not**.
+
+   If you simply want a logical separation of files, create subdirectories within your
+   addon directory.
+
+.. _config-addons-path:
+
+``addons[*].path``
+^^^^^^^^^^^^^^^^^^
 
 **Required**. The path, relative the parent directory of the configuration file, of the
 directory to include in your packaged addon.
@@ -305,36 +311,36 @@ If you had a project structure like this:
 .. code-block::
 
    MyProject
-   ├── MyDir
-   ├── MyOtherDir
+   ├── MyAddon
+   ├── MyOtherAddon
    └── .wap.yml
 
 then you would fill in this field like this:
 
 .. code-block:: yaml
 
-  dirs:
-    - path: MyDir
+  addons:
+    - path: MyAddon
     # ...
-    - path: MyOtherDir
+    - path: MyOtherAddon
     # ...
 
 
-.. _config-dirs-toc:
+.. _config-addons-toc:
 
-``dirs[*].toc``
-^^^^^^^^^^^^^^^
+``addons[*].toc``
+^^^^^^^^^^^^^^^^^
 
-**Required**. The configuration for this directory's generated TOC file. The generated
-TOC file will have the same name as the directory (plus the ``.toc`` extension) and be
-placed at the root of that directory.
+**Required**. The configuration for this addon's generated TOC file. The generated
+TOC file will have the same name as the base name of the addon directory
+(plus the ``.toc`` extension).
 
 See :ref:`toc-gen` for more information.
 
-.. _config-dirs-toc-tags:
+.. _config-addons-toc-tags:
 
-``dirs[*].toc.tags``
-^^^^^^^^^^^^^^^^^^^^
+``addons[*].toc.tags``
+^^^^^^^^^^^^^^^^^^^^^^
 
 **Required**. A ``map`` of key-value pairs to include in the generated TOC file. The keys and values
 will be interpreted as strings.
@@ -349,12 +355,12 @@ Custom tags can be added too, and should be prefixed with ``X-``.
   **You should not provide the** ``Interface`` **and** ``Version`` **tags!** ``wap`` generates
   those tags for you. You can override them, but it is not recommended.
 
-.. _config-dirs-toc-files:
+.. _config-addons-toc-files:
 
-``dirs[*].toc.files``
-^^^^^^^^^^^^^^^^^^^^^
+``addons[*].toc.files``
+^^^^^^^^^^^^^^^^^^^^^^^
 
-**Required**. A ``list`` of file paths, relative to the ``path`` of the item in ``dirs``,
+**Required**. A ``list`` of file paths, relative to the addon path,
 that specify the Lua (or XML) files your addon should load. The order of this sequence
 is respected in the generated TOC file.
 
@@ -364,4 +370,5 @@ these files are expected to be inside your project and how to write their paths.
 .. _`strictyaml`: https://hitchdev.com/strictyaml/
 .. _`What is YAML?`:  https://blog.stackpath.com/yaml/
 .. _`restrict some buggy YAML features`: https://hitchdev.com/strictyaml/#design-justifications
-.. _`WoW Gamepedia TOC format article`: https://wow.gamepedia.com/TOC_format#Display_in_the_addon_list
+.. _`WoW Gamepedia TOC format article`: https://wow.gamepedia.com/TOC_format
+.. _`loading conditions`: https://wow.gamepedia.com/TOC_format#Loading_conditions

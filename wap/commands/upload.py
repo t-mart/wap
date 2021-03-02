@@ -9,9 +9,9 @@ from wap.changelog import CHANGELOG_TYPES, Changelog
 from wap.commands.common import (
     DEFAULT_RELEASE_TYPE,
     WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
-    addon_version_option,
     config_path_option,
     json_option,
+    version_option,
 )
 from wap.config import Config
 from wap.curseforge import CurseForgeAPI
@@ -21,7 +21,7 @@ from wap.exception import ChangelogException, UploadException
 @click.command()
 @config_path_option()
 @json_option()
-@addon_version_option(required=True)
+@version_option(required=True, help="The version of a previously built project")
 @click.option(
     "-r",
     "--release-type",
@@ -57,11 +57,9 @@ from wap.exception import ChangelogException, UploadException
         "--changelog-contents."
     ),
 )
-@click.pass_context
 def upload(
-    ctx: click.Context,
     config_path: Path,
-    addon_version: str,
+    version: str,
     release_type: str,
     curseforge_token: str,
     show_json: bool,
@@ -69,20 +67,20 @@ def upload(
     changelog_type: Optional[str],
 ) -> None:
     """
-    Upload built addons to your addons Curseforge page. (wap build must have been run
-    before this.)
+    Upload packages to your Curseforge project page. (wap package must have
+    been run before this.)
 
-    Each build of your addon (retail and/or classic) with the given addon version will
-    be uploaded. An addon version is **required** from you for this command. This is to
+    Each package (retail and/or classic) with the given version will
+    be uploaded. A version is *required* from you for this command. This is to
     ensure that your uploads are intentional, which are released to the Internet.
 
     In addition to the options set for this command and your configuration, wap
     automatically sets some metadata to send with the request.
         - The display name. This is the name of the file as it appears on your addon's
           files page. wap sets this to
-          <addon-name>-<addon-version>-<wow-version-type>
+          <package-name>-<version>-<wow-version-type>
         - The zip file name. This is the file name of the that users download. wap sets
-          this to <addon-name>-<addon-version>-<wow-version-type>.zip
+          this to <package-name>-<version>-<wow-version-type>.zip
     """
     config = Config.from_path(config_path)
 
@@ -113,9 +111,16 @@ def upload(
                     f'to the parent of the config file ("{config_path.resolve()}") '
                     "and, if it is in a subdirectory, must only use forward slashes "
                     '("/"). Or, you may use the --changelog-contents and '
-                    "--changelog-type options "
+                    "--changelog-type options."
                 )
             changelog = Changelog.from_path(changelog_path)
+        else:
+            raise UploadException(
+                "No changelog data provided. To upload, you must either specify a "
+                "changelog-file in the curseforge section of your config or you must "
+                "provide the --changelog-contents and --changelog-type options. "
+                "Changelog data is required by the CurseForge API."
+            )
 
     output_map = {}
 
@@ -127,7 +132,7 @@ def upload(
             curseforge_config=curseforge_config,
             changelog=changelog,
             wow_version=wow_version,
-            addon_version=addon_version,
+            version=version,
             release_type=release_type,
             curseforge_api=curseforge_api,
         )

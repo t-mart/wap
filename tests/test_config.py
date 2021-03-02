@@ -4,7 +4,7 @@ import pytest
 
 from tests.fixtures import wow_dir_path
 from tests.util import Environment
-from wap.commands.common import DEFAULT_ADDON_VERSION
+from wap.commands.common import DEFAULT_PROJECT_VERSION
 from wap.exception import (
     ConfigFileException,
     ConfigSchemaException,
@@ -16,7 +16,7 @@ from wap.exception import (
     ("run_args",),
     [
         [
-            ("build",),
+            ("package",),
         ],
         [
             (
@@ -28,14 +28,14 @@ from wap.exception import (
         [
             (
                 "upload",
-                "--addon-version",
-                DEFAULT_ADDON_VERSION,
+                "--version",
+                DEFAULT_PROJECT_VERSION,
                 "--curseforge-token",
                 "abc123",
             )
         ],
     ],
-    ids=["build", "dev-install", "upload"],
+    ids=["package", "dev-install", "upload"],
 )
 class TestConfigUsingCommands:
     def test_config_path_not_file(
@@ -142,12 +142,12 @@ class TestConfigUsingCommands:
 
 
 def test_commands_config_no_curseforge_required(env: Environment) -> None:
-    # curseforge section is optional for build and dev-install
+    # curseforge section is optional for package and dev-install
     env.prepare(
         project_dir_name="basic",
         config_file_name="no_curseforge",
         wow_dir_name="retail",
     )
 
-    env.run_wap("build")
+    env.run_wap("package")
     env.run_wap("dev-install", "--wow-addons-path", str(wow_dir_path("retail")))

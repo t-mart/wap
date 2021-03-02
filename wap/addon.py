@@ -7,9 +7,9 @@ import click
 
 from wap import log
 from wap.changelog import Changelog
-from wap.config import CurseforgeConfig, DirConfig
+from wap.config import AddonConfig, CurseforgeConfig
 from wap.curseforge import CurseForgeAPI
-from wap.exception import BuildException, DevInstallException, UploadException
+from wap.exception import DevInstallException, PackageException, UploadException
 from wap.toc import write_toc
 from wap.util import delete_path
 from wap.wowversion import WoWVersion
@@ -19,51 +19,49 @@ def get_output_path() -> Path:
     return Path("dist")
 
 
-def get_build_path(
-    addon_name: str, addon_version: str, wow_version: WoWVersion
-) -> Path:
-    return get_output_path() / f"{addon_name}-{addon_version}-{wow_version.type()}"
+def get_package_path(addon_name: str, version: str, wow_version: WoWVersion) -> Path:
+    return get_output_path() / f"{addon_name}-{version}-{wow_version.type()}"
 
 
-def get_zip_path(addon_name: str, addon_version: str, wow_version: WoWVersion) -> Path:
-    bp = get_build_path(
+def get_zip_path(addon_name: str, version: str, wow_version: WoWVersion) -> Path:
+    bp = get_package_path(
         addon_name=addon_name,
-        addon_version=addon_version,
+        version=version,
         wow_version=wow_version,
     )
     return bp.with_name(bp.name + ".zip")
 
 
-def build_addon(
+def package_addon(
     config_path: Path,
     addon_name: str,
-    dir_configs: Sequence[DirConfig],
-    addon_version: str,
+    dir_configs: Sequence[AddonConfig],
+    version: str,
     wow_version: WoWVersion,
 ) -> Path:
-    build_path = get_build_path(
+    package_path = get_package_path(
         addon_name=addon_name,
-        addon_version=addon_version,
+        version=version,
         wow_version=wow_version,
     )
 
-    if build_path.exists():
-        delete_path(build_path)
+    if package_path.exists():
+        delete_path(package_path)
 
-    build_path.mkdir(parents=True)
+    package_path.mkdir(parents=True)
 
     for dir_config in dir_configs:
         src_dir = config_path.parent / dir_config.path
 
         if not src_dir.is_dir():
-            raise BuildException(
+            raise PackageException(
                 f'Dir config has path "{src_dir}", but it is not a directory. '
                 "This path must point to a directory, must be relative to "
                 f'the parent of the config file ("{config_path.resolve()}") and, '
                 'if it is in a subdirectory, must only use forward slashes ("/").'
             )
 
-        dst_dir = build_path / src_dir.name
+        dst_dir = package_path / src_dir.name
 
         shutil.copytree(src_dir, dst_dir)
 
@@ -81,7 +79,7 @@ def build_addon(
             toc_config=dir_config.toc_config,
             dir_path=src_dir,
             write_path=toc_path,
-            addon_version=addon_version,
+            addon_version=version,
             wow_version=wow_version,
         )
 
@@ -91,19 +89,19 @@ def build_addon(
         + " ("
         + click.style(f"{wow_version.type()}", fg="magenta")
         + ') at "'
-        + click.style(f"{build_path}", fg="green")
+        + click.style(f"{package_path}", fg="green")
         + '"'
     )
 
-    return build_path
+    return package_path
 
 
-def zip_addon(addon_name: str, addon_version: str, wow_version: WoWVersion) -> Path:
-    build_path = get_build_path(
-        addon_name=addon_name, addon_version=addon_version, wow_version=wow_version
+def zip_addon(addon_name: str, version: str, wow_version: WoWVersion) -> Path:
+    package_path = get_package_path(
+        addon_name=addon_name, version=version, wow_version=wow_version
     )
     zip_path = get_zip_path(
-        addon_name=addon_name, addon_version=addon_version, wow_version=wow_version
+        addon_name=addon_name, version=version, wow_version=wow_version
     )
 
     if zip_path.exists():
@@ -112,10 +110,10 @@ def zip_addon(addon_name: str, addon_version: str, wow_version: WoWVersion) -> P
     zip_path.parent.mkdir(parents=True, exist_ok=True)
 
     with ZipFile(zip_path, mode="w", compression=ZIP_DEFLATED) as zip_file:
-        for path in build_path.rglob("*"):
+        for path in package_path.rglob("*"):
             zip_file.write(
                 filename=path,
-                arcname=path.relative_to(build_path),
+                arcname=path.relative_to(package_path),
             )
 
     log.info(
@@ -137,20 +135,20 @@ def upload_addon(
     curseforge_config: CurseforgeConfig,
     changelog: Changelog,
     wow_version: WoWVersion,
-    addon_version: str,
+    version: str,
     release_type: str,
     curseforge_api: CurseForgeAPI,
 ) -> str:
     cf_wow_version_id = curseforge_api.get_version_id(version=wow_version.dot_version())
 
     zip_file_path = get_zip_path(
-        addon_name=addon_name, addon_version=addon_version, wow_version=wow_version
+        addon_name=addon_name, version=version, wow_version=wow_version
     )
 
     if not zip_file_path.is_file():
         log.error(
             "Expected zip file not found. Have you run `"
-            + click.style(f'wap build --addon-version "{addon_version}"', fg="blue")
+            + click.style(f'wap package --version "{version}"', fg="blue")
             + "` yet?"
         )
         raise UploadException(f'Zip file "{zip_file_path}" not found.')
@@ -159,7 +157,7 @@ def upload_addon(
         file_id = curseforge_api.upload_addon_file(
             project_id=curseforge_config.project_id,
             archive_file=package_archive_file,
-            display_name=f"{addon_name}-{addon_version}-{wow_version.type()}",
+            display_name=f"{addon_name}-{version}-{wow_version.type()}",
             changelog=changelog,
             wow_version_id=cf_wow_version_id,
             release_type=release_type,
@@ -185,25 +183,25 @@ def upload_addon(
 def dev_install_addon(
     *,
     addon_name: str,
-    addon_version: str,
+    version: str,
     wow_addons_path: Path,
     wow_version: WoWVersion,
 ) -> Sequence[Path]:
     installed_paths = []
 
-    build_path = get_build_path(
-        addon_name=addon_name, addon_version=addon_version, wow_version=wow_version
+    package_path = get_package_path(
+        addon_name=addon_name, version=version, wow_version=wow_version
     )
 
-    if not build_path.is_dir():
+    if not package_path.is_dir():
         log.error(
-            "Expected build directory not found. Have you run `"
-            + click.style(f"wap build --addon-version {addon_version}", fg="blue")
+            "Expected package directory not found. Have you run `"
+            + click.style(f"wap package --version {version}", fg="blue")
             + "` yet?"
         )
-        raise DevInstallException(f'Build directory "{build_path}" not found.')
+        raise DevInstallException(f'Package directory "{package_path}" not found.')
 
-    for addon_path in build_path.iterdir():
+    for addon_path in package_path.iterdir():
         install_addon_path = wow_addons_path / addon_path.name
 
         if install_addon_path.exists():

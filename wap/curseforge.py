@@ -68,8 +68,8 @@ class CurseForgeAPI:
         return resp.json()["id"]  # type: ignore
 
     def get_version_id(self, *, version: str) -> int:
-        # Since it's probably very common to upload 2 addons (a retail and classic), we
-        # cache this response.
+        # Since it's probably very common to upload 2 packages (a retail and classic),
+        # we cache this response.
         if self._version_map_cache is None:
             resp = self._SESSION.get(
                 url=self.VERSION_ENDPOINT_URL,

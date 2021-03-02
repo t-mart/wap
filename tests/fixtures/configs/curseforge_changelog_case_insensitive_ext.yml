@@ -5,7 +5,7 @@ curseforge:
   project-id: 123456
   changelog-file: CHANGELOG.MD
   project-slug: myaddon
-dirs:
+addons:
   - path: Dir1
     toc:
       tags:

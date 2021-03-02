@@ -69,13 +69,13 @@ class TestQuickstart:
         assert config_json["curseforge"]["project-id"] == "123456"
         assert config_json["curseforge"]["changelog-file"] == changelog_name
         assert config_json["curseforge"]["project-slug"] == cf_addon_name
-        assert config_json["dirs"][0]["path"] == addon_name
-        assert config_json["dirs"][0]["toc"]["tags"] == {
+        assert config_json["addons"][0]["path"] == addon_name
+        assert config_json["addons"][0]["toc"]["tags"] == {
             "Title": addon_name,
             "Author": author,
             "Notes": description,
         }
-        assert config_json["dirs"][0]["toc"]["files"] == ["Init.lua"]
+        assert config_json["addons"][0]["toc"]["files"] == ["Init.lua"]
 
         # test the files created
         expected_quickstart_files = {
@@ -95,9 +95,9 @@ class TestQuickstart:
 
         assert expected_quickstart_files == actual_quickstart_files
 
-        # do a simple wap build in the new project dir. this essentially "roundtrips"
+        # do a simple wap package in the new project dir. this essentially "roundtrips"
         # the output of quickstart to ensure it is functional
-        env.run_wap("build", cwd=full_project_dir_path)
+        env.run_wap("package", cwd=full_project_dir_path)
 
     def test_quickstart_interactive_prompt_retries(self, env: Environment) -> None:
         env.prepare(

@@ -1,10 +1,8 @@
 name: MyAddon
 wow-versions:
   - 9.0.2
-  - 1.13.6
 curseforge:
   project-id: 123456
-  changelog-file: CHANGELOG.md
   project-slug: myaddon
 addons:
   - path: Dir1
@@ -12,4 +10,5 @@ addons:
       tags:
         Title: MyAddon Dir1
       files:
-        - /Dir1.lua
+        - Dir1.lua
+        - Sub/Another.lua

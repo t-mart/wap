@@ -29,8 +29,8 @@ class DevInstallException(WAPException):
     """Indicates a problem during dev-installing"""
 
 
-class BuildException(WAPException):
-    """Indicates a problem during building"""
+class PackageException(WAPException):
+    """Indicates a problem during packagine"""
 
 
 class TocException(WAPException):
@@ -54,4 +54,4 @@ class NewConfigException(WAPException):
 
 
 class ChangelogException(WAPException):
-    """Indicates a problem building a changelog"""
+    """Indicates a problem packageing a changelog"""

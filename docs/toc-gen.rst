@@ -22,7 +22,7 @@ One of ``wap``'s nicer features is TOC file generation. This helps you in a few 
   Instead, by generating TOC files from configuration, ``wap`` can build those slightly
   different files for you automatically.
 
-The TOC file is mostly generated from your :ref:`TOC configuration<config-dirs-toc>`.
+The TOC file is mostly generated from your :ref:`TOC configuration<config-addons-toc>`.
 Additionally, ``wap`` will add some other tags:
 
 - ``Interface``. This tag indicates which version of WoW your addon supports. The value
@@ -30,9 +30,9 @@ Additionally, ``wap`` will add some other tags:
   that you are building for, but is formatted slightly differently. For example,
   WoW version ``9.0.2`` would appear here as ``90002`` or ``1.13.6`` would appear here
   as ``11306``.
-- ``Version``. This tag indicates the version of your addon. The value here is supplied
-  by you on as a command line option when you run ``wap`` commands (or is ``dev`` by
-  default).
+- ``Version``. This tag indicates the version of your package. The value here is supplied
+  by you on as a command line option when you run ``wap`` commands (or, by default, is
+  ``dev``).
 - ``X-BuildDateTime``. This custom tag is set to the datetime of build in `ISO 8601`_ format
   in the UTC timezone.
 - ``X-BuildTool``. This custom tag is set to a string like ``wap v<wap-version>``.
@@ -47,8 +47,8 @@ A ``.wap.yml`` configuration like this:
   name: MyAddon
   wow-versions:
     - 9.0.2
-  dirs:
-    - path: MyDir
+  addons:
+    - path: MyAddon
       toc:
         tags:
           Title: MyAddon
@@ -65,7 +65,7 @@ run with a build command like this:
 
    $ wap build --addon-version 1.2.3
 
-will produce a TOC file like this at ``dist/MyAddon-1.2.3-retail/MyDir/MyDir.toc``:
+will produce a TOC file like this at ``dist/MyAddon-1.2.3-retail/MyAddon/MyAddon.toc``:
 
 .. code-block:: wowtoc
 
@@ -73,6 +73,7 @@ will produce a TOC file like this at ``dist/MyAddon-1.2.3-retail/MyDir/MyDir.toc
    ## Version: 1.2.3
    ## X-BuildDateTime: 2021-02-26T23:05:52.980024+00:00
    ## X-BuildTool: wap v0.6.0
+   ## X-CustomTag: CustomValue
    ## Title: MyAddon
    ## Author: Me
    ## Notes: A great addon for WoW

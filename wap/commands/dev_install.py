@@ -7,9 +7,9 @@ import click
 from wap import addon
 from wap.commands.common import (
     WAP_WOW_ADDONS_PATH_ENVVAR_NAME,
-    addon_version_option,
     config_path_option,
     json_option,
+    version_option,
 )
 from wap.config import Config
 from wap.exception import DevInstallException
@@ -57,7 +57,7 @@ WOW_ADDONS_PATH_TYPE = WowAddonsPathType()
 
 @click.command()
 @config_path_option()
-@addon_version_option()
+@version_option(help="The version of a previously built package")
 @json_option()
 @click.option(
     "-w",
@@ -72,17 +72,17 @@ WOW_ADDONS_PATH_TYPE = WowAddonsPathType()
 )
 def dev_install(
     config_path: Path,
-    addon_version: str,
+    version: str,
     wow_addons_path: Path,
     show_json: bool,
 ) -> None:
     f"""
-    Install a built addon to the provided WoW addons directory. (wap build must have
-    been run before this.)
+    Install an addon package to the provided WoW addons directory. (wap package must
+    have been run before this.)
 
     This command assists you in testing your addons quickly.
 
-    wap is smart in determining which addon build to install (retail or classic). It
+    wap is smart in determining which package to install (retail or classic). It
     looks at the components of the WoW addons directory path provided and chooses the
     appropriate one.
 
@@ -114,7 +114,7 @@ def dev_install(
             break
     else:
         raise DevInstallException(
-            f'No build exists for WoW addons path "{wow_addons_path}" (which is a '
+            f'No package exists for WoW addons path "{wow_addons_path}" (which is a '
             f"{wow_addons_path_type} installation). "
         )
 
@@ -123,7 +123,7 @@ def dev_install(
     dev_install_paths = addon.dev_install_addon(
         wow_addons_path=wow_addons_path,
         addon_name=config.name,
-        addon_version=addon_version,
+        version=version,
         wow_version=wow_version,
     )
 
