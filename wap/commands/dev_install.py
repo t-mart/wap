@@ -6,78 +6,28 @@ import click
 
 from wap import addon
 from wap.commands.common import (
-    WAP_WOW_ADDONS_PATH_ENVVAR_NAME,
     config_path_option,
     json_option,
     version_option,
+    wow_addons_path_option,
 )
 from wap.config import Config
 from wap.exception import DevInstallException
-from wap.util import DEFAULT_DARWIN_WOW_ADDONS_PATH, DEFAULT_WIN32_WOW_ADDONS_PATH
 from wap.wowversion import WoWVersion
-
-
-class WowAddonsPathType(click.ParamType):
-    name = "WOW_ADDONS_PATH"
-
-    def convert(
-        self,
-        value: str,
-        param: Optional[click.Parameter],
-        ctx: Optional[click.Context],
-    ) -> Path:
-        path = Path(value)
-        if not path.is_dir():
-            self.fail(f"WoW AddOns path {value} is not a directory", param, ctx)
-
-        not_addons_dir_exc_str = (
-            f"WoW AddOns path {path} does not look like a WoW addons directory"
-        )
-
-        try:
-            *_, wow_part, type_part, interface_part, addons_part = path.parts
-        except ValueError:
-            self.fail(not_addons_dir_exc_str, param, ctx)
-
-        if (
-            wow_part != "World of Warcraft"
-            or interface_part != "Interface"
-            or addons_part != "AddOns"
-        ):
-            self.fail(not_addons_dir_exc_str, param, ctx)
-
-        if type_part not in WoWVersion.ADDONS_PATH_TYPE_MAP.keys():
-            self.fail(not_addons_dir_exc_str, param, ctx)
-
-        return path
-
-
-WOW_ADDONS_PATH_TYPE = WowAddonsPathType()
 
 
 @click.command()
 @config_path_option()
 @version_option(help="The version of a previously built package")
 @json_option()
-@click.option(
-    "-w",
-    "--wow-addons-path",
-    envvar=WAP_WOW_ADDONS_PATH_ENVVAR_NAME,
-    required=True,
-    type=WOW_ADDONS_PATH_TYPE,
-    help=(
-        "Your WoW addons path. May also be specified in the environment variable "
-        "WAP_WOW_ADDONS_PATH."
-    ),
-)
+@wow_addons_path_option()
 def dev_install(
     config_path: Path,
     version: str,
     wow_addons_path: Path,
     show_json: bool,
 ) -> None:
-    f"""
-    Install an addon package to the provided WoW addons directory. (wap package must
+    """Install an addon package to the provided WoW addons directory. (wap package must
     have been run before this.)
 
     This command assists you in testing your addons quickly.
@@ -92,12 +42,22 @@ def dev_install(
     provided, which must end with the following in order:
 
         1. "World of Warcraft"
+
         2. either "_retail_" or "_classic_"
+
         3. "Interface"
+
         4. "AddOns"
 
-    For example, "{DEFAULT_WIN32_WOW_ADDONS_PATH}" (Windows) or
-    "{DEFAULT_DARWIN_WOW_ADDONS_PATH}" (macOS) are acceptable.
+    For example,
+
+    "C:\\Program Files (x86)\\World of Warcraft\\_retail_\\Interface\\AddOns" (Windows)
+
+    or
+
+    "/Applications/World of Warcraft/_retail_/Interface/AddOns" (macOS)
+
+    are acceptable.
 
     If your addon's directories already exist in the WoW addons directory, they will
     first be deleted to ensure a clean install. Keep this in mind if you have somehow

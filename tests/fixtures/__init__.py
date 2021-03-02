@@ -6,13 +6,13 @@ PROJECT_DIRS_ROOT = FIXTURE_ROOT / "project_dirs"
 # WOW_DIRS_ROOT = FIXTURE_ROOT / "wow_dirs"
 
 WOW_DIRS = {
-    "classic": Path("/World of Warcraft/_classic_/Interface/AddOns"),
-    "retail": Path("/World of Warcraft/_retail_/Interface/AddOns"),
-    "bad_addons_part": Path("/World of Warcraft/_retail_/Interface/AddOffs"),
-    "bad_interface_part": Path("/World of Warcraft/_retail_/Interfaces/AddOns"),
-    "bad_type_part": Path("/World of Warcraft/_neither_/Interface/AddOns"),
-    "bad_wow_part": Path("/Planet of Warcraft/_retail_/Interface/AddOns"),
-    "too_short": Path("/World of Warcraft/"),
+    "classic": Path("World of Warcraft/_classic_/Interface/AddOns"),
+    "retail": Path("World of Warcraft/_retail_/Interface/AddOns"),
+    "bad_addons_part": Path("World of Warcraft/_retail_/Interface/AddOffs"),
+    "bad_interface_part": Path("World of Warcraft/_retail_/Interfaces/AddOns"),
+    "bad_type_part": Path("World of Warcraft/_neither_/Interface/AddOns"),
+    "bad_wow_part": Path("Planet of Warcraft/_retail_/Interface/AddOns"),
+    "too_short": Path("World of Warcraft/"),
 }
 
 

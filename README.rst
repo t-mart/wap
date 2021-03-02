@@ -37,9 +37,9 @@ wap (WoW Addon Packager)
 Features
 --------
 
-- Builds retail or classic WoW addons (or both!)
+- Packages retail or classic WoW addons (or both!)
 - Uploads your addons to CurseForge
-- Installs your addons to your Addons folder for fast development feedback
+- Automatically installs your addons to your AddOns folder when a file changes in your project
 - Generates valid TOC files automagically
 - Sets up new addon projects quickly, ready to go with one command
 - Consolidates all configuration in one easy-to-edit file
@@ -81,11 +81,11 @@ This entire set of instructions is runnable without editing a single line of cod
 
       $ cd "MyAddon"
 
-4. Build your addon
+4. Package your addon
 
    .. code-block:: console
 
-      $ wap build
+      $ wap package
 
 5. Install your addon so you can test it out in your local WoW installation:
 
@@ -98,6 +98,10 @@ This entire set of instructions is runnable without editing a single line of cod
       .. code-block:: console
 
          $ wap dev-install --wow-addons-path "/Applications/World of Warcraft/_retail_/Interface/AddOns"
+
+   .. note::
+
+      Also check out the ``watch`` command for automatic repackage and re-dev-installation!
 
 6. Upload your project to CurseForge
 

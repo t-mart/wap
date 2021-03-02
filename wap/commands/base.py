@@ -8,6 +8,7 @@ from wap.commands.package import package
 from wap.commands.quickstart import quickstart
 from wap.commands.upload import upload
 from wap.commands.validate import validate
+from wap.commands.watch import watch
 
 
 @click.group()
@@ -21,14 +22,7 @@ def base() -> None:
     log.info((VERSION_STRING_TEMPLATE + "\n") % {"version": __version__})
 
 
-SUBCOMMANDS = [
-    package,
-    dev_install,
-    upload,
-    quickstart,
-    new_config,
-    validate,
-]
+SUBCOMMANDS = [package, dev_install, upload, quickstart, new_config, validate, watch]
 
 for subcommand in SUBCOMMANDS:
     base.add_command(subcommand)

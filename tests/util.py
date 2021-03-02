@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 from collections.abc import Generator, Mapping
 from contextlib import contextmanager
 from pathlib import Path, PurePosixPath
@@ -98,7 +99,8 @@ class Environment:
     An environment for testing wap functionality
     """
 
-    fs: FakeFilesystem
+    fs: Optional[FakeFilesystem] = attr.ib(default=None)
+    tmp_dir: Optional[Path] = attr.ib(default=None)
     requests_mock: RequestsMocker
     frozen_time: arrow.Arrow = attr.ib(
         default=arrow.get("2021-02-23T20:25:06.979923+00:00")
@@ -170,24 +172,37 @@ class Environment:
         - Creates a wow addons directory
         - Patches requests to the curseforge API
         """
-        fs_root = Path("/")
-        project_dir_path = fs_root / "src"
+        if self.fs is not None:
+            root = Path("/")
+        elif self.tmp_dir is not None:
+            root = self.tmp_dir
+        else:
+            raise ValueError(
+                "Either fs or tmp_path must be set for testing Environment"
+            )
+        project_dir_path = root / "src"
 
         project_dir_fixture = fixtures.project_dir_path(project_dir_name)
-        self.fs.add_real_directory(
-            project_dir_fixture, read_only=False, target_path=project_dir_path
-        )
+        if self.fs is not None:
+            self.fs.add_real_directory(
+                project_dir_fixture, read_only=False, target_path=project_dir_path
+            )
+        else:
+            shutil.copytree(project_dir_fixture, project_dir_path)
 
         config_file_path: Optional[Path] = None
         if config_file_name:
             config_file_fixture = fixtures.config_file_path(config_file_name)
             config_file_path = project_dir_path / DEFAULT_CONFIG_PATH
-            self.fs.add_real_file(config_file_fixture, target_path=config_file_path)
+            if self.fs is not None:
+                self.fs.add_real_file(config_file_fixture, target_path=config_file_path)
+            else:
+                shutil.copyfile(config_file_fixture, config_file_path)
 
         wow_dir_path: Optional[Path] = None
         if wow_dir_name:
-            wow_dir_path = fixtures.wow_dir_path(wow_dir_name)
-            self.fs.create_dir(wow_dir_path)
+            wow_dir_path = root / fixtures.wow_dir_path(wow_dir_name)
+            wow_dir_path.mkdir(parents=True, exist_ok=True)
 
         self._config_file_path = config_file_path
         self._project_dir_path = project_dir_path
@@ -241,6 +256,7 @@ class Environment:
         cwd: Optional[Path] = None,
         input_lines: Optional[Sequence[str]] = None,
         catch_exceptions: bool = False,
+        tick_time: bool = False,
     ) -> Result:
         if env_vars is None:
             env_vars = {}
@@ -257,15 +273,25 @@ class Environment:
         runner = CliRunner(mix_stderr=False)
 
         with self._chdir_ctx(cwd):
-            with freeze_time(self.frozen_time.datetime):
-                return runner.invoke(
-                    base,
-                    args=args,
-                    catch_exceptions=catch_exceptions,
-                    standalone_mode=False,
-                    env=env_vars,
-                    input=runner_input,
-                )
+            if not tick_time:
+                with freeze_time(self.frozen_time.datetime):
+                    return runner.invoke(
+                        base,
+                        args=args,
+                        catch_exceptions=catch_exceptions,
+                        standalone_mode=False,
+                        env=env_vars,
+                        input=runner_input,
+                    )
+
+            return runner.invoke(
+                base,
+                args=args,
+                catch_exceptions=catch_exceptions,
+                standalone_mode=False,
+                env=env_vars,
+                input=runner_input,
+            )
 
 
 @attr.s(kw_only=True, frozen=True, auto_attribs=True, order=False)
