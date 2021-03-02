@@ -9,8 +9,8 @@ from tests.util import (
     decode_file_upload_multipart_request,
 )
 from wap.commands.common import (
-    DEFAULT_ADDON_VERSION,
     DEFAULT_CONFIG_PATH,
+    DEFAULT_PROJECT_VERSION,
     WAP_CONFIG_PATH_ENVVAR_NAME,
     WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
 )
@@ -53,7 +53,7 @@ def test_upload(
 
     run_wap_args = [
         "upload",
-        "--addon-version",
+        "--version",
         addon_version,
         "--release-type",
         release_type,
@@ -140,8 +140,8 @@ def test_upload_no_curseforge_config(env: Environment) -> None:
     with pytest.raises(UploadException, match=r'A "curseforge" configuration section'):
         env.run_wap(
             "upload",
-            "--addon-version",
-            DEFAULT_ADDON_VERSION,
+            "--version",
+            DEFAULT_PROJECT_VERSION,
             "--curseforge-token",
             "abc123",
         )
@@ -156,8 +156,8 @@ def test_upload_changelog_does_not_exist(env: Environment) -> None:
     with pytest.raises(UploadException, match=r"but it is not a file"):
         env.run_wap(
             "upload",
-            "--addon-version",
-            DEFAULT_ADDON_VERSION,
+            "--version",
+            DEFAULT_PROJECT_VERSION,
             "--curseforge-token",
             "abc123",
         )
@@ -194,8 +194,8 @@ def test_upload_changelog_extensions(
 
     env.run_wap(
         "upload",
-        "--addon-version",
-        DEFAULT_ADDON_VERSION,
+        "--version",
+        DEFAULT_PROJECT_VERSION,
         "--curseforge-token",
         "abc123",
     )
@@ -222,8 +222,8 @@ def test_upload_failed_get_version_id_request(
     ):
         env.run_wap(
             "upload",
-            "--addon-version",
-            DEFAULT_ADDON_VERSION,
+            "--version",
+            DEFAULT_PROJECT_VERSION,
             "--curseforge-token",
             "abc123",
         )
@@ -243,8 +243,8 @@ def test_upload_failed_upload_addon_file_request(
     ):
         env.run_wap(
             "upload",
-            "--addon-version",
-            DEFAULT_ADDON_VERSION,
+            "--version",
+            DEFAULT_PROJECT_VERSION,
             "--curseforge-token",
             "abc123",
         )
@@ -264,14 +264,14 @@ def test_upload_version_does_not_exist(
     ):
         env.run_wap(
             "upload",
-            "--addon-version",
-            DEFAULT_ADDON_VERSION,
+            "--version",
+            DEFAULT_PROJECT_VERSION,
             "--curseforge-token",
             "abc123",
         )
 
 
-def test_upload_without_build(env: Environment) -> None:
+def test_upload_without_package(env: Environment) -> None:
     env.prepare(
         project_dir_name="basic",
         config_file_name="basic",
@@ -280,8 +280,8 @@ def test_upload_without_build(env: Environment) -> None:
     with pytest.raises(UploadException, match=r"Zip file .+ not found"):
         env.run_wap(
             "upload",
-            "--addon-version",
-            DEFAULT_ADDON_VERSION,
+            "--version",
+            DEFAULT_PROJECT_VERSION,
             "--curseforge-token",
             "abc123",
         )
@@ -301,9 +301,26 @@ def test_upload_changelog_options_xor(env: Environment, cl_options: list[str]) -
     with pytest.raises(ChangelogException, match=r"must be used together or"):
         env.run_wap(
             "upload",
-            "--addon-version",
-            DEFAULT_ADDON_VERSION,
+            "--version",
+            DEFAULT_PROJECT_VERSION,
             "--curseforge-token",
             "abc123",
             *cl_options,
+        )
+
+
+def test_package_neither_changelog_options_or_config(env: Environment) -> None:
+    env.prepare(
+        project_dir_name="basic",
+        config_file_name="curseforge_changelog_not_set",
+        wow_dir_name="retail",
+    )
+
+    with pytest.raises(UploadException, match=r"No changelog data provided."):
+        env.run_wap(
+            "upload",
+            "--version",
+            DEFAULT_PROJECT_VERSION,
+            "--curseforge-token",
+            "abc123",
         )

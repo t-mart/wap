@@ -72,7 +72,7 @@ def test_dev_install(
         env_vars[WAP_CONFIG_PATH_ENVVAR_NAME] = str(DEFAULT_CONFIG_PATH)
 
     if not use_addon_default_version:
-        run_wap_args.extend(["--addon-version", addon_version])
+        run_wap_args.extend(["--version", addon_version])
 
     result = env.run_wap(*run_wap_args, env_vars=env_vars)
 
@@ -159,11 +159,11 @@ def test_dev_install_wow_addons_dir_is_not_dir(
         ],
     ],
     ids=[
-        "classic build into retail addons path",
-        "retail build into classic addons path",
+        "classic package into retail addons path",
+        "retail package into classic addons path",
     ],
 )
-def test_dev_install_no_build_type_for_wow_addons_path_type(
+def test_dev_install_no_package_type_for_wow_addons_path_type(
     env: Environment,
     config_file_name: str,
     wow_dir_name: str,
@@ -175,18 +175,18 @@ def test_dev_install_no_build_type_for_wow_addons_path_type(
     )
 
     with pytest.raises(
-        DevInstallException, match=r"No build exists for WoW addons path"
+        DevInstallException, match=r"No package exists for WoW addons path"
     ):
         env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path))
 
 
 @pytest.mark.parametrize(["wow_dir_name"], [["retail"], ["classic"]])
-def test_dev_install_without_build(env: Environment, wow_dir_name: str) -> None:
+def test_dev_install_without_package(env: Environment, wow_dir_name: str) -> None:
     env.prepare(
         project_dir_name="basic", config_file_name="basic", wow_dir_name=wow_dir_name
     )
 
     assert env.wow_dir_path
 
-    with pytest.raises(DevInstallException, match=r"Build directory .+ not found"):
+    with pytest.raises(DevInstallException, match=r"Package directory .+ not found"):
         env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path))

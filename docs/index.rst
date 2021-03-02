@@ -20,6 +20,7 @@ Welcome to wap's documentation!
 
    five-minutes
    installation
+   terms
    commands
    config
    toc-gen

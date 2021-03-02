@@ -8,9 +8,9 @@ from many other types of software. It is:
 
   * Addon directories
 
-    + Lua code
+    + Lua or XML files
 
-    + Other resources your addon needs
+    + Other resources like fonts, textures or sounds
 
     + Subdirectories that contain any of the above items
 
@@ -25,11 +25,11 @@ Let's take a look at an example:
    |   ├── CONTRIBUTING.md
    |   └── workflows
    |       └── ci.yml
-   ├── MyDir
+   ├── AnAddon
    |   ├── Init.lua
    |   ├── Core.lua
    |   └── Options.lua
-   ├── AnotherDir
+   ├── AnotherAddon
    |   ├── Init.lua
    |   ├── Font.ttf
    |   ├── AlertSound.mp3
@@ -49,22 +49,21 @@ Let's take a look at an example:
    principles.
 
 At the root is your project directory (``MyProject``). This contains everything related
-to your project: source code, documentation, and configuration. If you are using
-version control, this would the the ideal location of your repository.
+to your project: source code, documentation, and configuration.
 
-Inside your project directory, there are source code directories (``MyDir`` and
-``AnotherDir``). The fact that these are directories and not straight Lua files is a
+Inside your project directory, there are addon directories (``AnAddon/`` and
+``AnotherAddon/``). The fact that these are directories and not straight Lua files is a
 consequence of how World of Warcraft expects addons to be: a directory (or several)
-that contains Lua code and/or other resources that your addon uses.
+that contains Lua code, XML documents, and/or other resources that your addon uses.
 
 Also note the documentation files, configuration files, and other project metadata.
 These are things that you want to include when developers work on your project, but
-should not in your packaged addon. Therefore, they live at the project root level.
+should not be in your addons' package. Therefore, they live at the project root level.
 
 Version Control Suggestions
 ---------------------------
 
-- Again, set the repository to be at the root level of your project.
+- Set the repository to be at the root level of your project.
 - You should definitely check in the ``.wap.yml`` file
 - You should add the ``dist/`` directory to your ``.gitignore`` file. Any builds of
   your addon are derived from the source files. So, you can always recreate builds and

@@ -129,7 +129,7 @@ def quickstart(
     write_readme(readme_path, project_name)
 
     # guided config puts 1 starter lua file in the toc config's files.
-    dir_config = config.dir_configs[0]
+    dir_config = config.addon_configs[0]
     starter_lua_file = dir_config.toc_config.files[0]
     lua_file = project_dir_path / dir_config.path / starter_lua_file
     log.info(
@@ -150,7 +150,7 @@ def quickstart(
         + click.style(f'cd "{project_dir_path}"', fg="magenta")
         + "`, you can get started running some wap commands immediately, such as:"
     )
-    log.info("  - " + click.style("wap build", fg="blue"))
+    log.info("  - " + click.style("wap package", fg="blue"))
     log.info(
         "  - "
         + click.style(
@@ -165,7 +165,7 @@ def quickstart(
         log.info(
             "  - "
             + click.style(
-                'wap upload --addon-version "dev" --curseforge-token "<your-token>"',
+                'wap upload --version "dev" --curseforge-token "<your-token>"',
                 fg="blue",
             )
         )

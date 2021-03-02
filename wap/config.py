@@ -125,7 +125,7 @@ class TocConfig(YamlType["TocConfig", Mapping[str, Any]]):
 
 
 @attr.s(kw_only=True, auto_attribs=True, order=False)
-class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
+class AddonConfig(YamlType["AddonConfig", Mapping[str, Any]]):
     path: PurePosixPath = attr.ib()
     toc_config: TocConfig
 
@@ -137,7 +137,7 @@ class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
     ) -> None:
         if value.is_absolute():
             raise ConfigSemanticException(
-                f'Directory path "{value}" in dirs config must be relative (not '
+                f'Directory path "{value}" in addon config must be relative (not '
                 "absolute)"
             )
 
@@ -154,7 +154,7 @@ class DirConfig(YamlType["DirConfig", Mapping[str, Any]]):
     def from_python_object(
         cls,
         obj: Mapping[str, Any],
-    ) -> DirConfig:
+    ) -> AddonConfig:
         path = PurePosixPath(obj["path"])
 
         toc_config = TocConfig.from_python_object(obj["toc"])
@@ -192,10 +192,10 @@ class CurseforgeConfig(YamlType["CurseforgeConfig", Mapping[str, Any]]):
     @changelog_path.validator
     def _check_path_relative(
         self,
-        attribute: attr.Attribute[PurePosixPath],
-        value: PurePosixPath,
+        attribute: attr.Attribute[Optional[PurePosixPath]],
+        value: Optional[PurePosixPath],
     ) -> None:
-        if value.is_absolute():
+        if value is not None and value.is_absolute():
             raise ConfigSemanticException(
                 f'Changelog path "{value}" in curseforge config must be relative '
                 "(not absolute)"
@@ -237,7 +237,7 @@ class Config(YamlType["Config", Mapping[str, Any]]):
     name: str
     wow_versions: Sequence[WoWVersion] = attr.ib()
     curseforge_config: Optional[CurseforgeConfig] = attr.ib(default=None)
-    dir_configs: Sequence[DirConfig]
+    addon_configs: Sequence[AddonConfig]
 
     @wow_versions.validator
     def _check_wow_versions_no_dupe_types(
@@ -264,7 +264,7 @@ class Config(YamlType["Config", Mapping[str, Any]]):
                     strictyaml.Str(),
                 ),
                 strictyaml.Optional("curseforge"): CurseforgeConfig._yaml_schema(),
-                "dirs": strictyaml.Seq(DirConfig._yaml_schema()),
+                "addons": strictyaml.Seq(AddonConfig._yaml_schema()),
             }
         )
 
@@ -287,17 +287,21 @@ class Config(YamlType["Config", Mapping[str, Any]]):
         if "curseforge" in obj:
             curseforge_config = CurseforgeConfig.from_python_object(obj["curseforge"])
 
-        dir_configs = [DirConfig.from_python_object(dir_) for dir_ in obj["dirs"]]
-        if len({dir_config.path for dir_config in dir_configs}) < len(dir_configs):
+        addon_configs = [
+            AddonConfig.from_python_object(addon) for addon in obj["addons"]
+        ]
+        if len({addon_config.path for addon_config in addon_configs}) < len(
+            addon_configs
+        ):
             raise ConfigSemanticException(
-                "Directory paths in dir configs must have unique paths"
+                "Directory paths in addon configs must have unique paths"
             )
 
         return cls(
             name=name,
             wow_versions=wow_versions,
             curseforge_config=curseforge_config,
-            dir_configs=dir_configs,
+            addon_configs=addon_configs,
         )
 
     def to_python_object(
@@ -315,7 +319,9 @@ class Config(YamlType["Config", Mapping[str, Any]]):
         # we could hypothetically put this in the map literal above, but I want to
         # normalize order. note that order of key-value pairs in YAML is not recognized,
         # but strictyaml uses an ordered dict to hold them, so this is possible.
-        obj["dirs"] = [dir_config.to_python_object() for dir_config in self.dir_configs]
+        obj["addons"] = [
+            addon_config.to_python_object() for addon_config in self.addon_configs
+        ]
 
         return obj
 

@@ -5,7 +5,7 @@ from typing import Any, Optional, Pattern, cast
 import click
 
 from wap import log
-from wap.config import Config, CurseforgeConfig, DirConfig, TocConfig
+from wap.config import AddonConfig, Config, CurseforgeConfig, TocConfig
 from wap.wowversion import LATEST_CLASSIC_VERSION, LATEST_RETAIL_VERSION
 
 DEFAULT_CHANGELOG_PATH = PurePosixPath("CHANGELOG.md")
@@ -92,7 +92,7 @@ def guide(project_dir_name: str) -> Config:
         files=[PurePosixPath("Init.lua")],
     )
 
-    dir_configs = [DirConfig(path=PurePosixPath(name), toc_config=toc_config)]
+    addon_configs = [AddonConfig(path=PurePosixPath(name), toc_config=toc_config)]
 
     # wow versions supported
     wow_versions = []
@@ -127,7 +127,7 @@ def guide(project_dir_name: str) -> Config:
 
     return Config(
         name=name,
-        dir_configs=dir_configs,
+        addon_configs=addon_configs,
         wow_versions=wow_versions,
         curseforge_config=curseforge_config,
     )
