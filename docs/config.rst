@@ -4,7 +4,7 @@ Configuration
 -------------
 
 ``wap`` only needs one file to operate: a YAML file named ``.wap.yml``. This file should
- be placed at the root of your project directory.
+be placed at the root of your project directory.
 
 For new YAML authors, see `What is YAML?`_.
 
@@ -41,7 +41,7 @@ Here's a commented sample ``.wap.yml`` file:
 .. code-block:: yaml
 
   # the name of your package, can be anything you like
-  name: MyAddon
+  name: MyProject
 
   # a list of versions of WoW your addon works on
   wow-versions:
@@ -65,7 +65,7 @@ Here's a commented sample ``.wap.yml`` file:
   addons:
 
       # an addon directory
-    - path: MyDir  # an addon directory
+    - path: MyAddon  # an addon directory
 
       # TOC generation
       toc:
@@ -103,11 +103,10 @@ Syntax
 ``name``
 ^^^^^^^^
 
-**Required**. The name of your project. This will be used to name the build
-directories and zip files for your package (as well as the zip file users download on
-CurseForge).
+**Required**. The name of your package. This will be used to name your package directories
+and zip files (as well as the zip file users see and download on CurseForge).
 
-You can name this anything you want.
+You can name this anything you want. It should represent your project as a whole.
 
 Example:
 
@@ -121,7 +120,7 @@ Example:
 ^^^^^^^^^^^^^^^^
 
 **Required**. A ``list`` of the versions of World of Warcraft that your package supports.
-``wap`` will create different package builds for each version in the output directory.
+``wap`` will create different packages for each version in the output directory ``dist/``.
 
 Each version must be in the form ``x.y.z``, where ``x``, ``y``, and ``z`` are
 non-negative integers.
@@ -129,15 +128,14 @@ non-negative integers.
 You must at least supply one of these, and can at most supply two (for retail and
 classic).
 
-You should list **current** WoW versions. Otherwise, your addon may
-be disabled when users install it.
+You should list **current** WoW versions. Otherwise, your addon may be disabled when users install it.
 
 ``wap`` uses these versions for a few things:
 
-- To build your package for each version (with the correct ``## Interface`` tag in TOC files).
-- To mark on CurseForge which version your package supports.
-- To ``dev-install`` the right package build into the right WoW AddOns path. For example a
+- To :ref:`package <wap-package>` each version (with the correct ``## Interface`` tag in TOC files).
+- To :ref:`dev-install <wap-dev-install>` the right package build into the right WoW AddOns path. For example a
   *classic* addon build should not go into a *retail* AddOns directory.
+- To mark on CurseForge which version your package supports.
 
 Examples:
 
@@ -164,7 +162,7 @@ Examples:
   You do need to ensure these versions are actaully valid WoW versions, or else
   uploads to CurseForge will fail.
 
-  One surefire way of getting a valid version is looking at the Battle.net Launcher
+  One surefire way of getting a valid current version is looking at the Battle.net Launcher
   and looking at the first 3 digits of the version list there:
 
   .. image:: _static/valid-wow-version.png
@@ -180,7 +178,7 @@ CurseForge, you must include this section.
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Required**. The project id as found on your CurseForge addon's page. This field tells wap
-what addon page to upload to.
+what addon project to upload to.
 
 .. image:: _static/where-to-find-project-id.png
   :alt: Where to find your CurseForge project id
@@ -191,6 +189,26 @@ Example:
 
   curseforge:
     project-id: 433258
+    # ...
+
+``curseforge.project-slug``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Required**. The string of the name of your addon as it is found in your addon's CurseForge
+URL.
+
+While not strictly necessary, this helps ``wap`` provide better output for you in the
+form of URLs that you can copy-paste into your browser after you upload.
+
+Example:
+
+If your projects's URL is ``https://www.curseforge.com/wow/addons/mycooladdon``, then you
+would fill in this field like this:
+
+.. code-block:: yaml
+
+  curseforge:
+    project-slug: mycooladdon
     # ...
 
 ``curseforge.changelog-file``
@@ -255,30 +273,10 @@ then you would fill in this field like this:
     changelog-file: CHANGELOG.md
     # ...
 
-``curseforge.project-slug``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-**Required**. The string of the name of your addon as it is found in your addon's CurseForge
-URL.
-
-While not strictly necessary, this helps ``wap`` provide better output for you in the
-form of URLs that you can copy-paste into your browser after you upload.
-
-Example:
-
-If your projects's URL is ``https://www.curseforge.com/wow/addons/mycooladdon``, then you
-would fill in this field like this:
-
-.. code-block:: yaml
-
-  curseforge:
-    project-slug: mycooladdon
-    # ...
-
 ``addons``
 ^^^^^^^^^^
 
-**Required**. A ``list`` of addons to include in your build.
+**Required**. A ``list`` of addons to include in your package.
 
 .. warning::
 
@@ -299,7 +297,7 @@ would fill in this field like this:
 ^^^^^^^^^^^^^^^^^^
 
 **Required**. The path, relative the parent directory of the configuration file, of the
-directory to include in your packaged addon.
+addon directory to include in your package.
 
 This cannot be a file -- it must be a directory because only directories are installable
 into WoW addons folders.
@@ -312,7 +310,7 @@ If you had a project structure like this:
 
    MyProject
    ├── MyAddon
-   ├── MyOtherAddon
+   ├── MyHelperAddon
    └── .wap.yml
 
 then you would fill in this field like this:
@@ -322,7 +320,7 @@ then you would fill in this field like this:
   addons:
     - path: MyAddon
     # ...
-    - path: MyOtherAddon
+    - path: MyHelperAddon
     # ...
 
 
@@ -351,7 +349,7 @@ any other WoW-specified tags. A full list of supported tags may be found at the
 
 Custom tags can be added too, and should be prefixed with ``X-``.
 
-.. note::
+.. warning::
   **You should not provide the** ``Interface`` **and** ``Version`` **tags!** ``wap`` generates
   those tags for you. You can override them, but it is not recommended.
 
@@ -360,12 +358,20 @@ Custom tags can be added too, and should be prefixed with ``X-``.
 ``addons[*].toc.files``
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-**Required**. A ``list`` of file paths, relative to the addon path,
-that specify the Lua (or XML) files your addon should load. The order of this sequence
-is respected in the generated TOC file.
+**Required**. A ``list`` of file paths, relative to the addon directory path, that
+specify the Lua (or XML) files your addon should load. The order of this sequence is
+respected in the generated TOC file.
 
 See the `Sample Config File and Directory Structure`_ section for an example on where
 these files are expected to be inside your project and how to write their paths.
+
+.. note::
+
+   If you are including resource files like textures, fonts, or sounds, those must not
+   be in this file list, or else World of Warcraft will probably fail in trying to load
+   your addon.
+
+   Simply keep those files in your addon directory. ``wap`` will still package them up.
 
 .. _`strictyaml`: https://hitchdev.com/strictyaml/
 .. _`What is YAML?`:  https://blog.stackpath.com/yaml/

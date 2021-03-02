@@ -56,7 +56,7 @@ The directory structure will look something like this:
    └── .wap.yml
 
 This project is literally all ready to go. Some sample code has even been placed in the
-``Init.lua`` to get you started. It is :ref:`build <wap-package>`-able,
+``Init.lua`` to get you started. It is :ref:`package <wap-package>`-able,
 :ref:`install <wap-dev-install>`-able, and :ref:`upload <wap-upload>`-able.
 
 .. _wap-package:
@@ -210,13 +210,34 @@ Example:
 
    .. code-block:: console
 
-      $ wap dev-install "C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
+      $ wap dev-install --wow-addons-path "C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
+
+   .. code-block:: console
+
+      $ export WAP_WOW_ADDONS_PATH="C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
+      $ wap dev-install
+
+   .. code-block:: console
+
+      $ export WAP_WOW_ADDONS_PATH="C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns"
+      $ wap dev-install --version "1.2.3"
 
 .. tab:: macOS
 
    .. code-block:: console
 
-      $ wap dev-install "/Applications/World of Warcraft/_retail_/Interface/AddOns"
+      $ wap dev-install --wow-addons-path "/Applications/World of Warcraft/_retail_/Interface/AddOns"
+
+   .. code-block:: console
+
+      $ export WAP_WOW_ADDONS_PATH="/Applications/World of Warcraft/_retail_/Interface/AddOns"
+      $ wap dev-install
+
+   .. code-block:: console
+
+      $ export WAP_WOW_ADDONS_PATH="/Applications/World of Warcraft/_retail_/Interface/AddOns"
+      $ wap dev-install --version "1.2.3"
+
 
 .. warning::
    If your addon's directories already exist in the WoW addons directory, they will
@@ -293,6 +314,27 @@ automatically sets some metadata to send with the request.
 (``package-name``, ``version``, ``wow-version-type`` have the same meaning as they
 do in :ref:`package <wap-package>`.)
 
+Examples:
+
+.. code-block:: console
+
+   $ wap upload --version "1.2.3" --curseforge-token "a81ed26a-0139-4708-b5cc-f8d8349eb071"
+
+.. code-block:: console
+
+   $ export WAP_CURSEFORGE_TOKEN="a81ed26a-0139-4708-b5cc-f8d8349eb071"
+   $ wap upload --version "1.2.3"
+
+.. code-block:: console
+
+   $ export WAP_CURSEFORGE_TOKEN="a81ed26a-0139-4708-b5cc-f8d8349eb071"
+   $ wap upload --version "1.2.3" --release-type "release
+
+.. code-block:: console
+
+   $ export WAP_CURSEFORGE_TOKEN="a81ed26a-0139-4708-b5cc-f8d8349eb071"
+   $ wap upload --version "1.2.3" --release-type "release --changelog-type "text" --changelog-contents "the changes are ..."
+
 
 .. _wap-new-config:
 
@@ -322,6 +364,16 @@ projects that want to migrate from another packager.
 More than likely, you will need to edit this configuration file to fit to your
 project. This just provides a starting point.
 
+Examples:
+
+.. code-block:: console
+
+   $ wap new-config
+
+.. code-block:: console
+
+   $ wap new-config --config-path "some/other/path/.wap.yml"
+
 .. _wap-validate:
 
 ``validate``
@@ -348,5 +400,15 @@ encountered is displayed and the exit code is non-zero.
 
    Successful validation does not indicate that any other ``wap`` command will work. It
    merely means that there were no errors parsing the configuration file.
+
+Examples:
+
+.. code-block:: console
+
+   $ wap validate
+
+.. code-block:: console
+
+   $ wap validate --config-path "some/other/path/.wap.yml"
 
 .. _`create a new project`: https://www.curseforge.com/project/1/1/create

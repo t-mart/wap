@@ -42,12 +42,13 @@ to introduce bugs because developers have to keep in mind how the code differs i
 case. It is no longer Lua code -- it is an overloading of Lua comments into a
 preprocessing language with its own esoteric syntax and keyword names.
 
-And, I'd also argue its ugly. It's hard to read, write and maintain.
+And, I'd also argue its ugly: It's hard to read, write and maintain.
 
 Sometimes too, `packager`_ can be quite slow at doing these substitutions. Some of my builds
-take `7+ minutes at this step`_!
+take `7+ minutes doing substitutions`_!
 
-Finally, you can't run static analyzers like `luacheck`_ on this code.
+Finally, you can't run static analyzers like `luacheck`_ on this code. These programs
+help you catch bugs and/or unintended side effects in your code.
 
 **With pure lua code and the WoW API**
 
@@ -135,7 +136,7 @@ build it. This is bad for a few reasons:
    If you still really want to automate pulling in repositories, you can write a script
    with tooling known to be present in your environment.
 
-Why not upload WoWInterface too?
+Why not upload to WoWInterface too?
 ********************************
 
 The momentum of the WoW community points towards CurseForge.
@@ -162,7 +163,7 @@ much bloat for too little gain.
 
 .. _`packager`: https://github.com/BigWigsMods/packager
 .. _`luacheck`: https://github.com/mpeterv/luacheck
-.. _`7+ minutes at this step`: https://github.com/t-mart/ItemVersion/runs/1864902187
+.. _`7+ minutes doing substitutions`: https://github.com/t-mart/ItemVersion/runs/1864902187
 .. _upload-release-asset: https://github.com/actions/upload-release-asset
 .. _`Github CLI`: https://cli.github.com/
 .. _`do one thing and do it well`: https://en.wikipedia.org/wiki/Unix_philosophy#Do_One_Thing_and_Do_It_Well

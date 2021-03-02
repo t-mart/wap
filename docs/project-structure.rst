@@ -51,10 +51,10 @@ Let's take a look at an example:
 At the root is your project directory (``MyProject``). This contains everything related
 to your project: source code, documentation, and configuration.
 
-Inside your project directory, there are source code directories (``AnAddon/`` and
+Inside your project directory, there are addon directories (``AnAddon/`` and
 ``AnotherAddon/``). The fact that these are directories and not straight Lua files is a
 consequence of how World of Warcraft expects addons to be: a directory (or several)
-that contains Lua code and/or other resources that your addon uses.
+that contains Lua code, XML documents, and/or other resources that your addon uses.
 
 Also note the documentation files, configuration files, and other project metadata.
 These are things that you want to include when developers work on your project, but

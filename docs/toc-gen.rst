@@ -7,7 +7,7 @@ One of ``wap``'s nicer features is TOC file generation. This helps you in a few 
 
 - Validation. ``wap`` validates that:
 
-  * Any files listed actually exist within that folder. Listing a file that does not
+  * Any files listed actually exist within that addon directory. Listing a file that does not
     exist is certainly a bug, so ``wap`` will abort with an error message.
 
   * Any custom tags are prefixed with ``X-``, which is necessary for them to be
@@ -44,7 +44,7 @@ A ``.wap.yml`` configuration like this:
 
 .. code-block:: yaml
 
-  name: MyAddon
+  name: MyProject
   wow-versions:
     - 9.0.2
   addons:
@@ -65,7 +65,7 @@ run with a build command like this:
 
    $ wap build --addon-version 1.2.3
 
-will produce a TOC file like this at ``dist/MyAddon-1.2.3-retail/MyAddon/MyAddon.toc``:
+will produce a TOC file like this at ``dist/MyAMyProjectddon-1.2.3-retail/MyAddon/MyAddon.toc``:
 
 .. code-block:: wowtoc
 
