@@ -244,6 +244,36 @@ Example:
    first be deleted to ensure a clean install. Keep this in mind if you have somehow
    put important data in that directory.
 
+.. _wap-watch:
+
+``watch``
+---------
+
+.. code-block:: text
+
+   Usage: wap watch [OPTIONS]
+
+   Options:
+     -c, --config-path PATH          The path of the configuration file. May also
+                                     be specified in the environment variable
+                                     WAP_CONFIG_PATH.  [default: (.wap.yml)]
+
+     -v, --version TEXT              The version you want to assign your package.
+                                     [default: dev]
+
+     -w, --wow-addons-path WOW_ADDONS_PATH
+                                     Your WoW addons path. May also be specified
+                                     in the environment variable
+                                     WAP_WOW_ADDONS_PATH.  [required]
+
+     --help                          Show this message and exit.
+
+Monitor for any changes in your project and automatically package and dev-install to
+your WoW AddOns directory.
+
+This speeds up the developer feedback-loop even more, so you don't have to
+type any further wap commands while you write your addons.
+
 .. _wap-upload:
 
 ``upload``

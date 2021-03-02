@@ -137,7 +137,7 @@ build it. This is bad for a few reasons:
    with tooling known to be present in your environment.
 
 Why not upload to WoWInterface too?
-********************************
+***********************************
 
 The momentum of the WoW community points towards CurseForge.
 

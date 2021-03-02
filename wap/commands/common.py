@@ -4,6 +4,8 @@ from typing import Any, Callable, Optional, TypeVar
 
 import click
 
+from wap.wowversion import WoWVersion
+
 
 class PathType(click.ParamType):
     name = "PATH"
@@ -94,3 +96,60 @@ def json_option(
         return update_wrapper(decorated, func)
 
     return wrapper
+
+
+def wow_addons_path_option() -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYPE]:
+    def wrapper(func: _DECORATED_FUNC_TYPE) -> _DECORATED_FUNC_TYPE:
+        decorated = click.option(
+            "-w",
+            "--wow-addons-path",
+            envvar=WAP_WOW_ADDONS_PATH_ENVVAR_NAME,
+            required=True,
+            type=WOW_ADDONS_PATH_TYPE,
+            help=(
+                "Your WoW addons path. May also be specified in the environment "
+                "variable WAP_WOW_ADDONS_PATH."
+            ),
+        )(func)
+
+        return update_wrapper(decorated, func)
+
+    return wrapper
+
+
+class WowAddonsPathType(click.ParamType):
+    name = "WOW_ADDONS_PATH"
+
+    def convert(
+        self,
+        value: str,
+        param: Optional[click.Parameter],
+        ctx: Optional[click.Context],
+    ) -> Path:
+        path = Path(value)
+        if not path.is_dir():
+            self.fail(f'WoW AddOns path "{value}" is not a directory', param, ctx)
+
+        not_addons_dir_exc_str = (
+            f'WoW AddOns path "{path}" does not look like a WoW addons directory'
+        )
+
+        try:
+            *_, wow_part, type_part, interface_part, addons_part = path.parts
+        except ValueError:
+            self.fail(not_addons_dir_exc_str, param, ctx)
+
+        if (
+            wow_part != "World of Warcraft"
+            or interface_part != "Interface"
+            or addons_part != "AddOns"
+        ):
+            self.fail(not_addons_dir_exc_str, param, ctx)
+
+        if type_part not in WoWVersion.ADDONS_PATH_TYPE_MAP.keys():
+            self.fail(not_addons_dir_exc_str, param, ctx)
+
+        return path
+
+
+WOW_ADDONS_PATH_TYPE = WowAddonsPathType()

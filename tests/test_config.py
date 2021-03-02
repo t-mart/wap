@@ -22,7 +22,10 @@ from wap.exception import (
             (
                 "dev-install",
                 "--wow-addons-path",
-                str(wow_dir_path("retail")),
+                # yikes, gotta put our root in front when we use pyfakefs
+                # usually, we can just query env.wow_dir_path, but because this is
+                # defined in parameters, we don't have access to that.
+                "/" + str(wow_dir_path("retail")),
             )
         ],
         [
@@ -150,4 +153,4 @@ def test_commands_config_no_curseforge_required(env: Environment) -> None:
     )
 
     env.run_wap("package")
-    env.run_wap("dev-install", "--wow-addons-path", str(wow_dir_path("retail")))
+    env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path))
