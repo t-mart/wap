@@ -1,0 +1,41 @@
+name: 'wap'
+description: 'Package and upload your addons'
+inputs:
+  version:
+    description: 'The version to package and upload.'
+    required: true
+  config-path:
+    description: 'The path to your configuration file.'
+    required: false
+    default: "./.wap.yml"
+  release-type:
+    description: 'The type of release to make. Either "alpha", "beta", or "release".'
+    required: false
+    default: "alpha"
+  curseforge-token:
+    description: 'The value of your CurseForge API token.'
+    required: true
+  changelog-contents:
+    description: |
+      The contents of your changelog.
+
+      This input is optional. If it is provided, it must be used with changelog-type. Otherwise,
+      the changelog data will come from your configuration file.
+    required: false
+  changelog-type:
+    description: |
+      The format of your changelog contents. Either "markdown", "html", or "text".
+
+      This input is optional. If it is provided, it must be used with changelog-contents. Otherwise,
+      the changelog data will come from your configuration file.
+    required: false
+runs:
+  using: 'docker'
+  image: 'action/Dockerfile'
+  env:
+    WAP_VERSION: ${{ inputs.version }}
+    WAP_CONFIG_PATH: ${{ inputs.config-path }}
+    WAP_RELEASE_TYPE: ${{ inputs.release-type }}
+    WAP_CHANGELOG_TYPE: ${{ inputs.changelog-type }}
+    WAP_CHANGELOG_CONTENTS: ${{ inputs.changelog-contents }}
+    WAP_CURSEFORGE_TOKEN.: ${{ inputs.curseforge-token }}
