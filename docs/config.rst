@@ -165,7 +165,7 @@ Examples:
   One surefire way of getting a valid current version is looking at the Battle.net Launcher
   and looking at the first 3 digits of the version list there:
 
-  .. image:: _static/valid-wow-version.png
+  .. image:: _static/images/valid-wow-version.png
      :alt: A version in the Battle.net Launcher
 
 ``curseforge``
@@ -180,7 +180,7 @@ CurseForge, you must include this section.
 **Required**. The project id as found on your CurseForge addon's page. This field tells wap
 what addon project to upload to.
 
-.. image:: _static/where-to-find-project-id.png
+.. image:: _static/images/where-to-find-project-id.png
   :alt: Where to find your CurseForge project id
 
 Example:

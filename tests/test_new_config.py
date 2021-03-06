@@ -19,6 +19,7 @@ class TestNewConfig:
         env.prepare(
             project_dir_name="new_config",
         )
+        env.config_file_path.unlink()
 
         addon_name = "foo"
         author = "John Doe"
@@ -40,8 +41,6 @@ class TestNewConfig:
             additional_args = ["--config-path", str(config_path.name)]
         else:
             config_path = env.project_dir_path / DEFAULT_CONFIG_PATH
-
-        assert not config_path.exists()
 
         result = env.run_wap(*run_wap_args, *additional_args, input_lines=input_lines)
 

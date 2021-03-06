@@ -45,6 +45,7 @@ class TestConfigUsingCommands:
         self, env: Environment, run_args: Iterable[str]
     ) -> None:
         env.prepare(project_dir_name="basic", wow_dir_name="retail")
+        env.config_file_path.unlink()
 
         with pytest.raises(ConfigFileException, match=r"No such config file"):
             env.run_wap(*run_args)
