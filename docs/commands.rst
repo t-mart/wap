@@ -268,11 +268,17 @@ Example:
 
      --help                          Show this message and exit.
 
-Monitor for any changes in your project and automatically package and dev-install to
-your WoW AddOns directory.
+Monitor for any changes in your project and automatically package and install
+to your WoW AddOns directory. You can exit with :kbd:`Ctrl-c`.
 
-This speeds up the developer feedback-loop even more, so you don't have to
-type any further wap commands while you write your addons.
+This command is a composite of the :ref:`package <wap-package>` and
+:ref:`dev-install <wap-dev-install>` commands, along with
+a filesystem event watcher on your config file and addon paths. When an event
+is emitted from your filesytem indicated a modification/addition/deletion of a file,
+your addon will be packaged and dev-installed.
+
+This speeds up the developer feedback-loop, so you don't have to type
+any further wap commands while you develop on your addons.
 
 .. _wap-upload:
 
@@ -338,7 +344,7 @@ automatically sets some metadata to send with the request.
 * The *zip file name*. This is the file name of the that users download. wap sets this to
   ``<package-name>-<version>-<wow-version-type>.zip``
 
-.. image:: _static/display-name-file-name.png
+.. image:: _static/images/display-name-file-name.png
    :alt: How display and file names present to users.
 
 (``package-name``, ``version``, ``wow-version-type`` have the same meaning as they

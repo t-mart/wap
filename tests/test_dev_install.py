@@ -55,9 +55,6 @@ def test_dev_install(
         wow_dir_name=wow_dir_name,
     )
 
-    # wow_dir_path is an optional type, and mypy wants to be sure it's set (which it is)
-    assert env.wow_dir_path is not None
-
     run_wap_args = ["dev-install", "--json"]
     env_vars: dict[str, str] = {}
 

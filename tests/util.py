@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import shutil
 from collections.abc import Generator, Mapping
 from contextlib import contextmanager
 from pathlib import Path, PurePosixPath
@@ -99,15 +98,15 @@ class Environment:
     An environment for testing wap functionality
     """
 
-    fs: Optional[FakeFilesystem] = attr.ib(default=None)
-    tmp_dir: Optional[Path] = attr.ib(default=None)
+    fs: FakeFilesystem = attr.ib(default=None)
     requests_mock: RequestsMocker
     frozen_time: arrow.Arrow = attr.ib(
         default=arrow.get("2021-02-23T20:25:06.979923+00:00")
     )
-    _config_file_path: Optional[Path] = attr.ib(default=None, init=False)
-    _wow_dir_path: Optional[Path] = attr.ib(default=None, init=False)
-    _project_dir_path: Optional[Path] = attr.ib(default=None, init=False)
+
+    _config_file_path: Path = attr.ib(default=None, init=False)
+    _wow_dir_path: Path = attr.ib(default=None, init=False)
+    _project_dir_path: Path = attr.ib(default=None, init=False)
     _prepared: bool = attr.ib(default=False, init=False)
 
     UPLOAD_FILE_ID: ClassVar[int] = 4321
@@ -140,13 +139,13 @@ class Environment:
     _FAIL_UPLOAD_ADDON_FILE_JSON: ClassVar[Any] = _FAIL_GET_VERSION_ID_JSON
 
     @property
-    def config_file_path(self) -> Optional[Path]:
+    def config_file_path(self) -> Path:
         if not self._prepared:
             raise RuntimeError("Environment must first be prepare()-d")
         return self._config_file_path
 
     @property
-    def wow_dir_path(self) -> Optional[Path]:
+    def wow_dir_path(self) -> Path:
         if not self._prepared:
             raise RuntimeError("Environment must first be prepare()-d")
         return self._wow_dir_path
@@ -155,14 +154,13 @@ class Environment:
     def project_dir_path(self) -> Path:
         if not self._prepared:
             raise RuntimeError("Environment must first be prepare()-d")
-        # this is always created during prepare()
-        return self._project_dir_path  # type: ignore
+        return self._project_dir_path
 
     def prepare(
         self,
-        project_dir_name: str,
-        config_file_name: Optional[str] = None,
-        wow_dir_name: Optional[str] = None,
+        project_dir_name: str = "basic",
+        config_file_name: str = "basic",
+        wow_dir_name: str = "retail",
         success_cf_get_version_id: bool = True,
         success_cf_upload_addon_file: bool = True,
     ) -> None:
@@ -172,37 +170,26 @@ class Environment:
         - Creates a wow addons directory
         - Patches requests to the curseforge API
         """
-        if self.fs is not None:
-            root = Path("/")
-        elif self.tmp_dir is not None:
-            root = self.tmp_dir
-        else:
-            raise ValueError(
-                "Either fs or tmp_path must be set for testing Environment"
-            )
+        root = Path("/")
         project_dir_path = root / "src"
 
         project_dir_fixture = fixtures.project_dir_path(project_dir_name)
-        if self.fs is not None:
-            self.fs.add_real_directory(
-                project_dir_fixture, read_only=False, target_path=project_dir_path
-            )
-        else:
-            shutil.copytree(project_dir_fixture, project_dir_path)
+        self.fs.add_real_directory(
+            project_dir_fixture,
+            target_path=project_dir_path,
+            read_only=False,
+        )
 
-        config_file_path: Optional[Path] = None
-        if config_file_name:
-            config_file_fixture = fixtures.config_file_path(config_file_name)
-            config_file_path = project_dir_path / DEFAULT_CONFIG_PATH
-            if self.fs is not None:
-                self.fs.add_real_file(config_file_fixture, target_path=config_file_path)
-            else:
-                shutil.copyfile(config_file_fixture, config_file_path)
+        config_file_fixture = fixtures.config_file_path(config_file_name)
+        config_file_path = project_dir_path / DEFAULT_CONFIG_PATH
+        self.fs.add_real_file(
+            config_file_fixture,
+            target_path=config_file_path,
+            read_only=False,
+        )
 
-        wow_dir_path: Optional[Path] = None
-        if wow_dir_name:
-            wow_dir_path = root / fixtures.wow_dir_path(wow_dir_name)
-            wow_dir_path.mkdir(parents=True, exist_ok=True)
+        wow_dir_path = root / fixtures.wow_dir_path(wow_dir_name)
+        wow_dir_path.mkdir(parents=True, exist_ok=True)
 
         self._config_file_path = config_file_path
         self._project_dir_path = project_dir_path
@@ -258,6 +245,9 @@ class Environment:
         catch_exceptions: bool = False,
         tick_time: bool = False,
     ) -> Result:
+        if not self._prepared:
+            raise RuntimeError("Environment must first be prepare()-d")
+
         if env_vars is None:
             env_vars = {}
 

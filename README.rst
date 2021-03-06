@@ -31,7 +31,7 @@ wap (WoW Addon Packager)
 
 ``wap`` is a developer-friendly World of Warcraft addon packager.
 
-.. image:: https://raw.githubusercontent.com/t-mart/wap/master/docs/_static/demo.gif
+.. image:: https://raw.githubusercontent.com/t-mart/wap/master/docs/_static/images/demo.gif
    :alt: wap demo
 
 Features
