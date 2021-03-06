@@ -24,7 +24,7 @@ wap (WoW Addon Packager)
    :alt: MIT licensed
 
 .. image:: https://readthedocs.org/projects/wow-addon-packager/badge/?version=latest
-   :target: https://wow-addon-packager.readthedocs.io/en/latest/?badge=latest
+   :target: https://wow-addon-packager.readthedocs.io/en/latest
    :alt: Documentation Status
 
 |
