@@ -7,7 +7,7 @@ import click
 
 from wap import log
 from wap.changelog import Changelog
-from wap.config import AddonConfig, CurseforgeConfig
+from wap.config import AddonConfig, Config, CurseforgeConfig
 from wap.curseforge import CurseForgeAPI
 from wap.exception import DevInstallException, PackageException, UploadException
 from wap.toc import write_toc
@@ -34,6 +34,7 @@ def get_zip_path(addon_name: str, version: str, wow_version: WoWVersion) -> Path
 
 def package_addon(
     config_path: Path,
+    config: Config,
     addon_name: str,
     dir_configs: Sequence[AddonConfig],
     version: str,
@@ -76,6 +77,7 @@ def package_addon(
             delete_path(toc_path)
 
         write_toc(
+            config=config,
             toc_config=dir_config.toc_config,
             dir_path=src_dir,
             write_path=toc_path,

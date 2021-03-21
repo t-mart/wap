@@ -13,7 +13,7 @@ addons:
     toc:
       tags:
         Title: MyAddon Dir1
-        X-Custom-Tag: foobar
+        Author: Sylvanas
       files:
         - Dir1.lua
         - Sub/Another.lua
