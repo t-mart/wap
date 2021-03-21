@@ -4,7 +4,7 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 import arrow
 
 from wap import __version__, log
-from wap.config import TocConfig
+from wap.config import Config, TocConfig
 from wap.exception import TocException
 from wap.wowversion import WoWVersion
 
@@ -80,6 +80,7 @@ def _create_file_line(path: PurePosixPath) -> str:
 
 
 def write_toc(
+    config: Config,
     toc_config: TocConfig,
     dir_path: Path,
     write_path: Path,
@@ -96,6 +97,9 @@ def write_toc(
                 'must only use forward slashes ("/").'
             )
 
+    common_tags = config.toc_tags or {}
+    user_tags = ChainMap(toc_config.tags, common_tags)
+
     extra_wap_tags = {
         "Interface": wow_version.interface_version(),
         "Version": addon_version,
@@ -103,23 +107,23 @@ def write_toc(
         f"{_METADATA_TAG_PREFIX}BuildTool": f"wap v{__version__}",
     }
 
-    tag_map = ChainMap(toc_config.tags, extra_wap_tags)
+    tag_map = ChainMap(user_tags, extra_wap_tags)
 
     for tag, value in extra_wap_tags.items():
-        if tag in toc_config.tags:
+        if tag in user_tags:
             log.warn(
                 f'Overwriting wap-provided tag "{tag}"="{value}" with '
                 f"{toc_config.tags[tag]}"
             )
 
-    for tag, value in toc_config.tags.items():
+    for tag, value in user_tags.items():
         if tag not in _OFFICIAL_TAGS and not tag.startswith(_METADATA_TAG_PREFIX):
             log.warn(
                 f'TOC user-specified tag "{tag}" does not have '
                 f'"{_METADATA_TAG_PREFIX}" prefix'
             )
 
-    if _SECURE_TAG in toc_config.tags.keys() and toc_config.tags[_SECURE_TAG] == "1":
+    if _SECURE_TAG in user_tags.keys() and user_tags[_SECURE_TAG] == "1":
         log.warn(
             f"{_SECURE_TAG} found with value equal to 1. Only Blizzard-signed addons "
             "can use the functionality of this setting. "

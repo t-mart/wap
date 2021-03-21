@@ -51,6 +51,7 @@ def package(
         try:
             package_path = addon.package_addon(
                 config_path=config_path,
+                config=config,
                 addon_name=config.name,
                 dir_configs=config.addon_configs,
                 version=version,

@@ -238,6 +238,7 @@ class Config(YamlType["Config", Mapping[str, Any]]):
     wow_versions: Sequence[WoWVersion] = attr.ib()
     curseforge_config: Optional[CurseforgeConfig] = attr.ib(default=None)
     addon_configs: Sequence[AddonConfig]
+    toc_tags: Optional[Mapping[str, str]] = attr.ib(default=None)
 
     @wow_versions.validator
     def _check_wow_versions_no_dupe_types(
@@ -265,6 +266,10 @@ class Config(YamlType["Config", Mapping[str, Any]]):
                 ),
                 strictyaml.Optional("curseforge"): CurseforgeConfig._yaml_schema(),
                 "addons": strictyaml.Seq(AddonConfig._yaml_schema()),
+                strictyaml.Optional("tags"): strictyaml.MapPattern(
+                    strictyaml.Str(),
+                    strictyaml.Str(),
+                ),
             }
         )
 
@@ -297,11 +302,16 @@ class Config(YamlType["Config", Mapping[str, Any]]):
                 "Directory paths in addon configs must have unique paths"
             )
 
+        toc_tags = None
+        if "tags" in obj:
+            toc_tags = obj["tags"]
+
         return cls(
             name=name,
             wow_versions=wow_versions,
             curseforge_config=curseforge_config,
             addon_configs=addon_configs,
+            toc_tags=toc_tags,
         )
 
     def to_python_object(
@@ -322,6 +332,9 @@ class Config(YamlType["Config", Mapping[str, Any]]):
         obj["addons"] = [
             addon_config.to_python_object() for addon_config in self.addon_configs
         ]
+
+        if self.toc_tags is not None:
+            obj["tags"] = self.toc_tags
 
         return obj
 

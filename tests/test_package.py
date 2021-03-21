@@ -68,6 +68,7 @@ def test_package(env: Environment, config_path_from_cli: bool) -> None:
 
         expected_toc_tags = {
             "Title": "MyAddon Dir1",
+            "Author": "Thrall",
             "Version": "dev",
             "Interface": interface,
             "X-BuildDateTime": env.frozen_time.to("Z").isoformat(),
@@ -79,6 +80,30 @@ def test_package(env: Environment, config_path_from_cli: bool) -> None:
         assert expected_toc_files == toc_fileset(
             env.project_dir_path / f"dist/MyAddon-dev-{wow_type}/Dir1/Dir1.toc"
         )
+
+        # check the files in the toc
+        assert expected_toc_tags == toc_tagmap(
+            env.project_dir_path / f"dist/MyAddon-dev-{wow_type}/Dir1/Dir1.toc"
+        )
+
+
+def test_package_common_tags(env: Environment) -> None:
+    env.prepare(
+        project_dir_name="basic",
+        config_file_name="toc_overwritten_common_tag",
+    )
+
+    env.run_wap("package")
+
+    for wow_type, interface in [("retail", "90002"), ("classic", "11306")]:
+        expected_toc_tags = {
+            "Title": "MyAddon Dir1",
+            "Author": "Sylvanas",
+            "Version": "dev",
+            "Interface": interface,
+            "X-BuildDateTime": env.frozen_time.to("Z").isoformat(),
+            "X-BuildTool": f"wap v{__version__}",
+        }
 
         # check the files in the toc
         assert expected_toc_tags == toc_tagmap(

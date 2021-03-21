@@ -83,6 +83,20 @@ are some caveats:
   checking for correctness. This is what you want.
 * Locally, there is no way to easily check your commit's code coverage.
 
+Documentation
+-------------
+
+All documentation is written in reStructuredText and lives in the ``docs/`` directory.
+Once pushed, documentation will be build with ReadTheDocs.
+
+You can start a helpful live-updating documentation server with:
+
+.. code-block:: console
+
+   $ make sphinx-autobuild
+
+Then navigate to http://127.0.0.1:8000 to see the documentation as it will be built.
+
 Versioning
 ----------
 

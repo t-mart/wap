@@ -273,6 +273,18 @@ then you would fill in this field like this:
     changelog-file: CHANGELOG.md
     # ...
 
+``tags``
+^^^^^^^^
+
+A ``map`` of tags to use in all generated TOC files. You can also set tags that are only
+available to a specific addon in the :ref:`config-addons-toc` section.
+
+When more than one tag is defined with the same name, ``wap`` uses the most specific
+value. For example, a tag specified in :ref:`config-addons-toc` will override a tag with
+the same name defined here.
+
+This section exists to help reduce duplication.
+
 ``addons``
 ^^^^^^^^^^
 
