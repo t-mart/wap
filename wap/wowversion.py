@@ -56,5 +56,5 @@ class WoWVersion:
         return cls.ADDONS_PATH_TYPE_MAP[type_part]
 
 
-LATEST_RETAIL_VERSION = WoWVersion.from_dot_version("9.0.2")
+LATEST_RETAIL_VERSION = WoWVersion.from_dot_version("9.0.5")
 LATEST_CLASSIC_VERSION = WoWVersion.from_dot_version("1.13.6")
