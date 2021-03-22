@@ -8,6 +8,8 @@ It's people like *you* who make it such a great tool for everyone.
   Please submit as many fixes for typos and grammar bloopers as you can!
 * Don't be afraid to open half-finished PRs, and ask questions if something is unclear!
 * Try to limit each pull request to *one* change only.
+* If your change is worth documenting to end users, add a section to the `changelog`_
+  under "Unreleased".
 * Since we squash on merge, it's up to you how you handle updates to the master branch.
   Whether you prefer to rebase on master or merge master into your branch, do whatever is more comfortable for you.
 * *Always* add tests and docs for your code.
@@ -119,6 +121,14 @@ Release Process
    of changes on the master branch is performed and the appropriate next version is
    determined according to `SemVer rules`_.
 
+#. Move any items from the "Unreleased" section in the `changelog`_ to a new section
+   for the release (or create the items if they do not exist). This section should be
+   right under the "Unreleased" section.
+
+   Additionally, update the URL for the "Unreleased" link at the bottom of the page. It
+   should point to ``https://github.com/t-mart/wap/compare/v<new-version>...HEAD`` where
+   ``<new-version>`` is the version that will be released.
+
 #. On the master branch, this new version is incremented to with the ``bumpversion``.
 
    .. code-block:: console
@@ -137,6 +147,7 @@ Release Process
    asset.
 
 .. _`Codecov`: https://about.codecov.io/
+.. _`changelog`: https://github.com/t-mart/wap/CHANGELOG.rst
 .. _`Read the Docs`: https://readthedocs.org/
 .. _`CI workflow`: https://github.com/t-mart/wap/actions/workflows/ci.yml
 .. _`Semantic Versioning`: https://semver.org/

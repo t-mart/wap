@@ -29,5 +29,5 @@ Added
 
 .. _`Keep a Changelog`: https://keepachangelog.com/en/1.0.0/
 .. _`Semantic Versioning`: https://semver.org/spec/v2.0.0.html
-.. _`Unreleased`: https://github.com/t-mart/wap/compare/v1.0.0...HEAD
+.. _`Unreleased`: https://github.com/t-mart/wap/compare/v0.8.2...HEAD
 .. _`0.8.3`: https://github.com/t-mart/wap/compare/v0.8.2...v0.8.3
