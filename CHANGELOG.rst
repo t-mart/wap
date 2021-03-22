@@ -18,13 +18,13 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 Unreleased
 ----------
 
+`0.8.3`_ - 2021-03-22
+---------------------
+
 Added
 ^^^^^
 
 - Document changes to the project with this changelog.
-
-`0.8.3`_ - 2021-03-22
----------------------
 
 
 .. _`Keep a Changelog`: https://keepachangelog.com/en/1.0.0/
