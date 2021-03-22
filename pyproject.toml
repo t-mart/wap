@@ -43,6 +43,7 @@ Sphinx = "^3.5.1"
 furo = "^2021.2.21-beta.25"
 sphinx-autobuild = "^2020.9.1"
 sphinx-inline-tabs = "^2020.10.19-beta.4"
+towncrier = "^19.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -54,3 +55,6 @@ wap = 'wap.__main__:main'
 [tool.black]
 line-length = 88
 target-version = ['py38']
+
+[tool.towncrier]
+directory = "changes"
