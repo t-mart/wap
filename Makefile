@@ -50,5 +50,3 @@ clean:
 	rm -f coverage.xml
 	make -C docs clean
 	rm -rf dist
-
-

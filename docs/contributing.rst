@@ -40,6 +40,12 @@ Environment Setup
    This will create a virtual environment for you automatically and install all the
    project dependencies into it.
 
+#. Install the pre-commit hooks:
+
+   .. code-block:: console
+
+      $ pre-commit install
+
 Status Checks
 -------------
 
