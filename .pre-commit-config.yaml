@@ -37,7 +37,3 @@ repos:
       - id: fix-byte-order-marker
       - id: fix-encoding-pragma
         args: ["--remove"]
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-markup
-    rev: v1.0.1
-    hooks:
-      - id: rst-linter
