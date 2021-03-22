@@ -26,7 +26,14 @@ Welcome to wap's documentation!
    toc-gen
    project-structure
    why
+
+.. toctree::
+   :caption: Development
+   :maxdepth: 2
+   :hidden:
+
    contributing
+   changes
    license
 
 .. toctree::
