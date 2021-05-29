@@ -343,11 +343,11 @@ class Config(YamlType["Config", Mapping[str, Any]]):
         if not path.is_file():
             raise ConfigFileException(f'No such config file "{path}"')
 
-        with path.open("r") as file:
+        with path.open("r", encoding='utf-8') as file:
             contents = file.read()
 
         return cls.from_yaml(yaml=contents, label=str(path))
 
     def to_path(self, path: Path) -> None:
-        with path.open("w") as file:
+        with path.open("w", encoding='utf-8') as file:
             file.write(self.to_yaml())
