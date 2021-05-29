@@ -5,6 +5,7 @@ from pathlib import Path
 import attr
 
 from wap import log
+from wap.exception import ChangelogException
 
 CHANGELOG_SUFFIX_MAP = {
     ".md": "markdown",
@@ -49,7 +50,12 @@ class Changelog:
             type = "text"
 
         with path.open("r", encoding="utf-8") as file:
-            contents = file.read()
+            try:
+                contents = file.read()
+            except UnicodeDecodeError as ude:
+                raise ChangelogException(
+                    f'Changelog file "{path}" cannot be decoded to utf-8: {ude}'
+                )
 
         return cls(
             type=type,

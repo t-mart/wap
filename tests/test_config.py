@@ -144,6 +144,17 @@ class TestConfigUsingCommands:
         with pytest.raises(ConfigSemanticException, match=r"must be relative"):
             env.run_wap(*run_args)
 
+    def test_config_non_utf_8(self, env: Environment, run_args: Iterable[str]) -> None:
+        # curseforge section is optional for package and dev-install
+        env.prepare(
+            project_dir_name="basic",
+            config_file_name="toc_tags_non_utf_8",
+            wow_dir_name="retail",
+        )
+
+        with pytest.raises(ConfigFileException, match=r"cannot be decoded to utf-8"):
+            env.run_wap(*run_args)
+
 
 def test_commands_config_no_curseforge_required(env: Environment) -> None:
     # curseforge section is optional for package and dev-install

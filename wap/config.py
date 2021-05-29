@@ -344,7 +344,12 @@ class Config(YamlType["Config", Mapping[str, Any]]):
             raise ConfigFileException(f'No such config file "{path}"')
 
         with path.open("r", encoding="utf-8") as file:
-            contents = file.read()
+            try:
+                contents = file.read()
+            except UnicodeDecodeError as ude:
+                raise ConfigFileException(
+                    f'Config file "{path}" cannot be decoded to utf-8: {ude}'
+                )
 
         return cls.from_yaml(yaml=contents, label=str(path))
 

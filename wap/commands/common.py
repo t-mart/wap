@@ -36,8 +36,8 @@ WAP_WOW_ADDONS_PATH_ENVVAR_NAME = "WAP_WOW_ADDONS_PATH"
 _DECORATED_FUNC_TYPE = TypeVar("_DECORATED_FUNC_TYPE", bound=Callable[..., Any])
 
 
-def config_path_option() -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYPE]:
-    def wrapper(func: _DECORATED_FUNC_TYPE) -> _DECORATED_FUNC_TYPE:
+def config_path_option() -> Callable[[_DECORATED_FUNC_TYPE], Callable[..., Any]]:
+    def wrapper(func: _DECORATED_FUNC_TYPE) -> Callable[..., Any]:
         decorated = click.option(
             "-c",
             "--config-path",
@@ -58,8 +58,8 @@ def config_path_option() -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYP
 
 def version_option(
     *, help: str, required: bool = False
-) -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYPE]:
-    def wrapper(func: _DECORATED_FUNC_TYPE) -> _DECORATED_FUNC_TYPE:
+) -> Callable[[_DECORATED_FUNC_TYPE], Callable[..., Any]]:
+    def wrapper(func: _DECORATED_FUNC_TYPE) -> Callable[..., Any]:
         decorated = click.option(
             "-v",
             "--version",
@@ -76,14 +76,14 @@ def version_option(
 
 def json_option(
     *, help: Optional[str] = None
-) -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYPE]:
+) -> Callable[[_DECORATED_FUNC_TYPE], Callable[..., Any]]:
     if help is None:
         help = (
             "Output json to stdout of the operations wap performed (so it can be "
             "written to files or piped to other programs)"
         )
 
-    def wrapper(func: _DECORATED_FUNC_TYPE) -> _DECORATED_FUNC_TYPE:
+    def wrapper(func: _DECORATED_FUNC_TYPE) -> Callable[..., Any]:
         decorated = click.option(
             "-j",
             "--json",
@@ -98,8 +98,8 @@ def json_option(
     return wrapper
 
 
-def wow_addons_path_option() -> Callable[[_DECORATED_FUNC_TYPE], _DECORATED_FUNC_TYPE]:
-    def wrapper(func: _DECORATED_FUNC_TYPE) -> _DECORATED_FUNC_TYPE:
+def wow_addons_path_option() -> Callable[[_DECORATED_FUNC_TYPE], Callable[..., Any]]:
+    def wrapper(func: _DECORATED_FUNC_TYPE) -> Callable[..., Any]:
         decorated = click.option(
             "-w",
             "--wow-addons-path",
