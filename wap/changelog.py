@@ -48,7 +48,7 @@ class Changelog:
             )
             type = "text"
 
-        with path.open("r", encoding='utf-8') as file:
+        with path.open("r", encoding="utf-8") as file:
             contents = file.read()
 
         return cls(

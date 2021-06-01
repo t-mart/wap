@@ -13,7 +13,7 @@ LATEST_RETAIL_VERSION = WoWVersion.from_dot_version("9.0.2")
 
 
 def write_changelog(path: Path, name: str) -> None:
-    with path.open("w", encoding='utf-8') as changelog_file:
+    with path.open("w", encoding="utf-8") as changelog_file:
         changelog_file.write(f"# {name} Changelog\n\n")
         changelog_file.write(
             "This file is used by *wap* when you upload to Curseforge. It should "
@@ -25,7 +25,7 @@ def write_changelog(path: Path, name: str) -> None:
 
 
 def write_readme(path: Path, name: str) -> None:
-    with path.open("w", encoding='utf-8') as readme_file:
+    with path.open("w", encoding="utf-8") as readme_file:
         readme_file.write(f"# {name}\n\n")
         readme_file.write(
             "(This file is not required to run *wap*. It is here as a suggestion to "
@@ -51,7 +51,7 @@ def write_readme(path: Path, name: str) -> None:
 
 
 def write_lua_file(path: Path, name: str) -> None:
-    with path.open("w", encoding='utf-8') as lua_file:
+    with path.open("w", encoding="utf-8") as lua_file:
         lua_file.write("-- Your code can go here.\n")
         lua_file.write("-- Here's something to get you started,\n")
         lua_file.write("-- but you can erase it if you wish.\n\n")
