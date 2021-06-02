@@ -18,6 +18,9 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 Unreleased
 ----------
 
+`0.9.0`_ - 2021-06-02
+----------
+
 Added
 ^^^^^
 
@@ -31,8 +34,8 @@ Added
 
 - Document changes to the project with this changelog.
 
-
 .. _`Keep a Changelog`: https://keepachangelog.com/en/1.0.0/
 .. _`Semantic Versioning`: https://semver.org/spec/v2.0.0.html
 .. _`Unreleased`: https://github.com/t-mart/wap/compare/v0.8.2...HEAD
 .. _`0.8.3`: https://github.com/t-mart/wap/compare/v0.8.2...v0.8.3
+.. _`0.9.0`: https://github.com/t-mart/wap/compare/v0.8.3...v0.9.0
