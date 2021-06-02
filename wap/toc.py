@@ -135,6 +135,6 @@ def write_toc(
         *[_create_file_line(file) for file in toc_config.files],
     ]
 
-    with write_path.open("w") as toc_file:
+    with write_path.open("w", encoding="utf-8") as toc_file:
         for line in lines:
             toc_file.write(line)
