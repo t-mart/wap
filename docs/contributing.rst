@@ -20,10 +20,11 @@ It's people like *you* who make it such a great tool for everyone.
 Environment Setup
 -----------------
 
-#. Install `poetry <https://python-poetry.org/docs/#installation>`_. There are many
-   installation methods, but you should **not** choose any that install poetry into the
-   same virtualenv as wap itself -- packages of either may conflict with the packages
-   of the other. (I like the pipx way, for example.)
+#. Install `Poetry`_. There are a few installation methods, but you should **not**
+   choose any that install poetry into the same virtualenv as ``wap`` itself -- packages
+   of either may conflict with the packages of the other. (I like the pipx way, for
+   example.)
+
 #. Clone ``wap``
 
    .. code-block:: console
@@ -152,10 +153,42 @@ Release Process
    steps will be taken, such as publishing to PyPI and creating a GitHub release
    asset.
 
+Dependency Updating
+-------------------
+
+Occasionally, the project should have its dependencies updated to the latest compatible
+versions. To do this, do the following:
+
+#. Upgrade the CI runner poetry dependency. (This will provide a fresh system,
+   like the CI runners, a repeatable Poetry installation. It does not change anything
+   locally.)
+
+   #. Get the latest version from the `Poetry releases`_ page and update
+      `Poetry requirements input file`_.
+
+   #. Run the command in the comment of the `Poetry requirements output file`_. It will
+      be something like:
+
+      .. code-block:: console
+
+         $ pip-compile --output-file=ci/poetry-requirements.txt ci/poetry-requirements.in
+
+#. Upgrade the project dependencies:
+
+   .. code-block:: console
+
+      $ poetry upgrade
+
+#. Commit any changes.
+
+.. _`Poetry`: https://python-poetry.org/docs/#installation
 .. _`Codecov`: https://about.codecov.io/
 .. _`changelog`: https://github.com/t-mart/wap/CHANGELOG.rst
 .. _`Read the Docs`: https://readthedocs.org/
 .. _`CI workflow`: https://github.com/t-mart/wap/actions/workflows/ci.yml
+.. _`Poetry requirements output file`: https://github.com/t-mart/wap/blob/master/ci/poetry-requirements.txt
+.. _`Poetry requirements input file`: https://github.com/t-mart/wap/blob/master/ci/poetry-requirements.in
 .. _`Semantic Versioning`: https://semver.org/
 .. _`SemVer rules`: https://semver.org/#summary
 .. _`bump2version`: https://github.com/c4urself/bump2version
+.. _`Poetry releases`: https://github.com/python-poetry/poetry/releases
