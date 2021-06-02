@@ -18,6 +18,11 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 Unreleased
 ----------
 
+Added
+^^^^^
+
+- Force UTF-8 encoding for configuration and changelog files, and gracefully error on any other encoding.
+
 `0.8.3`_ - 2021-03-22
 ---------------------
 

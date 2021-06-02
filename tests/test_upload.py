@@ -324,3 +324,19 @@ def test_package_neither_changelog_options_or_config(env: Environment) -> None:
             "--curseforge-token",
             "abc123",
         )
+
+
+def test_changelog_non_utf_8(env: Environment) -> None:
+    env.prepare(
+        project_dir_name="non_utf_8_changelog",
+        wow_dir_name="retail",
+    )
+
+    with pytest.raises(ChangelogException, match=r"cannot be decoded to utf-8"):
+        env.run_wap(
+            "upload",
+            "--version",
+            DEFAULT_PROJECT_VERSION,
+            "--curseforge-token",
+            "abc123",
+        )

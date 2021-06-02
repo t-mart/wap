@@ -30,7 +30,9 @@ repos:
       - id: check-xml
       - id: check-executables-have-shebangs
       - id: check-toml
-      - id: check-yaml
+      # disabled because we have non-utf-8 yaml files and this hook does not support anything but
+      # utf-8.
+      # - id: check-yaml
       - id: debug-statements
       - id: check-added-large-files
       - id: check-symlinks

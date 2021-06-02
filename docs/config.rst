@@ -4,7 +4,7 @@ Configuration
 -------------
 
 ``wap`` only needs one file to operate: a YAML file named ``.wap.yml``. This file should
-be placed at the root of your project directory.
+be placed at the root of your project directory and UTF-8 encoded.
 
 For new YAML authors, see `What is YAML?`_.
 
