@@ -1,168 +1,149 @@
-from collections.abc import Iterable
+import json
+from typing import Any
 
 import pytest
+from glom import assign, delete
 
-from tests.fixtures import wow_dir_path
-from tests.util import Environment
-from wap.commands.common import DEFAULT_PROJECT_VERSION
+from tests.cmd_util import invoke_config
+from tests.fixture.config import get_basic_config
+from tests.fixture.fsenv import FSEnv
 from wap.exception import (
-    ConfigFileException,
+    ConfigPathException,
     ConfigSchemaException,
-    ConfigSemanticException,
+    ConfigValueException,
 )
 
 
 @pytest.mark.parametrize(
-    ("run_args",),
+    "path,expected_stdout",
     [
-        [
-            ("package",),
-        ],
-        [
-            (
-                "dev-install",
-                "--wow-addons-path",
-                # yikes, gotta put our root in front when we use pyfakefs
-                # usually, we can just query env.wow_dir_path, but because this is
-                # defined in parameters, we don't have access to that.
-                "/" + str(wow_dir_path("retail")),
-            )
-        ],
-        [
-            (
-                "upload",
-                "--version",
-                DEFAULT_PROJECT_VERSION,
-                "--curseforge-token",
-                "abc123",
-            )
-        ],
+        ("name", "Package"),
+        ("wowVersions", {"mainline": "9.2.7", "wrath": "3.4.0", "vanilla": "1.14.3"}),
     ],
-    ids=["package", "dev-install", "upload"],
 )
-class TestConfigUsingCommands:
-    def test_config_path_not_file(
-        self, env: Environment, run_args: Iterable[str]
-    ) -> None:
-        env.prepare(project_dir_name="basic", wow_dir_name="retail")
-        env.config_file_path.unlink()
+@pytest.mark.parametrize("raw", [True, False])
+def test_config_get(fs_env: FSEnv, path: str, expected_stdout: str, raw: bool) -> None:
+    fs_env.write_config(get_basic_config())
 
-        with pytest.raises(ConfigFileException, match=r"No such config file"):
-            env.run_wap(*run_args)
+    args = [path]
+    if raw:
+        args.append("--raw")
+    result = invoke_config(args)
 
-    def test_config_wow_version_bad_format(
-        self, env: Environment, run_args: Iterable[str]
-    ) -> None:
-        env.prepare(
-            project_dir_name="basic",
-            config_file_name="version_bad_format",
-            wow_dir_name="retail",
-        )
-
-        with pytest.raises(
-            ConfigSemanticException, match=r"WoW versions must be of form"
-        ):
-            env.run_wap(*run_args)
-
-    def test_config_dir_paths_not_unique(
-        self, env: Environment, run_args: Iterable[str]
-    ) -> None:
-        env.prepare(
-            project_dir_name="basic",
-            config_file_name="dir_paths_not_unique",
-            wow_dir_name="retail",
-        )
-
-        with pytest.raises(ConfigSemanticException, match=r"must have unique paths"):
-            env.run_wap(*run_args)
-
-    @pytest.mark.parametrize(
-        ("config_file_name"),
-        [
-            "version_too_many_classic",
-            "version_too_many_retail",
-            "version_duplicated_version",
-        ],
-    )
-    def test_config_version_too_many_of_same_type(
-        self, env: Environment, config_file_name: str, run_args: Iterable[str]
-    ) -> None:
-        env.prepare(
-            project_dir_name="basic",
-            config_file_name=config_file_name,
-            wow_dir_name="retail",
-        )
-
-        with pytest.raises(ConfigSemanticException, match=r"at most one \w+ version"):
-            env.run_wap(*run_args)
-
-    def test_config_does_not_follow_schema(
-        self, env: Environment, run_args: Iterable[str]
-    ) -> None:
-        env.prepare(
-            project_dir_name="basic",
-            config_file_name="does_not_follow_schema",
-            wow_dir_name="retail",
-        )
-
-        with pytest.raises(ConfigSchemaException):
-            env.run_wap(*run_args)
-
-    def test_config_curseforge_changelog_not_relative(
-        self, env: Environment, run_args: Iterable[str]
-    ) -> None:
-        env.prepare(
-            project_dir_name="basic",
-            config_file_name="curseforge_changelog_not_relative",
-            wow_dir_name="retail",
-        )
-
-        with pytest.raises(ConfigSemanticException, match=r"must be relative"):
-            env.run_wap(*run_args)
-
-    def test_config_dir_path_not_relative(
-        self, env: Environment, run_args: Iterable[str]
-    ) -> None:
-        env.prepare(
-            project_dir_name="basic",
-            config_file_name="dir_path_not_relative",
-            wow_dir_name="retail",
-        )
-
-        with pytest.raises(ConfigSemanticException, match=r"must be relative"):
-            env.run_wap(*run_args)
-
-    def test_config_toc_file_not_relative(
-        self, env: Environment, run_args: Iterable[str]
-    ) -> None:
-        env.prepare(
-            project_dir_name="basic",
-            config_file_name="toc_file_not_relative",
-            wow_dir_name="retail",
-        )
-
-        with pytest.raises(ConfigSemanticException, match=r"must be relative"):
-            env.run_wap(*run_args)
-
-    def test_config_non_utf_8(self, env: Environment, run_args: Iterable[str]) -> None:
-        # curseforge section is optional for package and dev-install
-        env.prepare(
-            project_dir_name="basic",
-            config_file_name="toc_tags_non_utf_8",
-            wow_dir_name="retail",
-        )
-
-        with pytest.raises(ConfigFileException, match=r"cannot be decoded to utf-8"):
-            env.run_wap(*run_args)
+    assert result.success
+    if isinstance(expected_stdout, str) and raw:
+        assert result.stdout.strip() == expected_stdout
+    else:
+        assert json.loads(result.stdout) == expected_stdout
 
 
-def test_commands_config_no_curseforge_required(env: Environment) -> None:
-    # curseforge section is optional for package and dev-install
-    env.prepare(
-        project_dir_name="basic",
-        config_file_name="no_curseforge",
-        wow_dir_name="retail",
-    )
+def test_config_get_bad_path(fs_env: FSEnv) -> None:
+    fs_env.write_config(get_basic_config())
 
-    env.run_wap("package")
-    env.run_wap("dev-install", "--wow-addons-path", str(env.wow_dir_path))
+    result = invoke_config(["this.does.not.exist"])
+
+    assert isinstance(result.exception, ConfigPathException)
+
+
+@pytest.mark.parametrize(
+    "path,value,expected_config",
+    [
+        ("name", "lol", assign(get_basic_config(), "name", "lol")),
+        (
+            "wowVersions",
+            {"mainline": "1.2.3", "wrath": "4.5.6", "vanilla": "7.8.9"},
+            assign(
+                get_basic_config(),
+                "wowVersions",
+                {"mainline": "1.2.3", "wrath": "4.5.6", "vanilla": "7.8.9"},
+            ),
+        ),
+    ],
+)
+def test_config_set(fs_env: FSEnv, path: str, value: str, expected_config: Any) -> None:
+    config_path = fs_env.write_config(get_basic_config())
+
+    result = invoke_config(["--set", path, json.dumps(value)])
+
+    assert result.success
+
+    assert json.loads(config_path.read_text()) == expected_config
+
+
+@pytest.mark.parametrize(
+    "path,value,expected_config",
+    [
+        ("name", "lol", assign(get_basic_config(), "name", "lol")),
+        ("name", '"more quotes"', assign(get_basic_config(), "name", '"more quotes"')),
+        ("version", "9.9.9", assign(get_basic_config(), "version", "9.9.9")),
+    ],
+)
+def test_config_set_raw(
+    fs_env: FSEnv, path: str, value: str, expected_config: Any
+) -> None:
+    config_path = fs_env.write_config(get_basic_config())
+
+    result = invoke_config(["--raw", "--set", path, value])
+
+    assert result.success
+
+    assert json.loads(config_path.read_text()) == expected_config
+
+
+def test_config_set_cant_encode(fs_env: FSEnv) -> None:
+    fs_env.write_config(get_basic_config())
+
+    result = invoke_config(["--set", "name", "invalid { json"])
+
+    assert isinstance(result.exception, ConfigValueException)
+
+
+def test_config_set_fail_validate(fs_env: FSEnv) -> None:
+    fs_env.write_config(get_basic_config())
+
+    result = invoke_config(["--set", "name", "1"])
+
+    assert isinstance(result.exception, ConfigSchemaException)
+
+
+@pytest.mark.parametrize("path", ["this.does.not.exist", "package.99"])
+def test_config_set_bad_path(fs_env: FSEnv, path: str) -> None:
+    fs_env.write_config(get_basic_config())
+
+    result = invoke_config(["--set", path, "1"])
+
+    assert isinstance(result.exception, ConfigPathException)
+
+
+def test_config_set_no_value_provided(fs_env: FSEnv) -> None:
+    fs_env.write_config(get_basic_config())
+
+    result = invoke_config(["--set", "some.path"])
+
+    assert isinstance(result.exception, SystemExit)
+
+
+@pytest.mark.parametrize(
+    "path,expected_config",
+    [
+        ("publish", delete(get_basic_config(), "publish")),
+        ("package.0.include", delete(get_basic_config(), "package.0.include")),
+    ],
+)
+def test_config_delete(fs_env: FSEnv, path: str, expected_config: Any) -> None:
+    config_path = fs_env.write_config(get_basic_config())
+
+    result = invoke_config(["--delete", path])
+
+    assert result.success
+
+    assert json.loads(config_path.read_text()) == expected_config
+
+
+@pytest.mark.parametrize("path", ["this.does.not.exist", "package.99"])
+def test_config_delete_bad_path(fs_env: FSEnv, path: str) -> None:
+    fs_env.write_config(get_basic_config())
+
+    result = invoke_config(["--delete", path])
+
+    assert isinstance(result.exception, ConfigPathException)

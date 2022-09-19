@@ -1,0 +1,10 @@
+## Title: The title
+## Author: Me
+## Notes: Notes for addon
+## Interface: 90207
+## Version: 1.2.3
+## X-BuildDateTime: 2022-09-07T04:01:12.981967+00:00
+## X-BuildTool: wap 0.10.0
+
+Main.lua
+Extra.lua

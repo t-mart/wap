@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://json.schemastore.org/wap",
+  "$defs": {
+    "wowVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "relativePath": { "type": "string", "pattern": "^\\./" }
+  },
+  "title": "World of Warcraft Addon Package",
+  "description": "Packaging configuration for World of Warcraft addons",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "description": "The name of the addon package. Will be used in generated file names.",
+      "type": "string"
+    },
+    "version": {
+      "description": "The version of the addon package. Will be used in generated file names and, optionally, in a generated ToC",
+      "type": "string"
+    },
+    "wowVersions": {
+      "description": "The versions of World of Warcraft that are supported by this addon package.",
+      "type": "object",
+      "properties": {
+        "mainline": {
+          "description": "The supported mainline (or retail) version.",
+          "$ref": "#/$defs/wowVersion"
+        },
+        "wrath": {
+          "description": "The supported Wrath of the Lich King Classic version.",
+          "$ref": "#/$defs/wowVersion"
+        },
+        "vanilla": {
+          "description": "The supported Vanilla Classic version.",
+          "$ref": "#/$defs/wowVersion"
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "publish": {
+      "type": "object",
+      "description": "Configuration for publishing the addon package to hosts",
+      "properties": {
+        "curseforge": {
+          "type": "object",
+          "description": "Curseforge configuration",
+          "properties": {
+            "projectId": {
+              "type": "string",
+              "description": "The Curseforge Project ID, which can be found the the page of an addon."
+            },
+            "changelogFile": {
+              "description": "The relative path to a changelog file.",
+              "$ref": "#/$defs/relativePath"
+            },
+            "changelogText": {
+              "type": "string",
+              "description": "The changelog as a string."
+            },
+            "changelogType": {
+              "description": "The format of the contents of the changelog text. Can be \"text\", \"html\", or \"markdown\".",
+              "type": "string",
+              "enum": ["text", "html", "markdown"],
+              "default": "text"
+            },
+            "slug": {
+              "type": "string",
+              "description": "The project slug, which can be found in the URL for an addon."
+            },
+            "releaseType": {
+              "type": "string",
+              "enum": ["alpha", "beta", "release"],
+              "description": "The development phase in which to release the addon package. Can be \"alpha\", \"beta\", or \"release\"."
+            }
+          },
+          "required": ["projectId"],
+          "not": { "required": ["changelogFile", "changelogText"] }
+        }
+      },
+      "additionalProperties": false
+    },
+    "package": {
+      "description": "A list of addons to package together.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "An addon (that has its own ToC)",
+        "properties": {
+          "path": {
+            "description": "The path to the root directory of an addon, relative to this configuration file. All files inside it will be packaged.",
+            "$ref": "#/$defs/relativePath"
+          },
+          "toc": {
+            "description": "Generate a ToC with the provided data",
+            "type": "object",
+            "properties": {
+              "tags": {
+                "type": "object",
+                "description": "The metadata tags inside a ToC",
+                "properties": {
+                  "Author": {
+                    "type": "string",
+                    "description": "The author of the addon"
+                  },
+                  "LoadOnDemand": {
+                    "type": "boolean",
+                    "description": "If false, load the addon automatically when entering the game. Otherwise, an API call must be made to load it. Will be serialized to either \"0\" or \"1\"."
+                  },
+                  "Dependencies": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "The name of an addon."
+                    },
+                    "description": "Addons that must load before this one."
+                  },
+                  "OptionalDeps": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "The name of an addon."
+                    },
+                    "description": "Addons that must load before this one if they are present."
+                  },
+                  "LoadWith": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "The name of an addon."
+                    },
+                    "description": "Addons whose loading will trigger the loading of this addon."
+                  },
+                  "LoadManagers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "The name of an addon"
+                    },
+                    "description": "Addons that cause this addon to only load on demand (not automatically)."
+                  },
+                  "DefaultState": {
+                    "type": "boolean",
+                    "description": "If true, this addon is automatically enabled for loading (as in the addons list)."
+                  },
+                  "SavedVariables": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "The name of a variable"
+                    },
+                    "description": "Variable names accessible in addon code that hold state tied to the entire account."
+                  },
+                  "SavedVariablesPerCharacter": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "The name of a variable"
+                    },
+                    "description": "Variable names accessible in addon code that hold state tied to a single character."
+                  }
+                },
+                "patternProperties": {
+                  "^Title(-((deDE)|(enGB)|(enUS)|(esES)|(frFR)|(koKR)|(zhCN)|(zhTW)|(enCN)|(enTW)|(esMX)|(ruRU)|(ptBR)|(ptPT)|(itIT)))?$": {
+                    "type": "string",
+                    "description": "The title of the addon as will be displayed in the addons list."
+                  },
+                  "^Notes(-((deDE)|(enGB)|(enUS)|(esES)|(frFR)|(koKR)|(zhCN)|(zhTW)|(enCN)|(enTW)|(esMX)|(ruRU)|(ptBR)|(ptPT)|(itIT)))?$": {
+                    "type": "string",
+                    "description": "The notes of the addon as will be displayed in the tooltip when mousing-over an addon in the addons list."
+                  },
+                  "^X-": {
+                    "type": "string",
+                    "description": "Custom metadata tag."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "files": {
+                "type": "array",
+                "description": "A list of files that the addon will load in order.",
+                "items": {
+                  "type": "string",
+                  "description": "A file path relative to this addon's path."
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "include": {
+            "type": "array",
+            "description": "Additional files paths or globs to include at the addon directory root, relative to this configuration file. Glob patterns are the same as those Python's Path.glob function (as documented at https://docs.python.org/3/library/pathlib.html#pathlib.Path.glob)",
+            "items": {
+              "$ref": "#/$defs/relativePath",
+              "description": "An additional path or glob to include"
+            }
+          }
+        },
+        "required": ["path"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false,
+  "required": ["name", "version", "wowVersions", "package"]
+}
