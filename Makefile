@@ -50,3 +50,7 @@ clean:
 	rm -f coverage.xml
 	make -C docs clean
 	rm -rf dist
+
+.PHONY: update-schema
+update-schema:
+	python scripts/update_schema.py

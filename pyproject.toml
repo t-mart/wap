@@ -1,57 +1,91 @@
 [tool.poetry]
-name = "wow-addon-packager"
-version = "0.9.0"
+name = "wap"
+version = "0.10.0"
 description = "A developer-friendly World of Warcraft addon packager"
-license = "MIT"
 authors = ["Tim Martin <tim@timmart.in>"]
+license = "MIT"
 readme = "README.rst"
+keywords = ["World of Warcraft", "WoW", "Addons"]
 homepage = "https://github.com/t-mart/wap"
 repository = "https://github.com/t-mart/wap"
 documentation = "https://wow-addon-packager.readthedocs.io/en/stable/"
-keywords = ["World of Warcraft", "WoW", "Addons"]
-packages = [
-    { include = "wap" },
+classifiers = [
+    "Topic :: Software Development :: Build Tools"
 ]
-
-[tool.poetry.dependencies]
-python = "^3.9"
-requests = "^2.25.1"
-click = "^7.1.2"
-strictyaml = "^1.3.2"
-arrow = "^0.17.0"
-attrs = "^20.3.0"
-colorama = "^0.4.4"
-
-[tool.poetry.dev-dependencies]
-black = "^20.8b1"
-mypy = "^0.812"
-pytest = "^6.2.2"
-flake8 = "^3.8.4"
-pyfakefs = "^4.3.3"
-pytest-cov = "^2.11.1"
-codecov = "^2.1.11"
-requests-mock = "^1.8.0"
-pytest-mock = "^3.5.1"
-isort = "^5.7.0"
-bump2version = "^1.0.1"
-requests-toolbelt = "^0.9.1"
-twine = "^3.3.0"
-freezegun = "^1.1.0"
-pip-tools = "^5.5.0"
-pytest-timeout = "^1.4.2"
-Sphinx = "^3.5.1"
-furo = "^2021.2.21-beta.25"
-sphinx-autobuild = "^2020.9.1"
-sphinx-inline-tabs = "^2020.10.19-beta.4"
-pre-commit = "^2.11.1"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 wap = 'wap.__main__:main'
 
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "^8.1.3"
+arrow = "^1.2.3"
+attrs = "^22.1.0"
+jsonschema = "^4.15.0"
+httpx = "^0.23.0"
+rich = "^12.5.1"
+watchfiles = "^0.16.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.8.0"
+mypy = "^0.971"
+pytest = "^7.1.3"
+flake8 = "^5.0.4"
+isort = "^5.10.1"
+Sphinx = "^5.1.1"
+furo = "^2022.6.21"
+freezegun = "^1.2.2"
+respx = "^0.19.3"
+glom = "^22.1.0"
+multipart = "^0.2.4"
+mkdocs-material = "^8.5.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = [
+    # importlib is recommended, but broken when reading conftest
+    # https://github.com/pytest-dev/pytest/issues/9645
+    # "--import-mode=importlib",
+    "--strict-config",
+    "--strict-markers"
+]
+testpaths = "tests"
+
 [tool.black]
 line-length = 88
-target-version = ['py38']
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+files = ["src", "tests"]
+check_untyped_defs = true
+follow_imports_for_stubs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+implicit_reexport = false
+no_implicit_optional = true
+show_error_codes = true
+strict_equality = true
+warn_incomplete_stub = true
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_ignores = true
+# disallow_any_unimported = true
+warn_return_any = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "multipart",
+    "glom",
+    "jsonschema"
+]
+ignore_missing_imports = true
