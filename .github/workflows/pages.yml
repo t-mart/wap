@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy documentation to GH Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -33,15 +33,16 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Install poetry
-        run: pipx install poetry
+        run: pipx install poetry  # it's surprising that this is already installed on the runner
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
           cache: 'poetry'
+      - name: Build docs
+        run: poetry run mkdocs build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          # Upload entire repository
           path: './site'
       - name: Deploy to GitHub Pages
         id: deployment
