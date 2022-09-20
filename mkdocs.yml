@@ -1,9 +1,32 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
 
-site_name: my site
+site_name: wap
+
+repo_url: https://github.com/t-mart/wap
+repo_name: t-mart/wap
+
+docs_dir: docs
+site_dir: site
 
 theme:
   name: material
+  logo: assets/wap.png
+  favicon: assets/wap.png
+  palette:
+    scheme: slate
+    primary: deep orange
+    accent: deep orange
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Getting Started: getting-started.md
+  - Configuration: configuration.md
+  - Project Structure: project-structure.md
+  - Commands: commands.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+  - License: license.md
 
 markdown_extensions:
 

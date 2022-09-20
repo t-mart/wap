@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wap"
-version = "0.10.0"
+version = "0.9.0"
 description = "A developer-friendly World of Warcraft addon packager"
 authors = ["Tim Martin <tim@timmart.in>"]
 license = "MIT"
@@ -32,8 +32,6 @@ mypy = "^0.971"
 pytest = "^7.1.3"
 flake8 = "^5.0.4"
 isort = "^5.10.1"
-Sphinx = "^5.1.1"
-furo = "^2022.6.21"
 freezegun = "^1.2.2"
 respx = "^0.19.3"
 glom = "^22.1.0"
