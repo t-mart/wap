@@ -16,8 +16,12 @@
       "description": "The name of the addon package. Will be used in generated file names.",
       "type": "string"
     },
+    "author": {
+      "description": "The name of author of this package. Will be used in generated ToC files if an key Author is not specified.",
+      "type": "string"
+    },
     "version": {
-      "description": "The version of the addon package. Will be used in generated file names and, optionally, in a generated ToC",
+      "description": "The version of the addon package. Will be used in generated file names and, optionally, in a generated ToC as the Version",
       "type": "string"
     },
     "wowVersions": {
@@ -107,7 +111,15 @@
                   },
                   "LoadOnDemand": {
                     "type": "boolean",
-                    "description": "If false, load the addon automatically when entering the game. Otherwise, an API call must be made to load it. Will be serialized to either \"0\" or \"1\"."
+                    "description": "If false, load the addon automatically when entering the game. Otherwise, an API call must be made to load it."
+                  },
+                  "RequiredDeps": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "The name of an addon."
+                    },
+                    "description": "Addons that must load before this one. Mutually exclusive with Dependencies."
                   },
                   "Dependencies": {
                     "type": "array",
@@ -115,7 +127,7 @@
                       "type": "string",
                       "description": "The name of an addon."
                     },
-                    "description": "Addons that must load before this one."
+                    "description": "Addons that must load before this one. Mutually exclusive with RequiredDeps."
                   },
                   "OptionalDeps": {
                     "type": "array",
@@ -163,20 +175,16 @@
                   }
                 },
                 "patternProperties": {
-                  "^Title(-((deDE)|(enGB)|(enUS)|(esES)|(frFR)|(koKR)|(zhCN)|(zhTW)|(enCN)|(enTW)|(esMX)|(ruRU)|(ptBR)|(ptPT)|(itIT)))?$": {
+                  "^Title(-(deDE|enCN|enGB|enTW|enUS|esES|esMX|frFR|itIT|koKR|ptBR|ptPT|ruRU|zhCN|zhTW))?$": {
                     "type": "string",
                     "description": "The title of the addon as will be displayed in the addons list."
                   },
-                  "^Notes(-((deDE)|(enGB)|(enUS)|(esES)|(frFR)|(koKR)|(zhCN)|(zhTW)|(enCN)|(enTW)|(esMX)|(ruRU)|(ptBR)|(ptPT)|(itIT)))?$": {
+                  "^Notes(-(deDE|enCN|enGB|enTW|enUS|esES|esMX|frFR|itIT|koKR|ptBR|ptPT|ruRU|zhCN|zhTW))?$": {
                     "type": "string",
                     "description": "The notes of the addon as will be displayed in the tooltip when mousing-over an addon in the addons list."
-                  },
-                  "^X-": {
-                    "type": "string",
-                    "description": "Custom metadata tag."
                   }
                 },
-                "additionalProperties": false
+                "not": { "required": ["RequiredDeps", "Dependencies"] }
               },
               "files": {
                 "type": "array",

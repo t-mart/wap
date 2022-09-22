@@ -9,38 +9,41 @@ from attr import frozen
 
 from wap import __version__
 from wap.config import TocConfig
-from wap.exception import PathMissingException
+from wap.exception import PathMissingException, TagException
 from wap.wow import Version
 
 # Just some notes about TOC files I found
-#   - Folder name must match toc prefix. E.g. Foo/Foo.toc, but not Foo/Bar.toc
-#   - Title not required. If not, addon list shows folder name
-#   - Localizable tags logic:
-#     - For a given player with a given locale named `<locale>`, that player can match
-#       to both `Tag-<locale>` and `Tag`. Which one is chosen is based on ordering: last
-#       always wins.
-#     - Presumably, only Title and Notes may be localized
-#   - Files are optional (but we will require them in our config file)
-#   - Tags are optional (ditto)
+# - Folder name must match toc prefix. E.g. Foo/Foo.toc, but not Foo/Bar.toc
+# - Title not required. If not, addon list shows folder name
+# - Localizable tags logic:
+#   - For a given player with a given locale named `<locale>`, that player can match
+#     to both `Title-<locale>` and `Title` (same for notes). Which one is chosen is
+#     based on ordering: last always wins.
+#   - Official tag names are case insensitive EXCEPT for locales
+#   - Presumably, only Title and Notes may be localized
+# - If no Notes are given, title is used
+# - Files are optional (but we will require them in our config file)
+# - Tags are optional (ditto)
+# - Tags do not require values (default to empty string)
 
 # this list comes from some blizzard wow addon code.
 # https://www.townlong-yak.com/framexml/beta/VideoOptionsPanels.lua#1270
 _LANGUAGE_REGIONS = {
     "deDE",
+    "enCN",
     "enGB",
+    "enTW",
     "enUS",
     "esES",
-    "frFR",
-    "koKR",
-    "zhCN",
-    "zhTW",
-    "enCN",
-    "enTW",
     "esMX",
-    "ruRU",
+    "frFR",
+    "itIT",
+    "koKR",
     "ptBR",
     "ptPT",
-    "itIT",
+    "ruRU",
+    "zhCN",
+    "zhTW",
 }
 
 # tag names from https://wowwiki-archive.fandom.com/wiki/TOC_format
@@ -85,7 +88,11 @@ class Toc:
         wow_version: Version,
         addon_version: str,
         suffix: str,
+        global_tags: dict[str, str],
     ) -> Toc:
+        """
+        Global tags will be overridden if the toc config respecifies them.
+        """
 
         extra_wap_tags = {
             "Interface": wow_version.interface_version,
@@ -94,7 +101,7 @@ class Toc:
             f"{_METADATA_TAG_PREFIX}BuildTool": f"wap {__version__}",
         }
 
-        merged_tags = toc_config.serialized_tags | extra_wap_tags
+        merged_tags = global_tags | toc_config.serialized_tags | extra_wap_tags
 
         # sort the tags, for Title and Notes
         # TOC parsing logic is that, for a given user locale "xxXX" and tag name "Tag"
@@ -104,6 +111,8 @@ class Toc:
         # the directory, and for "Notes", the default is an empty string.
         # Since locale tags are probably more applicable, we want them last.
         tag_pairs = list(merged_tags.items())
+        # this sort should only reorder localized tags. everything else should be in
+        # config order (insertion order) because this python sort is stable.
         tag_pairs.sort(key=lambda kv: 1 if kv[0] in _LOCALIZED_TAGS else 0)
 
         return cls(tags=tag_pairs, files=toc_config.files, suffix=suffix)
@@ -113,6 +122,17 @@ class Toc:
         return dict(self.tags)
 
     def validate(self, source_dir: Path) -> None:
+        """
+        Check various things about a toc, including testing that the paths in the files
+        list actually exist in source_dir
+        """
+        illegal_tag_chars = ["\n", " "]
+        for tag in self.tag_map:
+            for ill_char in illegal_tag_chars:
+                if ill_char in tag:
+                    raise TagException(
+                        f'Tag {tag} contains illegal character "{ill_char!r}"'
+                    )
         for file_path in self.files:
             joined_path = source_dir / file_path
             if not joined_path.is_file():

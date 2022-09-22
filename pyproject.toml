@@ -37,6 +37,9 @@ respx = "^0.19.3"
 glom = "^22.1.0"
 multipart = "^0.2.4"
 mkdocs-material = "^8.5.2"
+# NOTE: this pygments source should be replaced once the wowtoc lexer
+# support is released. See https://github.com/pygments/pygments/pull/2244
+pygments = {git = "https://github.com/pygments/pygments", rev = "fccb16b"}
 
 [build-system]
 requires = ["poetry-core"]

@@ -30,7 +30,7 @@ def get_desc() -> str:
 
 
 def get_version() -> str:
-    return Prompt.ask("Version", console=STDERR_CONSOLE)
+    return Prompt.ask("Version", default="0.0.1", console=STDERR_CONSOLE)
 
 
 def get_supported_flavors() -> list[Flavor]:
@@ -70,6 +70,7 @@ def prompt_for_config(mode: Literal["new-project", "new-config"]) -> Config:
     return Config(
         name=package_name,
         version=version,
+        author=author,
         wow_versions={
             flavor.name: flavor.latest_version.dotted for flavor in supported_flavors
         },
@@ -79,7 +80,6 @@ def prompt_for_config(mode: Literal["new-project", "new-config"]) -> Config:
                 toc=TocConfig(
                     tags={
                         "Title": package_name,
-                        "Author": author,
                         "Notes": desc,
                     },
                     files=["Main.lua"],

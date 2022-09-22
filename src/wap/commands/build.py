@@ -64,6 +64,7 @@ class Addon:
             else []
         )
 
+        global_tags = {'Author': config.author} if config.author is not None else {}
         tocs = []
         if addon_config.toc is not None:
             wow_versions = []
@@ -74,6 +75,7 @@ class Addon:
                     wow_version=wow_version,
                     addon_version=config.version,
                     suffix=FLAVOR_MAP[flavor_name].toc_suffix,
+                    global_tags=global_tags,
                 )
                 tocs.append(toc)
                 wow_versions.append(wow_version)
@@ -87,6 +89,7 @@ class Addon:
                     wow_version=max_wow_version,
                     addon_version=config.version,
                     suffix="",
+                    global_tags=global_tags,
                 )
             )
 
@@ -245,12 +248,6 @@ def resolve_globs(root_path: Path, glob_patterns: Sequence[str]) -> Sequence[Pat
         paths.extend(matching_paths)
     return paths
 
-
-# TODO: This help text is too bulky. I'd rather take the NPM approach, where this text
-# is barebones, but the online docs are thorough. Heck, we can even write a help
-# subcommand that webbroswer.open's up to the help page.
-
-
 @click.command()
 @config_path_option()
 @output_path_option()
@@ -302,7 +299,7 @@ def build(
     vanilla_addons_path: Path,
 ) -> None:
     """
-    Build addons into a package
+    Build addons into a package.
 
     Addons inside the package directory will have ToC files generated if configured.
     Additionally, any files in the "include" field of an addon's configuration will be

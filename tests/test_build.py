@@ -21,6 +21,7 @@ from wap.exception import (
     PathExistsException,
     PathMissingException,
     PathTypeException,
+    TagException,
 )
 
 INSTALLATION_ADDON_DIRS = {
@@ -44,7 +45,11 @@ def check_basic_addon(addon_root: Path) -> None:
     expected_toc_tags = {
         "Title": glom(config, "package.0.toc.tags.Title"),
         "Version": PACKAGE_VERSION,
-        "Author": glom(config, "package.0.toc.tags.Author"),
+        # first consult tag Author, then top-level author key
+        "Author": (
+            glom(config, "package.0.toc.tags.Author", default=None)
+            or glom(config, "author", default=None)
+        ),
         "Notes": glom(config, "package.0.toc.tags.Notes"),
         "X-BuildDateTime": str(TEST_TIME),
         "X-BuildTool": f"wap {wap_version}",
@@ -53,7 +58,9 @@ def check_basic_addon(addon_root: Path) -> None:
         path = addon_root / f"{addon_root.name}{suffix}.toc"
         toc = Toc.parse(path)
         assert toc == Toc(
-            tags=expected_toc_tags | {"Interface": interface}, files=expected_toc_files
+            tags={k: v for k, v in expected_toc_tags.items() if v is not None}
+            | {"Interface": interface},
+            files=expected_toc_files,
         )
 
     expected_files = {
@@ -69,7 +76,8 @@ def check_basic_addon(addon_root: Path) -> None:
 class Toc:
     """
     Rudimentary recreation of toc parsing. just good enough for testing. dont want
-    to use the SOT's code to do this."""
+    to use the SOT's code to do this.
+    """
 
     tags: Mapping[str, str]
     files: Sequence[str]
@@ -141,6 +149,31 @@ def test_build_different_config_path(fs_env: FSEnv) -> None:
     fs_env.place_file("LICENSE")
 
     result = invoke_build(["--config-path", config_path])
+
+    assert result.success
+
+    check_basic_addon(Path(f"dist/{PACKAGE_NAME}-{PACKAGE_VERSION}/Addon"))
+
+
+@pytest.mark.parametrize("top_level_author", [True, False])
+@pytest.mark.parametrize("toc_author", [True, False])
+def test_build_author_fallback(
+    fs_env: FSEnv, top_level_author: bool, toc_author: bool
+) -> None:
+    config = get_basic_config()
+
+    top_level_author_name = "top-level"
+    toc_author_name = "toc"
+    if top_level_author:
+        assign(config, "author", top_level_author_name)
+    if toc_author:
+        assign(config, "author", toc_author_name)
+
+    fs_env.write_config(get_basic_config())
+    fs_env.place_addon("basic")
+    fs_env.place_file("LICENSE")
+
+    result = invoke_build()
 
     assert result.success
 
@@ -575,6 +608,19 @@ def test_build_toc_list_type_tags(
         )
         toc = Toc.parse(toc_path)
         assert {(tag_name, expected)} <= toc.tags.items()
+
+
+@pytest.mark.parametrize("bad_tag", ["foo bar", "foo\nbar"])
+def test_build_toc_bad_tags(fs_env: FSEnv, bad_tag: str) -> None:
+    config = get_basic_config()
+    config["package"][0]["toc"]["tags"][bad_tag] = "value"
+    fs_env.write_config(config)
+    fs_env.place_addon("basic")
+    fs_env.place_file("LICENSE")
+
+    result = invoke_build()
+
+    assert isinstance(result.exception, TagException)
 
 
 def test_build_watch_edit_source_file(fs_env: FSEnv) -> None:

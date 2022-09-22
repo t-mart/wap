@@ -38,6 +38,7 @@ def test_prompt_for_config(mode: Literal["new-project", "new-config"]) -> None:
             "$schema": get_basic_config()["$schema"],
             "name": package_name,
             "version": version,
+            "author": author,
             "wowVersions": {
                 MAINLINE_FLAVOR.name: MAINLINE_FLAVOR.latest_version.dotted
             },
@@ -47,7 +48,6 @@ def test_prompt_for_config(mode: Literal["new-project", "new-config"]) -> None:
                     "toc": {
                         "tags": {
                             "Title": package_name,
-                            "Author": author,
                             "Notes": desc,
                         },
                         "files": ["Main.lua"],

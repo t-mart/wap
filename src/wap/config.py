@@ -16,7 +16,7 @@ from wap.wow import FlavorName
 from .exception import ConfigSchemaException, EncodingException
 
 SCHEMA_URL = (
-    "https://raw.githubusercontent.com/t-mart/wap-json-schema/master/wap.schema.json"
+    "https://raw.githubusercontent.com/t-mart/wap/master/src/wap/schema/wap.schema.json"
 )
 
 
@@ -30,6 +30,7 @@ def get_schema() -> Any:
 class Config:
     name: str
     version: str
+    author: str | None = field(default=None)
     wow_versions: Mapping[FlavorName, str]
     publish: PublishConfig | None = field(default=None)
     package: Sequence[AddonConfig]
@@ -53,6 +54,7 @@ class Config:
         return cls(
             name=obj["name"],
             version=obj["version"],
+            author=obj.get("author", None),
             wow_versions=obj["wowVersions"],
             publish=publish,
             package=[AddonConfig.from_python_object(obj) for obj in obj["package"]],
@@ -79,6 +81,7 @@ class Config:
             obj["$schema"] = SCHEMA_URL
         obj["name"] = self.name
         obj["version"] = self.version
+        obj["author"] = self.author
         obj["wowVersions"] = self.wow_versions
         if self.publish is not None:
             obj["publish"] = self.publish.to_python_object()

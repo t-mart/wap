@@ -23,7 +23,14 @@ nav:
   - Getting Started: getting-started.md
   - Configuration: configuration.md
   - Project Structure: project-structure.md
-  - Commands: commands.md
+  - TOC Generation: toc-gen.md
+  - Commands:
+    - wap build: commands/build.md
+    - wap config: commands/config.md
+    - wap help: commands/help.md
+    - wap new-config: commands/new-config.md
+    - wap new-project: commands/new-project.md
+    - wap publish: commands/publish.md
   - Contributing: contributing.md
   - Changelog: changelog.md
   - License: license.md
@@ -50,12 +57,17 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
-  - pymdownx.highlight
+  - pymdownx.highlight:
+      use_pygments: true
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.smartsymbols
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.tasklist:

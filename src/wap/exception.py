@@ -44,3 +44,7 @@ class PathTypeException(WapException):
 
 class PlatformException(WapException):
     """Indicates that the current platform does not have a required feature."""
+
+
+class TagException(WapException):
+    """Indicates a malformed tag inside a TOC."""

@@ -1,3 +1,4 @@
+from textwrap import dedent
 import webbrowser
 
 import click
@@ -28,6 +29,7 @@ def open_or_print_help_url(command_name: str | None = None) -> None:
 @click.command("help")
 @click.argument("subcommand", required=False)
 def help_command(subcommand: str | None) -> None:
+    """View help for commands"""
     if subcommand is None:
         open_or_print_help_url()
     elif subcommand not in SUBCOMMAND_NAMES:
@@ -58,3 +60,8 @@ def base() -> None:
 
 for subcommand in SUBCOMMANDS:
     base.add_command(subcommand)
+    if subcommand.help:
+        subcommand.help = (
+            dedent(subcommand.help)
+            + f'\n\nRun "wap help {subcommand.name}" for more info'
+        )
