@@ -47,7 +47,7 @@ These instructions create and upload a working addon without editing a single li
     wap build --link
     ```
 
-    At this point, you can play the game with your addon.
+    At this point, **you can play the game with your addon**.
 
 6. Upload your addon to CurseForge so that others can use it:
 

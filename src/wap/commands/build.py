@@ -13,6 +13,7 @@ from wap.commands.util import (
     config_path_option,
     output_path_option,
     wow_addons_dir_options,
+    DEFAULT_OUTPUT_PATH,
 )
 from wap.config import AddonConfig, Config
 from wap.console import info, warn
@@ -64,7 +65,7 @@ class Addon:
             else []
         )
 
-        global_tags = {'Author': config.author} if config.author is not None else {}
+        global_tags = {"Author": config.author} if config.author is not None else {}
         tocs = []
         if addon_config.toc is not None:
             wow_versions = []
@@ -248,6 +249,7 @@ def resolve_globs(root_path: Path, glob_patterns: Sequence[str]) -> Sequence[Pat
         paths.extend(matching_paths)
     return paths
 
+
 @click.command()
 @config_path_option()
 @output_path_option()
@@ -290,7 +292,7 @@ def resolve_globs(root_path: Path, glob_patterns: Sequence[str]) -> Sequence[Pat
 @wow_addons_dir_options()
 def build(
     config_path: Path,
-    output_path: Path,
+    output_path: Path | None,
     clean: bool,
     flavors_to_link: Sequence[FlavorName | AutoChoiceName],
     enable_watch: bool,
@@ -310,10 +312,16 @@ def build(
     """
     config_path = config_path.resolve()
 
+    if output_path is None:
+        output_path = config_path.parent / DEFAULT_OUTPUT_PATH
+
     def build_once() -> Package:
         config = Config.from_path(config_path)
         package = Package.create(
-            config=config, config_path=config_path, output_path=output_path
+            config=config,
+            config_path=config_path,
+            output_path=output_path,  # type: ignore
+            # mypy bug https://github.com/python/mypy/issues/2608
         )
 
         built_addons = package.build(clean=clean)

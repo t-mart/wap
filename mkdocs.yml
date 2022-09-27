@@ -19,7 +19,6 @@ theme:
 
 nav:
   - Home: index.md
-  - Installation: installation.md
   - Getting Started: getting-started.md
   - Configuration: configuration.md
   - Project Structure: project-structure.md

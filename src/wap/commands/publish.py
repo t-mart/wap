@@ -3,7 +3,11 @@ from pathlib import Path
 
 import click
 
-from wap.commands.util import config_path_option, output_path_option
+from wap.commands.util import (
+    config_path_option,
+    output_path_option,
+    DEFAULT_OUTPUT_PATH,
+)
 from wap.config import Config
 from wap.console import info, warn
 from wap.core import get_build_path
@@ -41,7 +45,7 @@ WAP_CURSEFORGE_TOKEN_ENVVAR_NAME = "WAP_CF_TOKEN"
 )
 def publish(
     config_path: Path,
-    output_path: Path,
+    output_path: Path | None,
     release_type: str | None,
     curseforge_token: str,
     dry_run: bool,
@@ -50,6 +54,8 @@ def publish(
     Upload packages to Curseforge.
     """
     config = Config.from_path(config_path)
+    if output_path is None:
+        output_path = config_path.parent / DEFAULT_OUTPUT_PATH
 
     if config.publish is None or config.publish.curseforge is None:
         raise ConfigException(

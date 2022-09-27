@@ -5,6 +5,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
+import os
 
 import pytest
 from attrs import frozen
@@ -153,6 +154,26 @@ def test_build_different_config_path(fs_env: FSEnv) -> None:
     assert result.success
 
     check_basic_addon(Path(f"dist/{PACKAGE_NAME}-{PACKAGE_VERSION}/Addon"))
+
+
+def test_build_config_discovery(fs_env: FSEnv) -> None:
+    fs_env.write_config(get_basic_config())
+    fs_env.place_addon("basic")
+    fs_env.place_file("LICENSE")
+
+    os.chdir(Path("addon"))
+
+    result = invoke_build()
+
+    assert result.success
+
+    check_basic_addon(Path(f"../dist/{PACKAGE_NAME}-{PACKAGE_VERSION}/Addon"))
+
+
+def test_build_config_discovery_fail(fs_env: FSEnv) -> None:
+    result = invoke_build()
+
+    assert isinstance(result.exception, SystemExit)
 
 
 @pytest.mark.parametrize("top_level_author", [True, False])
