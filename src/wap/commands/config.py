@@ -27,8 +27,8 @@ from wap.exception import ConfigPathException, ConfigValueException
     is_flag=True,
     default=False,
     help=(
-        "With --get, if the value at PATH is a string, write it without quotes. With "
-        "--set/--delete, read the VALUE as a string without quotes."
+        "With --get, if the value at PATH is a string, print it without quotes. With "
+        "--set, read VALUE as a string without quotes."
     ),
 )
 @click.argument("path")
@@ -41,11 +41,7 @@ def config(
     raw: bool,
 ) -> None:
     """
-    Get, set, or delete the JSON configuration value specified by PATH. Objects can be
-    accessed by property names and arrays by their zero-based indexes, such as
-    "package.0.path".
-
-    All mutations (--set/--delete) will be validated before being written.
+    Get, set, or delete the JSON configuration value specified by PATH.
 
     Examples:
 
@@ -69,7 +65,7 @@ def config(
         else:
             print_out(json.dumps(value, indent=2))
     elif mode == "set":
-        if not value:
+        if value is None:
             raise click.BadArgumentUsage("Must provide a value to set")
         if not raw:
             try:
@@ -80,6 +76,7 @@ def config(
             config_obj = assign(config.to_python_object(), path, value)
         except GlomError as glom_error:
             raise ConfigPathException(str(glom_error))
+        print_out(json.dumps(value, indent=2))
         Config.from_python_object(config_obj).write_to_path(config_path, indent=True)
     elif mode == "delete":
         try:

@@ -15,7 +15,7 @@ from wap.curseforge import RELEASE_TYPES, Changelog, CurseForgeAPI
 from wap.exception import ConfigException, CurseForgeAPIException, PathMissingException
 
 DEFAULT_RELEASE_TYPE = "alpha"
-WAP_CURSEFORGE_TOKEN_ENVVAR_NAME = "WAP_CF_TOKEN"
+WAP_CURSEFORGE_TOKEN_ENVVAR_NAME = "WAP_CURSEFORGE_TOKEN"
 
 
 @click.command()
@@ -30,25 +30,19 @@ WAP_CURSEFORGE_TOKEN_ENVVAR_NAME = "WAP_CF_TOKEN"
 )
 @click.option(
     "--curseforge-token",
+    metavar='TOKEN',
     envvar=WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
     required=True,
     help=(
         "The value of your CurseForge API token. May also be specified in the "
-        "environment variable WAP_CURSEFORGE_TOKEN."
+        f"environment variable {WAP_CURSEFORGE_TOKEN_ENVVAR_NAME}."
     ),
-)
-@click.option(
-    "--dry-run",
-    is_flag=True,
-    type=bool,
-    help=("Don't upload anything, but instead just report what would have been done."),
 )
 def publish(
     config_path: Path,
     output_path: Path | None,
     release_type: str | None,
     curseforge_token: str,
-    dry_run: bool,
 ) -> None:
     """
     Upload packages to Curseforge.
@@ -115,26 +109,23 @@ def publish(
                 f"{DEFAULT_RELEASE_TYPE}"
             )
 
-    if not dry_run:
-        info(f"Uploading {zip_path} to CurseForge with version ids {version_ids}")
-        with zip_path.open("rb") as zip_file:
-            file_id = cf_api.upload(
-                project_id=cf_config.project_id,
-                file=zip_file,
-                display_name=build_path.name,  # Addon-1.2.3
-                file_name=zip_path.name,  # Addon-1.2.3.zip
-                changelog=changelog,
-                game_version_ids=version_ids,
-                release_type=release_type,
-            )
-        if cf_config.slug is not None:
-            url = cf_api.uploaded_file_url(file_id=file_id, slug=cf_config.slug)
-            info(f"Upload available at {url}")
-        else:
-            info(f"Uploaded file {file_id}")
-            info(
-                'Hint: Provide a "slug" in your curseforge config to get an entire '
-                "link in output next time."
-            )
+    info(f"Uploading {zip_path} to CurseForge with version ids {version_ids}")
+    with zip_path.open("rb") as zip_file:
+        file_id = cf_api.upload(
+            project_id=cf_config.project_id,
+            file=zip_file,
+            display_name=build_path.name,  # Addon-1.2.3
+            file_name=zip_path.name,  # Addon-1.2.3.zip
+            changelog=changelog,
+            game_version_ids=version_ids,
+            release_type=release_type,
+        )
+    if cf_config.slug is not None:
+        url = cf_api.uploaded_file_url(file_id=file_id, slug=cf_config.slug)
+        info(f"Upload available at {url}")
     else:
-        info("Not uploading for dry run")
+        info(f"Uploaded file {file_id}")
+        info(
+            'Hint: Provide a "slug" in your curseforge config to get an entire '
+            "link in output next time."
+        )

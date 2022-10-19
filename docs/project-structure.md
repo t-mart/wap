@@ -22,8 +22,6 @@ flowchart
     end
 ```
 
-However complex, `wap` can handle it.
-
 ## Recommended File Layout
 
 In your project root, you should keep your `wap.json` configuration file and your addon directories.
@@ -33,6 +31,12 @@ MyProject/
 ├─── Addon A/
 │    ├─── Main.lua
 │    └─── Other.lua
+├─── Addon B/
+│    └─── API.lua
 ├─── README.md
 └─── wap.json
 ```
+
+!!! note
+
+    The `.lua` files above are just examples. You do not need these file names.

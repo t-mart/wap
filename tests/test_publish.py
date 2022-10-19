@@ -275,22 +275,6 @@ def test_publish_release_types(
         assert "No release type specified" in result.stderr
 
 
-def test_publish_dry_run(
-    fs_env: FSEnv,
-    cf_api_respx: MockRouter,
-) -> None:
-    fs_env.write_config(get_basic_config())
-    fs_env.place_output_dir("basic")
-
-    result = invoke_publish(["--curseforge-token", CURSEFORGE_TOKEN, "--dry-run"])
-
-    assert result.success
-
-    upload_file_route = cf_api_respx.routes["upload-file"]
-    assert upload_file_route
-    assert upload_file_route.call_count == 0
-
-
 @pytest.mark.parametrize("token", ["malformed", "random"])
 def test_publish_bad_auth(fs_env: FSEnv, token: str) -> None:
     fs_env.write_config(get_basic_config())

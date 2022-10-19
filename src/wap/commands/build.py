@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Literal, cast, get_args
 
 import click
-from attrs import frozen
+from attr import frozen
 from watchfiles import watch
 
 from wap.commands.util import (
@@ -302,13 +302,6 @@ def build(
 ) -> None:
     """
     Build addons into a package.
-
-    Addons inside the package directory will have ToC files generated if configured.
-    Additionally, any files in the "include" field of an addon's configuration will be
-    copied into the addon directories.
-
-    The name of the directory will be in the format of "<package-name>-<version>", such
-    as "MyAddon-1.2.3".
     """
     config_path = config_path.resolve()
 

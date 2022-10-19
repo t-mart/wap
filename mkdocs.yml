@@ -17,9 +17,12 @@ theme:
     primary: deep orange
     accent: deep orange
 
+extra_css:
+  - stylesheets/extra.css
+
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
+  - Installation: installation.md
   - Configuration: configuration.md
   - Project Structure: project-structure.md
   - TOC Generation: toc-gen.md

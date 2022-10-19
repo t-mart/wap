@@ -1,6 +1,4 @@
-# Getting Started
-
-`wap` is a developer-friendly World of Warcraft addon packager.
+# Installation
 
 ## Installation
 
@@ -26,4 +24,5 @@ pip install --upgrade --user wow-addon-packager
 
 !!! warning
 
-    Installing with pip creates the possibility of conflicts with other packages.
+    Installing with pip creates the possibility of conflicts with other packages. The
+    [pipx method](#pipx-recommended) does not have this issue.

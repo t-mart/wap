@@ -199,7 +199,7 @@
           },
           "include": {
             "type": "array",
-            "description": "Additional files paths or globs to include at the addon directory root, relative to this configuration file. Glob patterns are the same as those Python's Path.glob function (as documented at https://docs.python.org/3/library/pathlib.html#pathlib.Path.glob)",
+            "description": "Additional files paths or globs to include at the addon directory root, relative to this configuration file. Glob patterns are the same as those Python's pathlib.Path.glob function (as documented at https://docs.python.org/3/library/pathlib.html#pathlib.Path.glob)",
             "items": {
               "$ref": "#/$defs/relativePath",
               "description": "An additional path or glob to include"

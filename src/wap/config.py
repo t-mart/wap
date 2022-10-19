@@ -81,7 +81,8 @@ class Config:
             obj["$schema"] = SCHEMA_URL
         obj["name"] = self.name
         obj["version"] = self.version
-        obj["author"] = self.author
+        if self.author is not None:
+            obj["author"] = self.author
         obj["wowVersions"] = self.wow_versions
         if self.publish is not None:
             obj["publish"] = self.publish.to_python_object()
@@ -102,7 +103,10 @@ class Config:
         self, path: Path, with_schema: bool = True, indent: bool = False
     ) -> None:
         path.write_text(
-            json.dumps(self.to_python_object(), indent=2 if indent else None)
+            json.dumps(
+                self.to_python_object(with_schema=with_schema),
+                indent=2 if indent else None,
+            )
         )
 
 

@@ -101,7 +101,7 @@ class Toc:
             f"{_METADATA_TAG_PREFIX}BuildTool": f"wap {__version__}",
         }
 
-        merged_tags = global_tags | toc_config.serialized_tags | extra_wap_tags
+        merged_tags = global_tags | extra_wap_tags | toc_config.serialized_tags
 
         # sort the tags, for Title and Notes
         # TOC parsing logic is that, for a given user locale "xxXX" and tag name "Tag"
@@ -126,7 +126,7 @@ class Toc:
         Check various things about a toc, including testing that the paths in the files
         list actually exist in source_dir
         """
-        illegal_tag_chars = ["\n", " "]
+        illegal_tag_chars = ["\n", " ", ":"]
         for tag in self.tag_map:
             for ill_char in illegal_tag_chars:
                 if ill_char in tag:

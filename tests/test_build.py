@@ -631,7 +631,7 @@ def test_build_toc_list_type_tags(
         assert {(tag_name, expected)} <= toc.tags.items()
 
 
-@pytest.mark.parametrize("bad_tag", ["foo bar", "foo\nbar"])
+@pytest.mark.parametrize("bad_tag", ["foo bar", "foo\nbar", "foo:bar"])
 def test_build_toc_bad_tags(fs_env: FSEnv, bad_tag: str) -> None:
     config = get_basic_config()
     config["package"][0]["toc"]["tags"][bad_tag] = "value"
