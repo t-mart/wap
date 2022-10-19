@@ -28,11 +28,11 @@ nav:
   - TOC Generation: toc-gen.md
   - Commands:
     - wap build: commands/build.md
-    - wap config: commands/config.md
     - wap help: commands/help.md
     - wap new-config: commands/new-config.md
     - wap new-project: commands/new-project.md
     - wap publish: commands/publish.md
+    - wap validate: commands/validate.md
   - Contributing: contributing.md
   - Changelog: changelog.md
   - License: license.md

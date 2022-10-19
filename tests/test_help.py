@@ -8,7 +8,7 @@ from tests.cmd_util import invoke_help
 
 @pytest.mark.parametrize(
     "subcommand",
-    ["build", "config", "help", "new-config", "new-project", "publish", None],
+    ["build", "validate", "help", "new-config", "new-project", "publish", None],
 )
 def test_help(subcommand: str | None) -> None:
     with patch("tests.cmd_util.base.webbrowser.open") as webbrowser_open_mock:
@@ -27,7 +27,7 @@ def test_help(subcommand: str | None) -> None:
 
 @pytest.mark.parametrize(
     "subcommand",
-    ["build", "config", "help", "new-config", "new-project", "publish", None],
+    ["build", "validate", "help", "new-config", "new-project", "publish", None],
 )
 def test_help_no_browser(subcommand: str | None) -> None:
     with patch("tests.cmd_util.base.webbrowser.open", side_effect=webbrowser.Error):

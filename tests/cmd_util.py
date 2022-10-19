@@ -7,10 +7,10 @@ from attr import frozen
 from click import BaseCommand
 from click.testing import CliRunner, Result
 
-# we need to patch some functions in these module, so we gotta import the module
-# itself -- can't import specific things from the module because then the references
-# wouldn't be patchable.
-from wap.commands import base, build, config, new_config, new_project, publish
+# we need to patch some functions in these module, so we gotta import the module itself
+# -- can't import specific things from the module because then the references wouldn't
+# be patchable.
+from wap.commands import base, build, new_config, new_project, publish, validate
 
 _WHITESPACE_PATTERN = r"\s+"
 
@@ -38,11 +38,11 @@ class RunResult:  # yeesh, this name is derivative
     @property
     def stdout(self) -> str:
         # ensures there's no line breaks to mess up __contains__ calls
-        return re.sub(_WHITESPACE_PATTERN, " ", self.stdout_raw)
+        return re.sub(_WHITESPACE_PATTERN, " ", self.stdout_raw).strip()
 
     @property
     def stderr(self) -> str:
-        return re.sub(_WHITESPACE_PATTERN, " ", self.stderr_raw)
+        return re.sub(_WHITESPACE_PATTERN, " ", self.stderr_raw).strip()
 
     @property
     def success(self) -> bool:
@@ -59,8 +59,8 @@ def invoke_build(args: Sequence[str] | None = None) -> RunResult:
     return invoke(build.build, args)
 
 
-def invoke_config(args: Sequence[str] | None = None) -> RunResult:
-    return invoke(config.config, args)
+def invoke_validate(args: Sequence[str] | None = None) -> RunResult:
+    return invoke(validate.validate, args)
 
 
 def invoke_help(args: Sequence[str] | None = None) -> RunResult:

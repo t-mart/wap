@@ -5,7 +5,7 @@ import click
 
 from wap import __version__
 from wap.commands.build import build
-from wap.commands.config import config
+from wap.commands.validate import validate
 from wap.commands.new_config import new_config
 from wap.commands.new_project import new_project
 from wap.commands.publish import publish
@@ -40,11 +40,11 @@ def help_command(subcommand: str | None) -> None:
 
 SUBCOMMANDS = [
     build,
-    config,
     help_command,
     new_config,
     new_project,
     publish,
+    validate,
 ]
 SUBCOMMAND_NAMES = {command.name for command in SUBCOMMANDS}
 BASE_HELP_URL = "http://t-mart.github.io/wap"
@@ -54,7 +54,7 @@ BASE_HELP_URL = "http://t-mart.github.io/wap"
 @click.version_option(
     message=f"wap version {__version__}",
 )
-def base() -> None:
+def base() -> int | None:
     """World of Warcraft addon packager"""
 
 
