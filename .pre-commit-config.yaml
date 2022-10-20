@@ -1,41 +1,27 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
-  - repo: https://github.com/pycqa/isort
-    rev: "5.8.0"
-    hooks:
-      - id: isort
-  - repo: https://github.com/psf/black
-    rev: "20.8b1"
-    hooks:
-      - id: black
-        language_version: python3
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: "3.8.4"
-    hooks:
-      - id: flake8
-        exclude: "^docs/"
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.812
-    hooks:
-      - id: mypy
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v3.2.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
-      - id: check-merge-conflict
-      - id: check-case-conflict
-      - id: check-json
-      - id: check-xml
-      - id: check-executables-have-shebangs
-      - id: check-toml
-      # disabled because we have non-utf-8 yaml files and this hook does not support anything but
-      # utf-8.
-      # - id: check-yaml
-      - id: debug-statements
       - id: check-added-large-files
-      - id: check-symlinks
-      - id: fix-byte-order-marker
-      - id: fix-encoding-pragma
-        args: ["--remove"]
+
+  - repo: https://github.com/psf/black
+    rev: 22.8.0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        files: \.py$
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 5.0.4
+    hooks:
+      - id: flake8
+
+  # not gonna put mypy here. too slow and doesn't work well for individual files.

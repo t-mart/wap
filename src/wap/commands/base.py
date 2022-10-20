@@ -1,14 +1,14 @@
-from textwrap import dedent
 import webbrowser
+from textwrap import dedent
 
 import click
 
 from wap import __version__
 from wap.commands.build import build
-from wap.commands.validate import validate
 from wap.commands.new_config import new_config
 from wap.commands.new_project import new_project
 from wap.commands.publish import publish
+from wap.commands.validate import validate
 from wap.console import print
 
 

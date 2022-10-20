@@ -4,7 +4,7 @@ import click
 
 from wap.commands.util import config_path_option
 from wap.config import Config
-from wap.console import print, error
+from wap.console import error, print
 from wap.exception import WapError
 
 

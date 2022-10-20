@@ -9,14 +9,14 @@ from attrs import frozen
 from watchfiles import watch
 
 from wap.commands.util import (
+    DEFAULT_OUTPUT_PATH,
     clean_option,
     config_path_option,
     output_path_option,
     wow_addons_dir_options,
-    DEFAULT_OUTPUT_PATH,
 )
 from wap.config import AddonConfig, Config
-from wap.console import warn, print
+from wap.console import print, warn
 from wap.core import get_build_path
 from wap.exception import ConfigError, PathExistsError, PathTypeError
 from wap.fileops import clean_dir, copy_path, symlink
@@ -212,7 +212,6 @@ class Package:
 
 AutoChoiceName = Literal["auto"]
 AUTO_CHOICE: AutoChoiceName = get_args(AutoChoiceName)[0]
-
 
 
 def get_addon_link_targets(

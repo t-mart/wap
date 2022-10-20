@@ -40,6 +40,7 @@ mkdocs-material = "^8.5.2"
 # NOTE: this pygments source should be replaced once the wowtoc lexer
 # support is released. See https://github.com/pygments/pygments/pull/2244
 pygments = {git = "https://github.com/pygments/pygments", rev = "fccb16b"}
+pre-commit = "^2.20.0"
 
 [build-system]
 requires = ["poetry-core"]

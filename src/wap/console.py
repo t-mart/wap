@@ -1,8 +1,8 @@
 from typing import Any
 
 from rich.console import Console
-from rich.theme import Theme
 from rich.prompt import Confirm, Prompt
+from rich.theme import Theme
 
 _THEME = Theme(
     {

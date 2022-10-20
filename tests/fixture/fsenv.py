@@ -61,7 +61,7 @@ class FSEnv:
 
     def place_file(
         self,
-        target_name: str,
+        target_name: str | Path,
         parents: bool = False,
         exist_ok: bool = False,
         text: str = "",

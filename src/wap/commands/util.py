@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from functools import update_wrapper
 from pathlib import Path
-from typing import ParamSpec, TypeVar, Literal
+from typing import Literal, ParamSpec, TypeVar
 
 import click
 

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+import os
 from collections.abc import Iterable, Iterator, Mapping, Sequence
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
-import os
 
 import pytest
 from attrs import frozen

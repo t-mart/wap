@@ -9,11 +9,7 @@ import httpx
 from attrs import frozen
 
 from wap.console import warn
-from wap.exception import (
-    CurseForgeAPIError,
-    EncodingError,
-    PathMissingError,
-)
+from wap.exception import CurseForgeAPIError, EncodingError, PathMissingError
 
 GameVersionId = NewType("GameVersionId", int)
 ChangelogType = Literal["text", "html", "markdown"]

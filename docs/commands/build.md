@@ -41,22 +41,22 @@ to test them out in the game.
 !!! note
 
     A symlink is a file that points to/targets another file. As far as World of Warcraft is
-    concerned, the symlink is indistinguishable from the real file. If the softlink is deleted, the
+    concerned, the symlink is indistinguishable from the real file. If the symlink is deleted, the
     target file will be unaffected. See [Symbolic link](https://en.wikipedia.org/wiki/Symbolic_link)
      on Wikipedia for more information.
 
-    Windows users will not be able to create softlinks by default. There are two options:
+    Windows users will not be able to create symlinks by default. There are two options:
 
     - Enable developer mode by searching for "developer mode" in Settings and clicking the toggle.
       *(Recommended)*
     - Run wap as an administrator.
 
-The argument provided specifies to which installations links should be made. `mainline`, `wrath`,
-`vanilla` symlink into those respective flavor's installation. For a given addon, `auto` symlinks
-into any found installations on your computer if the addon is compatible with that flavor's
-installation.
+The argument provided specifies to which installations links should be made. Without an argument,
+`--link` runs as if `auto` was provided.
 
-Without an argument, `--link` runs as if `auto` was provided.
+For a given addon, `auto` symlinks into any found installations on your computer if the addon is
+compatible with that flavor's installation. Otherwise, `mainline`, `wrath`, `vanilla` symlink into
+those respective flavor's installation.
 
 This option can be provided multiple times unless `auto` is also provided.
 

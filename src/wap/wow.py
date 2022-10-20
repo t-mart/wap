@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import importlib.resources
 import json
+import re
 import sys
 from pathlib import Path
 from typing import ClassVar, Literal, Mapping, get_args
-import re
 
-from attrs import frozen, field
+from attrs import field, frozen
 
 import wap
 from wap.exception import PlatformError, VersionError

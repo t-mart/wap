@@ -6,7 +6,7 @@ import pytest
 from tests.fixture.config import get_basic_config
 from tests.fixture.fsenv import FSEnv
 from wap import prompt
-from wap.wow import MAINLINE_FLAVOR, FLAVORS
+from wap.wow import FLAVORS, MAINLINE_FLAVOR
 
 
 @pytest.mark.parametrize("mode", ["new-config", "new-project"])
@@ -40,9 +40,9 @@ def test_prompt_for_config(mode: Literal["new-project", "new-config"]) -> None:
         project_slug = "slug"
         mocks["get_project_slug"].return_value = project_slug
         confirm_publish = True
-        mocks['confirm_publish'].return_value = confirm_publish
+        mocks["confirm_publish"].return_value = confirm_publish
         confirm_all_ok = True
-        mocks['confirm_all_ok'].return_value = confirm_all_ok
+        mocks["confirm_all_ok"].return_value = confirm_all_ok
 
         config = prompt.prompt_for_config(mode=mode)
 

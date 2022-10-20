@@ -188,13 +188,12 @@ A container for Curseforge configuration.
 - Required
 - Type: string
 
-The Curseforge project identifier, which identifies the package to update. You can find it on your
-project page:
+The Curseforge project identifier, which identifies the package to publish to. You can find it on
+your project page:
 
 ![Project id as found on Curseforge's "About Project" section](/assets/where-to-find-project-id.png)
 
-If you do not have a project yet, you must create it manually on
-[the website](https://www.curseforge.com/wow/addons).
+You can create a new pacakge on [the website](https://www.curseforge.com/project/1/1/create).
 
 !!! example
 
@@ -280,8 +279,8 @@ A string identifier that identifies the Curseforge project.
 You can find it in the URL of your project page. For example, if your project URL is
 `https://www.curseforge.com/wow/addons/myaddon`, then your slug is `myaddon`.
 
-This value will be used solely to print a convenient URL to the newly published file to the console.
-If it is not provided, an less-helpful opaque file ID will be printed.
+This value lets wap print file URLS after publishing. Otherwise, an less-helpful file ID will be
+printed.
 
 !!! example
 

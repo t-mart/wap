@@ -1,15 +1,15 @@
 import getpass
+import re
+import textwrap
 from pathlib import Path
 from typing import Literal
-import textwrap
-import re
 
+from rich.panel import Panel
 
 from wap.config import AddonConfig, Config, CurseforgeConfig, PublishConfig, TocConfig
-from wap.console import print, prompt_ask, confirm_ask, print_json
-from wap.wow import FLAVORS, Flavor
-from rich.panel import Panel
+from wap.console import confirm_ask, print, print_json, prompt_ask
 from wap.exception import AbortError
+from wap.wow import FLAVORS, Flavor
 
 _CURSEFORGE_CREATE_PROJECT_LINK = "https://www.curseforge.com/project/1/1/create"
 

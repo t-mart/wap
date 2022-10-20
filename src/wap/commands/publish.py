@@ -4,9 +4,9 @@ from pathlib import Path
 import click
 
 from wap.commands.util import (
+    DEFAULT_OUTPUT_PATH,
     config_path_option,
     output_path_option,
-    DEFAULT_OUTPUT_PATH,
 )
 from wap.config import Config
 from wap.console import print, warn
@@ -30,7 +30,7 @@ WAP_CURSEFORGE_TOKEN_ENVVAR_NAME = "WAP_CURSEFORGE_TOKEN"
 )
 @click.option(
     "--curseforge-token",
-    metavar='TOKEN',
+    metavar="TOKEN",
     envvar=WAP_CURSEFORGE_TOKEN_ENVVAR_NAME,
     required=True,
     help=(
@@ -110,7 +110,7 @@ def publish(
                 f"{DEFAULT_RELEASE_TYPE}"
             )
 
-    print(f"Uploading to CurseForge...")
+    print("Uploading to CurseForge...")
     with zip_path.open("rb") as zip_file:
         file_id = cf_api.upload(
             project_id=cf_config.project_id,
