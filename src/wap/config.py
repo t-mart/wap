@@ -7,13 +7,13 @@ from pathlib import Path
 from typing import Any, Callable
 
 import jsonschema
-from attr import field, frozen
+from attrs import field, frozen
 
 import wap
 from wap.curseforge import ChangelogType, ReleaseType
 from wap.wow import FlavorName
 
-from .exception import ConfigSchemaException, EncodingException
+from .exception import ConfigSchemaError, EncodingError
 
 SCHEMA_URL = (
     "https://raw.githubusercontent.com/t-mart/wap/master/src/wap/schema/wap.schema.json"
@@ -40,9 +40,10 @@ class Config:
         try:
             jsonschema.validate(obj, get_schema())
         except jsonschema.ValidationError as validation_error:
-            raise ConfigSchemaException(
+            raise ConfigSchemaError(
                 f"Invalid configuation: {validation_error.message} at path "
-                f"{validation_error.json_path}"
+                f"{validation_error.json_path}. Please correct your configuration and "
+                "try again."
             ) from validation_error
 
         publish_obj = obj.get("publish", None)
@@ -65,13 +66,14 @@ class Config:
         try:
             return cls.from_python_object(json.loads(path.read_text(encoding="utf-8")))
         except UnicodeDecodeError as unicode_decode_error:
-            raise EncodingException(
+            raise EncodingError(
                 f'Config file "{path}" cannot be decoded to utf-8: '
-                f"{unicode_decode_error}"
+                f"{unicode_decode_error}. Please encode your file in utf-8."
             ) from unicode_decode_error
         except json.JSONDecodeError as json_decode_error:
-            raise EncodingException(
-                f'Config file "{path}" is malformed JSON: {json_decode_error}'
+            raise EncodingError(
+                f'Config file "{path}" is malformed JSON: {json_decode_error}. Please '
+                "correct the JSON error."
             ) from json_decode_error
 
     def to_python_object(self, with_schema: bool = True) -> Any:
@@ -92,22 +94,24 @@ class Config:
         try:
             jsonschema.validate(obj, get_schema())
         except jsonschema.ValidationError as validation_error:
-            raise ConfigSchemaException(
+            raise ConfigSchemaError(
                 f"Invalid configuation: {validation_error.message} at path "
-                f"{validation_error.json_path}"
+                f"{validation_error.json_path}  Please correct your configuration and "
+                "try again."
             ) from validation_error
 
         return obj
 
+    def to_json(self, with_schema: bool = True, indent: bool = False) -> str:
+        return json.dumps(
+            self.to_python_object(with_schema=with_schema),
+            indent=2 if indent else None,
+        )
+
     def write_to_path(
         self, path: Path, with_schema: bool = True, indent: bool = False
     ) -> None:
-        path.write_text(
-            json.dumps(
-                self.to_python_object(with_schema=with_schema),
-                indent=2 if indent else None,
-            )
-        )
+        path.write_text(self.to_json(with_schema=with_schema, indent=indent))
 
 
 @frozen(kw_only=True)

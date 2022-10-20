@@ -9,10 +9,10 @@ from wap.commands.util import (
     DEFAULT_OUTPUT_PATH,
 )
 from wap.config import Config
-from wap.console import info, warn
+from wap.console import print, warn
 from wap.core import get_build_path
 from wap.curseforge import RELEASE_TYPES, Changelog, CurseForgeAPI
-from wap.exception import ConfigException, CurseForgeAPIException, PathMissingException
+from wap.exception import ConfigError, CurseForgeAPIError, PathMissingError
 
 DEFAULT_RELEASE_TYPE = "alpha"
 WAP_CURSEFORGE_TOKEN_ENVVAR_NAME = "WAP_CURSEFORGE_TOKEN"
@@ -52,8 +52,9 @@ def publish(
         output_path = config_path.parent / DEFAULT_OUTPUT_PATH
 
     if config.publish is None or config.publish.curseforge is None:
-        raise ConfigException(
-            'A "publish.curseforge" config section must be present to publish'
+        raise ConfigError(
+            'A "publish.curseforge" config section must be present to publish. Please '
+            "add one and try again."
         )
 
     cf_config = config.publish.curseforge
@@ -73,11 +74,11 @@ def publish(
 
     build_path = get_build_path(output_path, config)
     if not build_path.is_dir():
-        raise PathMissingException(
+        raise PathMissingError(
             f'Build path {build_path} is not a directory. Have you run "wap build" yet?'
         )
 
-    info(f"Zipping {build_path}")
+    print(f"Zipping [path]{build_path}[path]")
     zip_path = Path(
         shutil.make_archive(
             base_name=str(build_path), format="zip", root_dir=build_path
@@ -86,7 +87,7 @@ def publish(
 
     cf_api = CurseForgeAPI(api_token=curseforge_token)
 
-    info("Getting CurseForge WoW version ids...")
+    print("Getting CurseForge WoW version ids...")
     version_map = cf_api.get_version_map()
 
     version_ids = []
@@ -94,7 +95,7 @@ def publish(
         try:
             version_ids.append(version_map[version])
         except KeyError as key_error:
-            raise CurseForgeAPIException(
+            raise CurseForgeAPIError(
                 f"Curseforge does not know about version {version} for flavor "
                 f"{flavor_name}. Does it actually exist?"
             ) from key_error
@@ -109,7 +110,7 @@ def publish(
                 f"{DEFAULT_RELEASE_TYPE}"
             )
 
-    info(f"Uploading {zip_path} to CurseForge with version ids {version_ids}")
+    print(f"Uploading to CurseForge...")
     with zip_path.open("rb") as zip_file:
         file_id = cf_api.upload(
             project_id=cf_config.project_id,
@@ -122,10 +123,10 @@ def publish(
         )
     if cf_config.slug is not None:
         url = cf_api.uploaded_file_url(file_id=file_id, slug=cf_config.slug)
-        info(f"Upload available at {url}")
+        print(f"Upload available at [url]{url}[url]")
     else:
-        info(f"Uploaded file {file_id}")
-        info(
-            'Hint: Provide a "slug" in your curseforge config to get an entire '
+        print(f"Uploaded file {file_id}")
+        print(
+            '[hint]Hint: Provide a "slug" in your curseforge config to get an entire '
             "link in output next time."
         )

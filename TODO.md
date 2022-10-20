@@ -1,6 +1,7 @@
 # Things to do
 
-- add color to output for readability
+- reorg help sections
+- spruce up help texts, understanding that online help should have most detail. keep it brief
 - Finish new docs:
   - toc gen
   - contributing
@@ -9,7 +10,6 @@
   - docs-old
   - README.rst
 - overhaul ci workflow
-  - run tests on commit
+  - run tests on push
   - publish to pypi when tag is pushed
 - create github action
-

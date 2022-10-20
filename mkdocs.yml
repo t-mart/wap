@@ -16,6 +16,8 @@ theme:
     scheme: slate
     primary: deep orange
     accent: deep orange
+  features:
+    - navigation.expand
 
 extra_css:
   - stylesheets/extra.css
@@ -23,9 +25,6 @@ extra_css:
 nav:
   - Home: index.md
   - Installation: installation.md
-  - Configuration: configuration.md
-  - Project Structure: project-structure.md
-  - TOC Generation: toc-gen.md
   - Commands:
     - wap build: commands/build.md
     - wap help: commands/help.md
@@ -33,6 +32,9 @@ nav:
     - wap new-project: commands/new-project.md
     - wap publish: commands/publish.md
     - wap validate: commands/validate.md
+  - Configuration: configuration.md
+  - TOC Generation: toc-gen.md
+  - Project Structure: project-structure.md
   - Contributing: contributing.md
   - Changelog: changelog.md
   - License: license.md

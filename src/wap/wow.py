@@ -2,20 +2,18 @@ from __future__ import annotations
 
 import importlib.resources
 import json
-import re
 import sys
-from functools import cached_property, total_ordering
 from pathlib import Path
-from typing import ClassVar, Literal, Mapping, Match, cast, get_args
+from typing import ClassVar, Literal, Mapping, get_args
+import re
 
-from attr import frozen
+from attrs import frozen, field
 
 import wap
-from wap.exception import PlatformException
+from wap.exception import PlatformError, VersionError
 
 
-@frozen(slots=False)
-@total_ordering
+@frozen(order=True)
 class Version:
 
     _INTERFACE_PATTERN: ClassVar[
@@ -27,7 +25,7 @@ class Version:
         (?P<patch>\d{2})
         $
     """
-    DOT_PATTERN: ClassVar[
+    _DOT_PATTERN: ClassVar[
         str
     ] = r"""(?x)
         ^
@@ -39,40 +37,39 @@ class Version:
         $
     """
 
-    dotted: str
+    major: int
+    minor: int
+    patch: int
 
-    @cached_property
-    def _parse(self) -> Mapping[str, int]:
-        # we can safely make this cast because versions come from schema-validated
-        # wap.json
-        match = cast(Match[str], re.match(self.DOT_PATTERN, self.dotted))
-        return {key: int(value) for key, value in match.groupdict().items()}
+    @classmethod
+    def from_dotted(cls, dotted: str) -> Version:
+        if match := re.fullmatch(cls._DOT_PATTERN, dotted):
+            return Version(
+                major=int(match.group("major")),
+                minor=int(match.group("minor")),
+                patch=int(match.group("patch")),
+            )
+        raise VersionError(f"Dotted version {dotted} does not appear to be valid.")
+
+    @classmethod
+    def from_interface(cls, interface: str) -> Version:
+        if match := re.fullmatch(cls._INTERFACE_PATTERN, interface):
+            return Version(
+                major=int(match.group("major")),
+                minor=int(match.group("minor")),
+                patch=int(match.group("patch")),
+            )
+        raise VersionError(
+            f"Interface version {interface} does not appear to be valid."
+        )
 
     @property
-    def major(self) -> int:
-        return self._parse["major"]
-
-    @property
-    def minor(self) -> int:
-        return self._parse["minor"]
-
-    @property
-    def patch(self) -> int:
-        return self._parse["patch"]
+    def dotted(self) -> str:
+        return f"{self.major}.{self.minor}.{self.patch}"
 
     @property
     def interface_version(self) -> str:
         return f"{self.major}{self.minor:0>2}{self.patch:0>2}"
-
-    @property
-    def as_tuple(self) -> tuple[int, int, int]:
-        return (self.major, self.minor, self.patch)
-
-    def __eq__(self, other: object) -> bool:
-        return isinstance(other, type(self)) and self.dotted == other.dotted
-
-    def __lt__(self, other: object) -> bool:
-        return isinstance(other, type(self)) and self.as_tuple < other.as_tuple
 
 
 FlavorName = Literal[
@@ -88,7 +85,7 @@ class Flavor:
     name: FlavorName
     canon_name: str
     toc_suffix: str
-    latest_version: Version
+    latest_version: Version = field(eq=False)
     installation_dir_name: str
 
 
@@ -105,21 +102,21 @@ MAINLINE_FLAVOR = Flavor(
     name="mainline",
     canon_name="Mainline",
     toc_suffix="_Mainline",
-    latest_version=Version(_latest_versions["mainline"]),
+    latest_version=Version.from_dotted(_latest_versions["mainline"]),
     installation_dir_name="_retail_",
 )
 WRATH_FLAVOR = Flavor(
     name="wrath",
     canon_name="Wrath of the Lich King Classic",
     toc_suffix="_Wrath",
-    latest_version=Version(_latest_versions["wrath"]),
+    latest_version=Version.from_dotted(_latest_versions["wrath"]),
     installation_dir_name="_classic_",
 )
 VANILLA_FLAVOR = Flavor(
     name="vanilla",
     canon_name="WoW Classic",
     toc_suffix="_Vanilla",
-    latest_version=Version(_latest_versions["vanilla"]),
+    latest_version=Version.from_dotted(_latest_versions["vanilla"]),
     installation_dir_name="_classic_era_",
 )
 
@@ -142,7 +139,10 @@ def get_default_addons_path(flavor: Flavor, platform: str | None = None) -> Path
         platform = sys.platform
 
     if platform not in _DEFAULT_INSTALL_PATH_FOR_PLATFORM:
-        raise PlatformException(f"No default addon path for platform {platform}")
+        raise PlatformError(
+            f"Unsupported platform {platform} has no default addon path. Please "
+            "provide paths explicitly with the --<flavor>-addon-path option."
+        )
 
     return (
         Path(_DEFAULT_INSTALL_PATH_FOR_PLATFORM[platform])

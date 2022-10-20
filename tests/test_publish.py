@@ -19,7 +19,7 @@ from tests.curseforge_request import CFUploadRequestContent
 from tests.fixture.config import get_basic_config
 from tests.fixture.curseforge import CURSEFORGE_TOKEN
 from tests.fixture.fsenv import FSEnv
-from wap.exception import ConfigException, CurseForgeAPIException, PathMissingException
+from wap.exception import ConfigError, CurseForgeAPIError, PathMissingError
 
 PACKAGE_NAME = get_basic_config()["name"]
 PACKAGE_VERSION = get_basic_config()["version"]
@@ -130,7 +130,7 @@ def test_publish_without_publish_config(fs_env: FSEnv) -> None:
 
     result = invoke_publish(["--curseforge-token", CURSEFORGE_TOKEN])
 
-    assert isinstance(result.exception, ConfigException)
+    assert isinstance(result.exception, ConfigError)
 
 
 def test_publish_without_cf_token(fs_env: FSEnv) -> None:
@@ -233,7 +233,7 @@ def test_publish_different_output_path(fs_env: FSEnv, placed_correctly: bool) ->
     if placed_correctly:
         assert result.success
     else:
-        assert isinstance(result.exception, PathMissingException)
+        assert isinstance(result.exception, PathMissingError)
 
 
 @pytest.mark.parametrize("cmd_release_type", ["release", "alpha", "beta", None])
@@ -284,7 +284,7 @@ def test_publish_bad_auth(fs_env: FSEnv, token: str) -> None:
         ["--curseforge-token", token if token != "random" else str(uuid.uuid4())]
     )
 
-    assert isinstance(result.exception, CurseForgeAPIException)
+    assert isinstance(result.exception, CurseForgeAPIError)
 
 
 def test_publish_unknown_wow_version(fs_env: FSEnv) -> None:
@@ -293,7 +293,7 @@ def test_publish_unknown_wow_version(fs_env: FSEnv) -> None:
 
     result = invoke_publish(["--curseforge-token", CURSEFORGE_TOKEN])
 
-    assert isinstance(result.exception, CurseForgeAPIException)
+    assert isinstance(result.exception, CurseForgeAPIError)
 
 
 @pytest.mark.parametrize("with_slug", [True, False])

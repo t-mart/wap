@@ -2,7 +2,7 @@
 
 `wap publish [OPTIONS]`
 
-Upload packages to Curseforge that were previously built with [`wap build`](../build.md). The
+Upload packages to Curseforge that were previously built with [`wap build`](build.md). The
 package will be added to the file of your project, configured with
 [`publish.curseforge.projectId`](../configuration.md#publishcurseforgeprojectid)
 

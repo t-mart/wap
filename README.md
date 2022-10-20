@@ -2,6 +2,8 @@
 
 A developer-friendly World of Warcraft addon packager.
 
+![demonstration of wap usage](https://raw.githubusercontent.com/t-mart/wap/master/docs/assets/demo.gif)
+
 ## Features
 
 - Builds retail, wrath, or vanilla addons (or all three!)
@@ -55,3 +57,11 @@ These instructions create and upload a working addon without editing a single li
     ```console
     wap upload --curseforge-token "<api-token>"
     ```
+
+## Project Information
+
+- License: MIT
+- PyPI: <https://pypi.org/project/wow-addon-packager/>
+- Source Code: <https://github.com/t-mart/wap>
+- Documentation: <https://t-mart.github.io/wap/>
+- Supported Python Versions: 3.10 and later

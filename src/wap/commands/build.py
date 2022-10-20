@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Literal, cast, get_args
 
 import click
-from attr import frozen
+from attrs import frozen
 from watchfiles import watch
 
 from wap.commands.util import (
@@ -16,9 +16,9 @@ from wap.commands.util import (
     DEFAULT_OUTPUT_PATH,
 )
 from wap.config import AddonConfig, Config
-from wap.console import info, warn
+from wap.console import warn, print
 from wap.core import get_build_path
-from wap.exception import ConfigException, PathExistsException, PathTypeException
+from wap.exception import ConfigError, PathExistsError, PathTypeError
 from wap.fileops import clean_dir, copy_path, symlink
 from wap.toc import Toc
 from wap.wow import FLAVOR_MAP, FLAVOR_NAMES, FlavorName, Version
@@ -30,15 +30,13 @@ class AddonBuildResult:
 
     def link(self, wow_addons_path: Path) -> Path | None:
         """
-        Links this built addon to a WoW addons directory. Returns the link path if one
-        was made. Otherwise, returns None.
+        Links this built addon to a WoW addons directory. Returns the link path.
         """
         link_path = wow_addons_path / self.path.name
-        if link_path.resolve() != self.path.resolve():
-            symlink(new_path=link_path, target_path=self.path)
-            return link_path
 
-        return None
+        symlink(new_path=link_path, target_path=self.path)
+
+        return link_path
 
 
 @frozen(kw_only=True)
@@ -70,7 +68,7 @@ class Addon:
         if addon_config.toc is not None:
             wow_versions = []
             for flavor_name, flavor_version in config.wow_versions.items():
-                wow_version = Version(flavor_version)
+                wow_version = Version.from_dotted(flavor_version)
                 toc = Toc.from_toc_config(
                     toc_config=addon_config.toc,
                     wow_version=wow_version,
@@ -107,16 +105,18 @@ class Addon:
         try:
             build_path.mkdir(parents=True, exist_ok=True)
         except FileExistsError as file_exists_error:
-            raise PathExistsException(
-                f"Output directory {build_path} already exists as a file"
+            raise PathExistsError(
+                f"Output directory {build_path} already exists as a file. Please "
+                "remove it."
             ) from file_exists_error
 
         if clean:
             clean_dir(build_path)
 
         if not self.source_path.is_dir():
-            raise PathTypeException(
-                f"Addon path {self.source_path} must be a directory"
+            raise PathTypeError(
+                f"Addon path {self.source_path} must be a directory. Please update the "
+                "path in your configuration or replace the file with a directory."
             )
 
         # copy source to dest
@@ -153,9 +153,10 @@ class Addon:
             try:
                 toc_path_target.write_text(toc.generate())
             except PermissionError as perm_error:
-                raise PathExistsException(
-                    f"Cannot write generated toc {toc_path_target} because it already "
-                    "exists as a directory"
+                raise PathExistsError(
+                    f"Cannot generate ToC file {toc_path_target} because it already "
+                    "exists as a directory. Please remove that file from your source "
+                    "files."
                 ) from perm_error
             toc_paths.append(toc_path_target)
 
@@ -173,10 +174,7 @@ class Package:
 
     @classmethod
     def create(cls, config: Config, config_path: Path, output_path: Path) -> Package:
-        addon_paths = [addon_config.path for addon_config in config.package]
-        if len(addon_paths) > len(set(addon_paths)):
-            raise ConfigException("Addon paths in package must be unique")
-        return cls(
+        package = cls(
             addons=[
                 Addon.create(
                     addon_config=addon_config,
@@ -187,6 +185,19 @@ class Package:
             ],
             build_path=get_build_path(output_path=output_path, config=config),
         )
+
+        # dupe check
+        seen_addon_paths = set()
+        for addon in package.addons:
+            if addon.source_path not in seen_addon_paths:
+                seen_addon_paths.add(addon.source_path)
+            else:
+                raise ConfigError(
+                    f"Duplicate addon path {addon.source_path} found. Please remove or "
+                    "update that addon path in your configuration."
+                )
+
+        return package
 
     def build(self, clean: bool) -> Sequence[AddonBuildResult]:
         return [
@@ -203,13 +214,14 @@ AutoChoiceName = Literal["auto"]
 AUTO_CHOICE: AutoChoiceName = get_args(AutoChoiceName)[0]
 
 
+
 def get_addon_link_targets(
     flavors_to_link: Sequence[FlavorName | AutoChoiceName],
     config: Config,
     mainline_addons_path: Path,
     wrath_addons_path: Path,
     vanilla_addons_path: Path,
-) -> set[Path]:
+) -> dict[FlavorName, Path]:
     flavor_addons_path_map: dict[FlavorName, Path] = {
         "mainline": mainline_addons_path,
         "wrath": wrath_addons_path,
@@ -220,7 +232,11 @@ def get_addon_link_targets(
     if AUTO_CHOICE in uniq_flavors:
         if len(uniq_flavors) > 1:
             raise click.BadOptionUsage(
-                "link", 'If linking "auto", it must be the only link'
+                "link",
+                (
+                    'If linking "auto", it must be the only link. Please remove other '
+                    "--link options and run the command again."
+                ),
             )
 
         config_flavors = set(config.wow_versions)
@@ -230,12 +246,12 @@ def get_addon_link_targets(
             if flavor_addons_path_map[flavor_name].exists()
         )
         return {
-            flavor_addons_path_map[flavor_name]
+            flavor_name: flavor_addons_path_map[flavor_name]
             for flavor_name in config_flavors & existing_installs
         }
 
     return {
-        flavor_addons_path_map[link_flavor]
+        link_flavor: flavor_addons_path_map[link_flavor]
         for link_flavor in cast(set[FlavorName], uniq_flavors)
     }
 
@@ -308,6 +324,10 @@ def build(
     if output_path is None:
         output_path = config_path.parent / DEFAULT_OUTPUT_PATH
 
+    # used to signal if this is the first time we're building, where we might print more
+    # information that subsequent times (in watch mode).
+    first_time = True
+
     def build_once() -> Package:
         config = Config.from_path(config_path)
         package = Package.create(
@@ -328,19 +348,34 @@ def build(
         )
 
         for addon in built_addons:
-            info(f"Built {addon.path.name} in " f"{addon.path.parent}")
+            build_addon_msg = f"Built addon [addon]{addon.path.name}[/addon]"
+            if first_time:
+                build_addon_msg += f" at [path]{addon.path}[/path]"
+            print(build_addon_msg)
 
-            for addon_dir in addon_link_dirs:
+            for flavor_name, addon_dir in addon_link_dirs.items():
                 link_path = addon.link(wow_addons_path=addon_dir)
-                if link_path:
-                    info(f"Linked {link_path} to {addon.path}")
+                if first_time:
+                    print(
+                        f"Linked [path]{link_path}[/path] "
+                        f"([flavor]{flavor_name}[/flavor]) to "
+                        f"[addon]{addon.path.name}[/addon]"
+                    )
+
+        build_package_msg = (
+            f"Built package [package]{package.build_path.name}[/package]"
+        )
+        if first_time:
+            build_package_msg += f" at [path]{package.build_path}[/path]"
+        print(build_package_msg)
 
         return package
 
     package = build_once()
+    first_time = False
 
     if enable_watch:
-        info("Running in watch mode. Press Ctrl-C at any time to quit.")
+        print("Running in watch mode. Press [key]Ctrl-C[/key] at any time to quit.")
         project_file_paths = {*package.watch_paths, config_path}
         for paths_changed in watch_paths(config_path.parent):
             if any(
@@ -348,7 +383,7 @@ def build(
                 for watch_path in project_file_paths
                 for changed_path in paths_changed
             ):
-                info("Project file changed, rebuilding...")
+                print("Project file changed, rebuilding...\n")
                 package = build_once()
                 project_file_paths = {*package.watch_paths, config_path}
 

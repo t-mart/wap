@@ -17,12 +17,12 @@ from tests.fixture.fsenv import FSEnv
 from tests.fixture.time import TEST_TIME
 from wap import __version__ as wap_version
 from wap.exception import (
-    ConfigException,
-    EncodingException,
-    PathExistsException,
-    PathMissingException,
-    PathTypeException,
-    TagException,
+    ConfigError,
+    EncodingError,
+    PathExistsError,
+    PathMissingError,
+    PathTypeError,
+    TagError,
 )
 
 INSTALLATION_ADDON_DIRS = {
@@ -126,7 +126,7 @@ def test_build_dupe_addon_path(fs_env: FSEnv) -> None:
 
     result = invoke_build()
 
-    assert isinstance(result.exception, ConfigException)
+    assert isinstance(result.exception, ConfigError)
 
 
 def test_build_different_output_path(fs_env: FSEnv) -> None:
@@ -223,7 +223,7 @@ def test_build_missing_addon(fs_env: FSEnv) -> None:
 
     result = invoke_build()
 
-    assert isinstance(result.exception, PathTypeException)
+    assert isinstance(result.exception, PathTypeError)
 
 
 def test_build_addon_path_is_not_dir(fs_env: FSEnv) -> None:
@@ -233,7 +233,7 @@ def test_build_addon_path_is_not_dir(fs_env: FSEnv) -> None:
 
     result = invoke_build()
 
-    assert isinstance(result.exception, PathTypeException)
+    assert isinstance(result.exception, PathTypeError)
 
 
 @pytest.mark.parametrize(
@@ -301,7 +301,6 @@ def test_build_link_exists(fs_env: FSEnv, link_arg: str) -> None:
         Path(f"dist/{PACKAGE_NAME}-{PACKAGE_VERSION}/Addon").resolve()
         == (Path(INSTALLATION_ADDON_DIRS[link_arg]) / "Addon").resolve()
     )
-    assert "Linked" not in result.stderr
 
 
 @pytest.mark.parametrize("add_auto", [True, False])
@@ -370,7 +369,7 @@ def test_build_non_unicode_config(fs_env: FSEnv) -> None:
 
     result = invoke_build()
 
-    assert isinstance(result.exception, EncodingException)
+    assert isinstance(result.exception, EncodingError)
 
 
 def test_build_overwriting_src_include(fs_env: FSEnv) -> None:
@@ -404,7 +403,7 @@ def test_build_addon_dir_exists_as_file(fs_env: FSEnv) -> None:
 
     result = invoke_build()
 
-    assert isinstance(result.exception, PathExistsException)
+    assert isinstance(result.exception, PathExistsError)
 
 
 @pytest.mark.parametrize(
@@ -460,7 +459,7 @@ def test_build_toc_file_missing(fs_env: FSEnv) -> None:
 
     result = invoke_build()
 
-    assert isinstance(result.exception, PathMissingException)
+    assert isinstance(result.exception, PathMissingError)
 
 
 @pytest.mark.parametrize(
@@ -494,7 +493,7 @@ def test_build_include_dir_overwrite_file(fs_env: FSEnv) -> None:
 
     result = invoke_build()
 
-    assert isinstance(result.exception, PathExistsException)
+    assert isinstance(result.exception, PathExistsError)
 
 
 def test_build_include_file_overwrite_file(fs_env: FSEnv) -> None:
@@ -535,7 +534,7 @@ def test_build_include_file_overwrite_dir(fs_env: FSEnv) -> None:
 
     result = invoke_build()
 
-    assert isinstance(result.exception, PathExistsException)
+    assert isinstance(result.exception, PathExistsError)
 
 
 def test_build_toc_included(fs_env: FSEnv) -> None:
@@ -547,7 +546,7 @@ def test_build_toc_included(fs_env: FSEnv) -> None:
 
     result = invoke_build()
 
-    assert isinstance(result.exception, PathExistsException)
+    assert isinstance(result.exception, PathExistsError)
 
 
 @pytest.mark.parametrize("load_on_demand,expected", [(True, "1"), (False, "0")])
@@ -641,7 +640,7 @@ def test_build_toc_bad_tags(fs_env: FSEnv, bad_tag: str) -> None:
 
     result = invoke_build()
 
-    assert isinstance(result.exception, TagException)
+    assert isinstance(result.exception, TagError)
 
 
 def test_build_watch_edit_source_file(fs_env: FSEnv) -> None:

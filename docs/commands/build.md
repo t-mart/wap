@@ -85,11 +85,11 @@ it with any of the [`--<flavor>-addons-path`](#-flavor-addons-path) options
 When linking with [`--link`](#-link), override the default installation path with the directory path
 provided.
 
-Example:
+!!! example
 
-```shell
-wap build --wrath-addons-path "D:/Games/World of Warcraft/_classic_/Interface/Addons"
-```
+    ```shell
+    wap build --wrath-addons-path "D:/Games/World of Warcraft/_classic_/Interface/Addons"
+    ```
 
 ### `--clean`
 

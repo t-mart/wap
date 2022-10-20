@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/t-mart/wap/master/src/wap/schema/wap.schema.json",
+  "name": "f",
+  "version": "0.0.1",
+  "author": "tim",
+  "wowVersions": {
+    "mainline": "9.2.7",
+    "wrath": "3.4.0",
+    "vanilla": "1.14.3"
+  },
+  "package": [
+    {
+      "path": "./f",
+      "toc": {
+        "tags": {
+          "Title": "f",
+          "Notes": ""
+        },
+        "files": [
+          "Main.lua"
+        ]
+      }
+    }
+  ]
+}

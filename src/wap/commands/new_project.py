@@ -3,7 +3,7 @@ from pathlib import Path
 
 import click
 
-from wap.console import info
+from wap.console import print
 from wap.prompt import prompt_for_config
 
 
@@ -25,7 +25,6 @@ def new_project() -> None:
 
     config_path = project_path / "wap.json"
     config.write_to_path(config_path, indent=True)
-    info(f"Wrote {config_path}")
 
     readme_md_text = textwrap.dedent(
         f"""\
@@ -36,7 +35,6 @@ def new_project() -> None:
     )
     readme_path = project_path / "README.md"
     readme_path.write_text(readme_md_text)
-    info(f"Wrote {readme_path}")
 
     main_lua_text = textwrap.dedent(
         f"""\
@@ -51,6 +49,8 @@ def new_project() -> None:
     main_lua_path = project_path / config.name / "Main.lua"
     main_lua_path.parent.mkdir()
     main_lua_path.write_text(main_lua_text)
-    info(f"Wrote {main_lua_path}")
 
-    info(f"New project created at {project_path}")
+    print(
+        f"Project for package [package]{project_path.name}[/package] created at "
+        f"[path]{project_path}[/path]"
+    )

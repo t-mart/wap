@@ -6,13 +6,13 @@ from pathlib import Path
 from typing import BinaryIO, ClassVar, Literal, NewType, get_args
 
 import httpx
-from attr import frozen
+from attrs import frozen
 
 from wap.console import warn
 from wap.exception import (
-    CurseForgeAPIException,
-    EncodingException,
-    PathMissingException,
+    CurseForgeAPIError,
+    EncodingError,
+    PathMissingError,
 )
 
 GameVersionId = NewType("GameVersionId", int)
@@ -24,10 +24,10 @@ RELEASE_TYPES: tuple[ReleaseType, ...] = get_args(ReleaseType)
 
 def _raise_for_status(response: httpx.Response, activity_text: str) -> None:
     if response.status_code != httpx.codes.OK:
-        raise CurseForgeAPIException(
-            f"HTTP Error from CurseForge during {activity_text}: "
+        raise CurseForgeAPIError(
+            f"HTTP Error from {response.url} during {activity_text}: "
             f"'{response.status_code} {response.reason_phrase}'. Response body: "
-            f"{response.text}"
+            f"{response.text}."
         )
 
 
@@ -153,13 +153,14 @@ class Changelog:
         try:
             contents = path.read_text(encoding="utf-8")
         except UnicodeDecodeError as unicode_decode_error:
-            raise EncodingException(
+            raise EncodingError(
                 f'Changelog file "{path}" cannot be decoded to utf-8: '
-                f"{unicode_decode_error}"
+                f"{unicode_decode_error}. Please change the encoding and try again."
             ) from unicode_decode_error
         except FileNotFoundError as file_not_found_error:
-            raise PathMissingException(
-                f"Changelog path {path} does not exist"
+            raise PathMissingError(
+                f"Changelog path {path} does not exist. Please update the path and try "
+                "again."
             ) from file_not_found_error
 
         return cls(

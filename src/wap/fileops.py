@@ -2,10 +2,10 @@ import shutil
 from pathlib import Path
 
 from wap.exception import (
-    PathExistsException,
-    PathMissingException,
-    PathTypeException,
-    PlatformException,
+    PathExistsError,
+    PathMissingError,
+    PathTypeError,
+    PlatformError,
 )
 
 
@@ -19,8 +19,8 @@ def delete_path(path: Path) -> None:
     elif path.is_dir():
         shutil.rmtree(path)
     else:  # pragma: no cover
-        raise PathTypeException(
-            f"Cannot delete path {path} because it is not a file or directory"
+        raise PathTypeError(
+            f"Cannot delete path {path} because it is not a file or directory."
         )
 
 
@@ -56,19 +56,21 @@ def copy_path(src: Path, dst: Path) -> None:
     """
     if src.is_file():
         if dst.is_dir():
-            raise PathExistsException(
-                f"Cannot copy file {src} to {dst} because it is a directory"
+            raise PathExistsError(
+                f"Cannot copy file {src} to {dst} because it is a directory. Please "
+                "remove that directory or choose a different target."
             )
         shutil.copy(src, dst)
     elif src.is_dir():
         if dst.is_file():
-            raise PathExistsException(
-                f"Cannot copy directory {src} to {dst} because it is a file"
+            raise PathExistsError(
+                f"Cannot copy directory {src} to {dst} because it is a file. Please "
+                "remove that file or choose a different target."
             )
         shutil.copytree(src, dst, dirs_exist_ok=True)
     else:  # pragma: no cover
-        raise PathTypeException(
-            f"Cannot copy path {src} because it is not a file or directory"
+        raise PathTypeError(
+            f"Cannot copy path {src} because it is not a file or directory."
         )
 
 
@@ -101,19 +103,20 @@ def symlink(
     except FileExistsError as file_exists_error:
         if target_path.resolve() == new_path.resolve():
             return
-        raise PathExistsException(
-            f"Intended symlink {new_path} already exists."
+        raise PathExistsError(
+            f"Intended symlink {new_path} already exists and points to a different "
+            "target. Please delete the symlink and try again."
         ) from file_exists_error
     except FileNotFoundError as file_not_found_error:
-        raise PathMissingException(
-            f"Unable to create link {new_path}. Does its parent directory exist?"
+        raise PathMissingError(
+            f"Unable to create link {new_path}. Please ensure its parent directory "
+            "exists."
         ) from file_not_found_error
     except OSError as os_error:
         if getattr(os_error, "winerror", None) == 1314:
-            raise PlatformException(
+            raise PlatformError(
                 f"Could not create symbolic link from {new_path} to {target_path} "
-                "which requires requires elevation as administrator on Windows. "
-                "However, Windows 10 (build 14972 or newer) with Developer Mode "
-                "enabled no longer requires elevation."
+                "because this program Windows Developer Mode is not enable or because "
+                "this program is not running as an administrator."
             ) from os_error
         raise os_error

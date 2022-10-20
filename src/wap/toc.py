@@ -5,11 +5,11 @@ from pathlib import Path, PureWindowsPath
 from typing import ClassVar
 
 import arrow
-from attr import frozen
+from attrs import frozen
 
 from wap import __version__
 from wap.config import TocConfig
-from wap.exception import PathMissingException, TagException
+from wap.exception import PathMissingError, TagError
 from wap.wow import Version
 
 # Just some notes about TOC files I found
@@ -130,13 +130,17 @@ class Toc:
         for tag in self.tag_map:
             for ill_char in illegal_tag_chars:
                 if ill_char in tag:
-                    raise TagException(
-                        f'Tag {tag} contains illegal character "{ill_char!r}"'
+                    raise TagError(
+                        f'Tag {tag} contains illegal character "{ill_char!r}". Please '
+                        "remove it and try again"
                     )
         for file_path in self.files:
             joined_path = source_dir / file_path
             if not joined_path.is_file():
-                raise PathMissingException(f"Path {joined_path} at does not exist.")
+                raise PathMissingError(
+                    f"ToC file path {joined_path} does not exist. Please fix the path "
+                    "in your configuration file or remove it."
+                )
 
     @classmethod
     def _create_tag_line(cls, key: str, value: str) -> str:

@@ -9,7 +9,7 @@ from wap.commands.validate import validate
 from wap.commands.new_config import new_config
 from wap.commands.new_project import new_project
 from wap.commands.publish import publish
-from wap.console import info
+from wap.console import print
 
 
 def open_or_print_help_url(command_name: str | None = None) -> None:
@@ -21,7 +21,7 @@ def open_or_print_help_url(command_name: str | None = None) -> None:
     try:
         webbrowser.open(full_url)
     except webbrowser.Error:
-        info(f"See documentation at {full_url}")
+        print(f"See documentation at [url]{full_url}[/url]")
 
 
 # this subcommand is defined here because it uses the list of all subcommands. if it
@@ -33,7 +33,10 @@ def help_command(subcommand: str | None) -> None:
     if subcommand is None:
         open_or_print_help_url()
     elif subcommand not in SUBCOMMAND_NAMES:
-        raise click.BadArgumentUsage(f"Unknown subcommand {subcommand}")
+        raise click.BadArgumentUsage(
+            f"Unknown subcommand {subcommand}. See available subcommands with "
+            "`wap help`."
+        )
     else:
         open_or_print_help_url(subcommand)
 
@@ -63,5 +66,5 @@ for subcommand in SUBCOMMANDS:
     if subcommand.help:
         subcommand.help = (
             dedent(subcommand.help)
-            + f'\n\nRun "wap help {subcommand.name}" for more info'
+            + f"\n\nRun `wap help {subcommand.name}` for more information."
         )

@@ -1,4 +1,4 @@
-class WapException(Exception):
+class WapError(Exception):
     """General WAP exception"""
 
     def __init__(self, message: str):
@@ -6,45 +6,53 @@ class WapException(Exception):
         self.message = message
 
 
-class ConfigException(WapException):
+class AbortError(WapError):
+    """Indicates the user aborted the operation."""
+
+
+class ConfigError(WapError):
     """Indicates a general problem with the config."""
 
 
-class ConfigPathException(WapException):
+class ConfigPathError(WapError):
     """Indicates a problem accessing a configuration value"""
 
 
-class ConfigValueException(WapException):
+class ConfigValueError(WapError):
     """Indicates a problem encoding a configuration value to JSON"""
 
 
-class ConfigSchemaException(WapException):
+class ConfigSchemaError(WapError):
     """Indicates a config does not follow the schema."""
 
 
-class CurseForgeAPIException(WapException):
+class CurseForgeAPIError(WapError):
     """Indicates a problem communicating with CurseForge"""
 
 
-class EncodingException(WapException):
+class EncodingError(WapError):
     """Indicates an issue encoding or decoding data"""
 
 
-class PathExistsException(WapException):
+class PathExistsError(WapError):
     """Indicates a path exists that should not"""
 
 
-class PathMissingException(WapException):
+class PathMissingError(WapError):
     """Indicates a needed path does not exist."""
 
 
-class PathTypeException(WapException):
+class PathTypeError(WapError):
     """Indicates a path is not of the type expected (directory, file, etc)."""
 
 
-class PlatformException(WapException):
+class PlatformError(WapError):
     """Indicates that the current platform does not have a required feature."""
 
 
-class TagException(WapException):
+class TagError(WapError):
     """Indicates a malformed tag inside a TOC."""
+
+
+class VersionError(WapError):
+    """Indicates that a version is invalid when parsed."""
