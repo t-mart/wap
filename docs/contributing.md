@@ -24,3 +24,5 @@ A few nuggets of information about the project:
   [isort](https://github.com/PyCQA/isort). There's a Makefile target to do both with `make format`.
 - Code should yield no [mypy](https://mypy.readthedocs.io/en/stable/) or
   [flake8](https://flake8.pycqa.org/en/latest/) errors. Run `make check` to check for that.
+- You can run [pre-commit](https://pre-commit.com/) checks by install the hook with `pre-commit
+  install`.
