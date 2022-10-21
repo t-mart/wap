@@ -7,7 +7,8 @@
 - *Always* add tests and docs for your code.
 - No contribution is too small! Please submit as many fixes for typos and grammar bloopers as you
   can!
-- Make sure your changes pass the CI checks.
+- Make sure your changes pass the
+  [CI checks](https://github.com/t-mart/wap/blob/master/.github/workflows/ci.yml).
 - Once you've addressed review feedback, make sure to bump the pull request with a short note.
 
 ## Developer Setup
@@ -26,3 +27,32 @@ A few nuggets of information about the project:
   [flake8](https://flake8.pycqa.org/en/latest/) errors. Run `make check` to check for that.
 - You can run [pre-commit](https://pre-commit.com/) checks by install the hook with `pre-commit
   install`.
+
+
+## Releasing
+
+1. Bump the version in the `pyproject.toml`. It can be done manually or with Poetry's `version`
+   command:
+
+    ```bash
+    # for example, to bump the patch part...
+    poetry version patch
+    ```
+
+2. Create a git tag for that version, **prefixing the version with a `v` character**:
+
+    ```bash
+    git tag -a "v1.2.3" -m "Release v1.2.3"
+    ```
+
+3. Push the tag to GitHub and let the
+   [CI workflow](https://github.com/t-mart/wap/blob/master/.github/workflows/ci.yml) do the rest:
+
+    ```bash
+    git push
+    ```
+
+    !!! note
+
+        The `v` version prefix signals to the CI script that this push should also be published to
+        PyPI.
