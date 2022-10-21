@@ -138,13 +138,7 @@ if it is not explicitly provided in the [`package[*].toc.tags`](#packagetoctags)
 !!! example
 
     ```json
-    "author": "Thrall"
-    ```
-
-!!! example
-
-    ```json
-    "author": "Amleth, Queen Gudrún, and Fjölnir the Brotherless"
+    "description": "This addon gives you more gold!"
     ```
 
 ### `version`
