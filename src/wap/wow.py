@@ -10,7 +10,7 @@ from typing import ClassVar, Literal, Mapping, get_args
 from attrs import field, frozen
 
 import wap
-from wap.exception import PlatformError, VersionError
+from wap.exception import VersionError
 
 
 @frozen(order=True)
@@ -134,15 +134,12 @@ _DEFAULT_INSTALL_PATH_FOR_PLATFORM = {
 }
 
 
-def get_default_addons_path(flavor: Flavor, platform: str | None = None) -> Path:
+def get_default_addons_path(flavor: Flavor, platform: str | None = None) -> Path | None:
     if not platform:
         platform = sys.platform
 
     if platform not in _DEFAULT_INSTALL_PATH_FOR_PLATFORM:
-        raise PlatformError(
-            f"Unsupported platform {platform} has no default addon path. Please "
-            "provide paths explicitly with the --<flavor>-addon-path option."
-        )
+        return None
 
     return (
         Path(_DEFAULT_INSTALL_PATH_FOR_PLATFORM[platform])
