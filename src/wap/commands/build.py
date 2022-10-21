@@ -150,12 +150,13 @@ class Addon:
                 addon_paths.add(rel_path)
             try:
                 toc_path_target.write_text(toc.generate())
-            except PermissionError as perm_error:
+            except (PermissionError, IsADirectoryError) as error:
+                # on windows, raises PermissionError, linux raises IsADirectoryError
                 raise PathExistsError(
                     f"Cannot generate TOC file {toc_path_target} because it already "
                     "exists as a directory. Please remove that file from your source "
                     "files."
-                ) from perm_error
+                ) from error
             toc_paths.append(toc_path_target)
 
         return AddonBuildResult(path=build_path)
