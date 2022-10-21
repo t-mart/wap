@@ -1,6 +1,8 @@
 .md-sidebar--secondary {
     /* don't overflow long section headings, like on the configuration page */
-    width: min-content;
+    width: fit-content;
+    /* width: max(min-content, 12.1rem); */
+    /* width: clamp(min-content, min-content, 12.1rem); */
 }
 
 .md-sidebar__scrollwrap {

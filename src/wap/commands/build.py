@@ -63,7 +63,6 @@ class Addon:
             else []
         )
 
-        global_tags = {"Author": config.author} if config.author is not None else {}
         tocs = []
         if addon_config.toc is not None:
             wow_versions = []
@@ -72,9 +71,9 @@ class Addon:
                 toc = Toc.from_toc_config(
                     toc_config=addon_config.toc,
                     wow_version=wow_version,
-                    addon_version=config.version,
-                    suffix=FLAVOR_MAP[flavor_name].toc_suffix,
-                    global_tags=global_tags,
+                    flavor_suffix=FLAVOR_MAP[flavor_name].toc_suffix,
+                    config=config,
+                    source_path=source_path,
                 )
                 tocs.append(toc)
                 wow_versions.append(wow_version)
@@ -86,9 +85,8 @@ class Addon:
                 Toc.from_toc_config(
                     toc_config=addon_config.toc,
                     wow_version=max_wow_version,
-                    addon_version=config.version,
-                    suffix="",
-                    global_tags=global_tags,
+                    config=config,
+                    source_path=source_path,
                 )
             )
 
@@ -154,7 +152,7 @@ class Addon:
                 toc_path_target.write_text(toc.generate())
             except PermissionError as perm_error:
                 raise PathExistsError(
-                    f"Cannot generate ToC file {toc_path_target} because it already "
+                    f"Cannot generate TOC file {toc_path_target} because it already "
                     "exists as a directory. Please remove that file from your source "
                     "files."
                 ) from perm_error
@@ -285,15 +283,13 @@ def resolve_globs(root_path: Path, glob_patterns: Sequence[str]) -> Sequence[Pat
     is_flag=False,
     flag_value=AUTO_CHOICE,
     help=(
-        "Create a symlink from packaged addon folder into the WoW AddOns folder. This "
-        "is handy for installing your own stuff, so you can work on it and test it "
-        "iteratively without having to continually recopy it into the AddOns folder. "
-        "You can specify a flavor to this option to symlink just a particular flavor"
-        "(that must also be in the wowVersions section of your config). You may also "
-        "specify no value, in which case links will be made for all configured flavors "
-        "that exist on this system. "
-        "The path of the AddOns folder is a default for your operating system, but may "
-        "be overriden by specifying any of the --<flavor>-addons-path options."
+        """
+        Create a symlink from packaged addon folder into a flavor's WoW AddOns. This is
+        handy for installing your own stuff, so you can work on it and test it quickly.
+        If no argument is provided to this option or if "auto" is provided, then links
+        will be made into each flavor that exists on this system and is supported by the
+        package. This option can be provided mulitple times.
+        """
     ),
     show_default=True,
 )
@@ -316,7 +312,7 @@ def build(
     vanilla_addons_path: Path,
 ) -> None:
     """
-    Build addons into a package.
+    Build addons into a playable, distributable package.
     """
     config_path = config_path.resolve()
 

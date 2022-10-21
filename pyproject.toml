@@ -41,6 +41,7 @@ mkdocs-material = "^8.5.2"
 # support is released. See https://github.com/pygments/pygments/pull/2244
 pygments = {git = "https://github.com/pygments/pygments", rev = "fccb16b"}
 pre-commit = "^2.20.0"
+twine = "^4.0.1"
 
 [build-system]
 requires = ["poetry-core"]

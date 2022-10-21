@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, overload
 
 from rich.console import Console
 from rich.prompt import Confirm, Prompt
@@ -69,10 +69,23 @@ def _render_as_style(text: str, style: str) -> str:
     return _THEME.styles[style].render(text)
 
 
-def prompt_ask(
-    prompt: str,
-    default: str | None = None,
-) -> str:
+# this is only overloaded because rich overloads it. unnecessary...
+@overload
+def prompt_ask(prompt: str) -> str:
+    ...
+
+
+@overload
+def prompt_ask(prompt: str, default: str) -> str:
+    ...
+
+
+@overload
+def prompt_ask(prompt: str, default: str | None) -> str | None:
+    ...
+
+
+def prompt_ask(prompt: str, default: str | None = None) -> str | None:
     # this method exists because Prompt.ask text does not parse [markup] tags
     return Prompt.ask(
         _render_as_style(prompt, "promptq"),

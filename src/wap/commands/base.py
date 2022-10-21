@@ -29,7 +29,7 @@ def open_or_print_help_url(command_name: str | None = None) -> None:
 @click.command("help")
 @click.argument("subcommand", required=False)
 def help_command(subcommand: str | None) -> None:
-    """View help for commands"""
+    """Open the help webpage for the given SUBCOMMAND in your browser."""
     if subcommand is None:
         open_or_print_help_url()
     elif subcommand not in SUBCOMMAND_NAMES:

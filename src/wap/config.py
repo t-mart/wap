@@ -31,6 +31,7 @@ class Config:
     name: str
     version: str
     author: str | None = field(default=None)
+    description: str | None = field(default=None)
     wow_versions: Mapping[FlavorName, str]
     publish: PublishConfig | None = field(default=None)
     package: Sequence[AddonConfig]
@@ -85,6 +86,8 @@ class Config:
         obj["version"] = self.version
         if self.author is not None:
             obj["author"] = self.author
+        if self.description is not None:
+            obj["description"] = self.description
         obj["wowVersions"] = self.wow_versions
         if self.publish is not None:
             obj["publish"] = self.publish.to_python_object()

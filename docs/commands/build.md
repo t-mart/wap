@@ -2,7 +2,9 @@
 
 `wap build [OPTIONS]`
 
-Build addons into a package. For each addon, building does 3 things:
+Build addons into a playable, distributable package.
+
+For each addon, building does 3 things:
 
 - Copies source files, specified by [`package[*].path`](../configuration.md#packagepath), to the
   output directory.
@@ -12,7 +14,10 @@ Build addons into a package. For each addon, building does 3 things:
   [`package[*].toc`](../configuration.md#packagetoc), generates ToC files in the output directory.
 
 The above addon files will be placed in a package directory inside the output directory. This
-directory will be named in the format of`<package-name>-<version>`, such as `dist/MyAddon-1.2.3`.
+directory will be named in the format of`<name>-<version>`, taking values as defined in your
+configuration. For example, with a [`name`](../configuration.md#name) of `MyAddon` and
+[`version`](../configuration.md#version) of `1.2.3`, the yielded output directory would be
+`MyAddon-1.2.3`.
 
 ## Options
 

@@ -80,7 +80,7 @@ def get_project_slug() -> str | None:
         'is "https://www.curseforge.com/wow/addons/my-addon", then the slug is '
         '"my-addon".'
     )
-    return prompt_ask("Curseforge project slug", default="") or None
+    return prompt_ask("Curseforge project slug (Press enter to skip)", default=None)
 
 
 def confirm_publish() -> bool:

@@ -2,12 +2,13 @@
 
 `wap help [OPTIONS] [SUBCOMMAND]`
 
-Open the help webpage for the given `COMMAND`.
+Open the help webpage for the given `COMMAND` in your browser.
 
-!!! note
+If a browser is not available, simply print the URL to which you would be navigated.
 
-    If you just want to create a new configuration file, use
-    [`wap new-config`](./new-config.md)
+!!! example
+
+    `wap help help` will take you to _this_ webpage.
 
 ## Options
 

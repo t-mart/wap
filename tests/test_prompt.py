@@ -105,7 +105,7 @@ def test_get_project_id() -> None:
 @pytest.mark.parametrize(
     "input, expected_slug",
     [
-        ("", None),
+        (None, None),
         ("slug", "slug"),
     ],
 )

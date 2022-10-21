@@ -35,6 +35,7 @@ already familiar.
       "$schema": "https://raw.githubusercontent.com/t-mart/wap/master/src/wap/schema/wap.schema.json",
       "name": "MyAddon",
       "version": "1.0.0",
+      "description": "MyAddon enhances something...",
       "wowVersions": {
         "mainline": "9.2.7",
         "wrath": "3.4.0",
@@ -88,8 +89,8 @@ The name is what your [addon package](./project-structure.md#project-structure) 
 
 It will be used in the following places:
 
-- Output directory name (created when building)
-- Output zip name (created when publishing)
+- Output directory name (created when [building](./commands/build.md))
+- Output zip name (created when [publishing](./commands/publish.md))
 - Uploaded/downloaded file names on Curseforge
 
 !!! example
@@ -98,7 +99,6 @@ It will be used in the following places:
     "name": "My Addon"
     ```
 
-
 ### `author`
 
 - Optional
@@ -106,8 +106,34 @@ It will be used in the following places:
 
 The person/people that contributed to your package should be listed in this field.
 
-If provided, this value will provide the `Author` tag in any [generated TOC files](./toc-gen.md),
-unless the [`toc.tag`](#packagetoctags) section includes it.
+This value is intended to document your project.
+
+Additionally, in any [generated TOC files](./toc-gen.md), this value will be the default for
+`Author` if it is not explicitly provided in the [`package[*].toc.tags`](#packagetoctags) section.
+
+!!! example
+
+    ```json
+    "author": "Thrall"
+    ```
+
+!!! example
+
+    ```json
+    "author": "Amleth, Queen Gudrún, and Fjölnir the Brotherless"
+    ```
+
+### `description`
+
+- Optional
+- Type: string
+
+A description of this package.
+
+This value is intended to document your project.
+
+Additionally, in any [generated TOC files](./toc-gen.md), this value will be the default for `Notes`
+if it is not explicitly provided in the [`package[*].toc.tags`](#packagetoctags) section.
 
 !!! example
 
@@ -130,6 +156,9 @@ The version of your package. It does not have to follow any format.
 
 It will be used in the same places as [`name`](#name).
 
+Additionally, in any [generated TOC files](./toc-gen.md), this value will be the default for
+`Version` if it is not explicitly provided in the [`package[*].toc.tags`](#packagetoctags) section.
+
 !!! example
 
     ```json
@@ -140,7 +169,7 @@ It will be used in the same places as [`name`](#name).
 
 - Required
 - Type: object with at least one key from `["mainline", "wrath", "vanilla"]` and values of the
-  form `x.y.z` where x, y, and z are non-negative numbers
+  form `x.y.z` where `x`, `y`, and `z` are non-negative numbers
 
 This object maps the flavors of the game your addon will support to the versions of those
 flavors.
@@ -153,12 +182,8 @@ The recognized flavors are as follows:
 | `wrath`    | The classic flavor that has slowly been evolving through old expansions |
 | `vanilla`  | The classic flavor that only includes the first expansion               |
 
-These flavor-version pairs will be used to determine which [TOC files to generate](./toc-gen.md) (if
-any) and the `Interface` tag to include inside them.
-
-!!! note
-
-    If these versions fall behind, the game client will claim your addon is out of date.
+In any [generated TOC files](./toc-gen.md), this value (in its interface form) will be the default
+for `Interface`.
 
 
 !!! example
@@ -168,6 +193,10 @@ any) and the `Interface` tag to include inside them.
       "mainline": "9.2.7"
     }
     ```
+
+!!! warning
+
+    If these versions fall behind, the WoW will claim your addon is out of date.
 
 ### `publish`
 
@@ -331,6 +360,9 @@ The path to your addon directory. See [Project Structure](/project-structure/#pr
 how your project should be laid out.
 
 This value must be unique among all other addon paths provided.
+
+Additionally, in any [generated TOC files](./toc-gen.md), this value will be the default for `Title`
+if it is not explicitly provided in the [`package[*].toc.tags`](#packagetoctags) section.
 
 !!! example
 

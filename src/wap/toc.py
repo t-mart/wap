@@ -8,7 +8,7 @@ import arrow
 from attrs import frozen
 
 from wap import __version__
-from wap.config import TocConfig
+from wap.config import Config, TocConfig
 from wap.exception import PathMissingError, TagError
 from wap.wow import Version
 
@@ -58,13 +58,13 @@ _METADATA_TAG_PREFIX = "X-"
 class Toc:
     tags: Sequence[tuple[str, str]]
     files: Sequence[str]
-    suffix: str
+    flavor_suffix: str | None
 
     _TAG_LINE_PREFIX: ClassVar[str] = "##"
     _COMMENT_LINE_PREFIX: ClassVar[str] = "#"
 
     @classmethod
-    def parse(cls, contents: str, suffix: str) -> Toc:
+    def parse(cls, contents: str, flavor_suffix: str) -> Toc:
         tags = []
         files = []
 
@@ -79,29 +79,32 @@ class Toc:
                 ]
                 tags.append((name, value))
 
-        return cls(tags=tags, files=files, suffix=suffix)
+        return cls(tags=tags, files=files, flavor_suffix=flavor_suffix)
 
     @classmethod
     def from_toc_config(
         cls,
         toc_config: TocConfig,
+        source_path: Path,
+        config: Config,
         wow_version: Version,
-        addon_version: str,
-        suffix: str,
-        global_tags: dict[str, str],
+        flavor_suffix: str | None = None,
     ) -> Toc:
-        """
-        Global tags will be overridden if the toc config respecifies them.
-        """
+        default_tags = {}
+        if config.author is not None:
+            default_tags["Author"] = config.author
+        if config.description is not None:
+            default_tags["Description"] = config.description
+        default_tags["Title"] = source_path.name
+        default_tags["Version"] = config.version
+        default_tags["Interface"] = wow_version.interface_version
+        default_tags[
+            f"{_METADATA_TAG_PREFIX}BuildDateTime"
+        ] = arrow.utcnow().isoformat()
+        default_tags[f"{_METADATA_TAG_PREFIX}BuildTool"] = f"wap {__version__}"
 
-        extra_wap_tags = {
-            "Interface": wow_version.interface_version,
-            "Version": addon_version,
-            f"{_METADATA_TAG_PREFIX}BuildDateTime": arrow.utcnow().isoformat(),
-            f"{_METADATA_TAG_PREFIX}BuildTool": f"wap {__version__}",
-        }
-
-        merged_tags = global_tags | extra_wap_tags | toc_config.serialized_tags
+        # all default tags are overrideable
+        merged_tags = default_tags | toc_config.serialized_tags
 
         # sort the tags, for Title and Notes
         # TOC parsing logic is that, for a given user locale "xxXX" and tag name "Tag"
@@ -115,7 +118,7 @@ class Toc:
         # config order (insertion order) because this python sort is stable.
         tag_pairs.sort(key=lambda kv: 1 if kv[0] in _LOCALIZED_TAGS else 0)
 
-        return cls(tags=tag_pairs, files=toc_config.files, suffix=suffix)
+        return cls(tags=tag_pairs, files=toc_config.files, flavor_suffix=flavor_suffix)
 
     @property
     def tag_map(self) -> Mapping[str, str]:
@@ -138,7 +141,7 @@ class Toc:
             joined_path = source_dir / file_path
             if not joined_path.is_file():
                 raise PathMissingError(
-                    f"ToC file path {joined_path} does not exist. Please fix the path "
+                    f"TOC file path {joined_path} does not exist. Please fix the path "
                     "in your configuration file or remove it."
                 )
 
@@ -153,7 +156,7 @@ class Toc:
         return f"{windows_path}"
 
     def filename(self, addon_name: str) -> str:
-        return f"{addon_name}{self.suffix}.toc"
+        return f"{addon_name}{self.flavor_suffix or ''}.toc"
 
     def generate(self) -> str:
         return "\n".join(

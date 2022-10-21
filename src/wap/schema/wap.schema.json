@@ -17,11 +17,15 @@
       "type": "string"
     },
     "author": {
-      "description": "The name of author of this package. Will be used in generated ToC files if an key Author is not specified.",
+      "description": "The name of author of this package. Will be used as a fallback for \"Author\" in generated TOC files.",
+      "type": "string"
+    },
+    "description": {
+      "description": "A description of this package. Will be used as a fallback for \"Notes\" in generated TOC files.",
       "type": "string"
     },
     "version": {
-      "description": "The version of the addon package. Will be used in generated file names and, optionally, in a generated ToC as the Version",
+      "description": "The version of the addon package. Will be used in generated file names and, optionally, in a generated TOC as the Version",
       "type": "string"
     },
     "wowVersions": {
@@ -91,19 +95,19 @@
       "type": "array",
       "items": {
         "type": "object",
-        "description": "An addon (that has its own ToC)",
+        "description": "An addon (that has its own TOC)",
         "properties": {
           "path": {
             "description": "The path to the root directory of an addon, relative to this configuration file. All files inside it will be packaged.",
             "$ref": "#/$defs/relativePath"
           },
           "toc": {
-            "description": "Generate a ToC with the provided data",
+            "description": "Generate a TOC with the provided data",
             "type": "object",
             "properties": {
               "tags": {
                 "type": "object",
-                "description": "The metadata tags inside a ToC",
+                "description": "The metadata tags inside a TOC",
                 "properties": {
                   "Author": {
                     "type": "string",
