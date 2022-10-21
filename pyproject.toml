@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "wap"
-version = "0.10.0"
+name = "wow-addon-packager"
+version = "0.10.1"
 description = "A developer-friendly World of Warcraft addon packager"
 authors = ["Tim Martin <tim@timmart.in>"]
 license = "MIT"
@@ -8,9 +8,18 @@ readme = "README.md"
 keywords = ["World of Warcraft", "WoW", "Addons"]
 homepage = "https://github.com/t-mart/wap"
 repository = "https://github.com/t-mart/wap"
-documentation = "https://wow-addon-packager.readthedocs.io/en/stable/"
+documentation = "https://t-mart.github.io/wap/"
 classifiers = [
-    "Topic :: Software Development :: Build Tools"
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development :: Build Tools",
 ]
 
 [tool.poetry.scripts]
