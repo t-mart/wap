@@ -17,7 +17,7 @@ A few nuggets of information about the project:
 - This is a [Python](https://www.python.org/downloads/) project.
 - Depenedencies are managed with [poetry](https://python-poetry.org/). Install the project with
   `poetry install`.
-- Tests can be run with `python -m pytest`
+- Tests can be run with `python -m pytest`.
 - Docs can be built with `mkdocs build` (or, rebuilt continuously with a development server with
   `mkdocs serve`).
 - Formatting should be done with [black](https://github.com/psf/black) and
