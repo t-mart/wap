@@ -35,8 +35,3 @@ def fs_env(tmp_path: Path) -> Iterator[FSEnv]:
 def cf_api_respx() -> Iterator[MockRouter]:
     with respx.mock(assert_all_called=False) as respx_mock:
         yield setup_mock_cf_api(respx_mock)
-
-
-# @pytest.fixture
-# def mock_watchfiles() -> Iterator[MagicMock]:
-#     with patch('tests.cmd_util.', side_effect=call) as watch_mock:

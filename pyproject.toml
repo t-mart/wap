@@ -22,7 +22,7 @@ classifiers = [
     "Topic :: Software Development :: Build Tools",
 ]
 packages = [
-    { include = "src/wap" },
+    { include = "wap", from = "src" },
 ]
 
 [tool.poetry.scripts]
