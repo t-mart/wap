@@ -161,7 +161,7 @@ def test_build_config_discovery(fs_env: FSEnv) -> None:
     fs_env.place_addon("basic")
     fs_env.place_file("LICENSE")
 
-    os.chdir(Path("addon"))
+    os.chdir(Path("Addon"))
 
     result = invoke_build()
 
