@@ -1,6 +1,6 @@
 # wap
 
-[![GitHub Actions status for master branch](https://github.com/t-mart/wap/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/t-mart/wap/actions/workflows/ci.yml)
+[![GitHub Actions CI status for default branch](https://github.com/t-mart/wap/actions/workflows/ci.yml/badge.svg)](https://github.com/t-mart/wap/actions/workflows/ci.yml)
 [![Latest release on PyPI](https://img.shields.io/pypi/v/wow-addon-packager)](https://pypi.org/project/wow-addon-packager/)
 
 
