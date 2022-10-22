@@ -3,6 +3,7 @@ from textwrap import dedent
 
 import click
 
+from wap import __name__ as package_name
 from wap import __version__
 from wap.commands.build import build
 from wap.commands.new_config import new_config
@@ -55,6 +56,7 @@ BASE_HELP_URL = "http://t-mart.github.io/wap"
 
 @click.group()
 @click.version_option(
+    package_name=package_name,
     message=f"wap version {__version__}",
 )
 def base() -> int | None:
