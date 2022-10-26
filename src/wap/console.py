@@ -34,11 +34,7 @@ def print(text: Any, stderr: bool = True, newline: bool = True) -> None:
 
     If `stderr` is True, print to stderr. Otherwise, print to stdout.
 
-    If `newline` is True, attach a newline character to the string before printing.
-
-    If `dedent` is True, remove any common leading whitespace from the text. This is
-    useful when printing triple-quoted strings present in Python source code. (Make
-    sure to start such strings with a `\"\"\"\\` so that there's no empty line.)
+    If `newline` is True, print a newline character after the string.
     """
     if stderr:
         console = _STDERR_CONSOLE
@@ -48,19 +44,19 @@ def print(text: Any, stderr: bool = True, newline: bool = True) -> None:
     console.print(text, end="\n" if newline else "")
 
 
-def debug(text: str, newline: bool = True, dedent: bool = False) -> None:
+def debug(text: str, newline: bool = True) -> None:
     print(f"[debug]\\[DEBUG][/debug] {text}", newline=newline)
 
 
-def info(text: str, newline: bool = True, dedent: bool = False) -> None:
+def info(text: str, newline: bool = True) -> None:
     print(f"[info]\\[INFO][/info] {text}", newline=newline)
 
 
-def warn(text: str, newline: bool = True, dedent: bool = False) -> None:
+def warn(text: str, newline: bool = True) -> None:
     print(f"[warn]\\[WARN][/warn] {text}", newline=newline)
 
 
-def error(text: str, newline: bool = True, dedent: bool = False) -> None:
+def error(text: str, newline: bool = True) -> None:
     print(f"[error]\\[ERROR][/error] {text}", newline=newline)
 
 
