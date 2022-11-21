@@ -150,12 +150,11 @@ class Changelog:
             contents = path.read_text(encoding="utf-8")
         except UnicodeDecodeError as unicode_decode_error:
             raise EncodingError(
-                f'Changelog file "{path}" cannot be decoded to utf-8: '
-                f"{unicode_decode_error}. Please change the encoding and try again."
+                f'Changelog file "{path}" should be utf-8: {unicode_decode_error}'
             ) from unicode_decode_error
         except FileNotFoundError as file_not_found_error:
             raise PathMissingError(
-                f"Changelog path {path} does not exist. Please update the path and try "
+                f"Changelog path {path} should exist. Please update the path and try "
                 "again."
             ) from file_not_found_error
 

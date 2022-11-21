@@ -53,8 +53,8 @@ def publish(
 
     if config.publish is None or config.publish.curseforge is None:
         raise ConfigError(
-            'A "publish.curseforge" config section must be present to publish. Please '
-            "add one and try again."
+            'A "publish.curseforge" config section should be present to publish. '
+            "Please add one and try again."
         )
 
     cf_config = config.publish.curseforge
@@ -75,7 +75,8 @@ def publish(
     build_path = get_build_path(output_path, config)
     if not build_path.is_dir():
         raise PathMissingError(
-            f'Build path {build_path} is not a directory. Have you run "wap build" yet?'
+            f'Build path {build_path} should be a directory. Have you run "wap build" '
+            "yet?"
         )
 
     print(f"Zipping [path]{build_path}[path]")

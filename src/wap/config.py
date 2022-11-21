@@ -68,13 +68,11 @@ class Config:
             return cls.from_python_object(json.loads(path.read_text(encoding="utf-8")))
         except UnicodeDecodeError as unicode_decode_error:
             raise EncodingError(
-                f'Config file "{path}" cannot be decoded to utf-8: '
-                f"{unicode_decode_error}. Please encode your file in utf-8."
+                f'Config file "{path}" should be utf-8: {unicode_decode_error}'
             ) from unicode_decode_error
         except json.JSONDecodeError as json_decode_error:
             raise EncodingError(
-                f'Config file "{path}" is malformed JSON: {json_decode_error}. Please '
-                "correct the JSON error."
+                f'Config file "{path}" should be well-formed JSON: {json_decode_error}.'
             ) from json_decode_error
 
     def to_python_object(self, with_schema: bool = True) -> Any:

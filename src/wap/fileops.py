@@ -20,7 +20,7 @@ def delete_path(path: Path) -> None:
         shutil.rmtree(path)
     else:  # pragma: no cover
         raise PathTypeError(
-            f"Cannot delete path {path} because it is not a file or directory."
+            f"Path {path} should be a file or directory in order to delete it."
         )
 
 

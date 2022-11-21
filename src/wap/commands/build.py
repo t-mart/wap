@@ -104,18 +104,14 @@ class Addon:
             build_path.mkdir(parents=True, exist_ok=True)
         except FileExistsError as file_exists_error:
             raise PathExistsError(
-                f"Output directory {build_path} already exists as a file. Please "
-                "remove it."
+                f"Output directory {build_path} should not be a file"
             ) from file_exists_error
 
         if clean:
             clean_dir(build_path)
 
         if not self.source_path.is_dir():
-            raise PathTypeError(
-                f"Addon path {self.source_path} must be a directory. Please update the "
-                "path in your configuration or replace the file with a directory."
-            )
+            raise PathTypeError(f"Addon path {self.source_path} should be a directory.")
 
         # copy source to dest
         copy_path(self.source_path, build_path)
@@ -153,9 +149,8 @@ class Addon:
             except (PermissionError, IsADirectoryError) as error:
                 # on windows, raises PermissionError, linux raises IsADirectoryError
                 raise PathExistsError(
-                    f"Cannot generate TOC file {toc_path_target} because it already "
-                    "exists as a directory. Please remove that file from your source "
-                    "files."
+                    f"Generated TOC file {toc_path_target} should not exist in your "
+                    "source files."
                 ) from error
             toc_paths.append(toc_path_target)
 
@@ -192,8 +187,8 @@ class Package:
                 seen_addon_paths.add(addon.source_path)
             else:
                 raise ConfigError(
-                    f"Duplicate addon path {addon.source_path} found. Please remove or "
-                    "update that addon path in your configuration."
+                    "Addon paths should be unique. Found duplicate for "
+                    f"{addon.source_path}."
                 )
 
         return package
@@ -231,10 +226,7 @@ def get_addon_link_targets(
         if len(uniq_flavors) > 1:
             raise click.BadOptionUsage(
                 "link",
-                (
-                    'If linking "auto", it must be the only link. Please remove other '
-                    "--link options and run the command again."
-                ),
+                ('If linking "--auto", it should be the only provided link option.'),
             )
 
         config_flavors = set(config.wow_versions)
@@ -259,7 +251,10 @@ def resolve_globs(root_path: Path, glob_patterns: Sequence[str]) -> Sequence[Pat
     for pattern in glob_patterns:
         matching_paths = list(root_path.glob(pattern))
         if len(matching_paths) == 0:
-            warn(f'Include "{pattern}" matched no paths')
+            warn(
+                f'Include pattern "{pattern}" should match some paths, but none were '
+                "found."
+            )
         paths.extend(matching_paths)
     return paths
 

@@ -434,7 +434,7 @@ def test_build_include_missing(fs_env: FSEnv) -> None:
     result = invoke_build()
 
     assert result.success
-    assert "matched no paths" in result.stderr
+    assert "none were found" in result.stderr
 
 
 def test_build_include_dir(fs_env: FSEnv) -> None:
