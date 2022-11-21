@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.7
+
+- When linking during builds, let users forcibly link if the link path already exists with the
+  `--force-link` option. This will delete the file/directory that was already there.
+
 ## 0.10.6
 
 (woops forgot to update these)
