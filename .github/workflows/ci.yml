@@ -125,6 +125,8 @@ jobs:
       # I suppose this is kinda useful to have, but, really, its just so that the mkdocs scraper
       # can determine the latest version number in its github section.
       - name: Github release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/*
+        shell: bash
+        run: |
+          gh release create --generate-notes ${{ github.ref }} dist/*
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
