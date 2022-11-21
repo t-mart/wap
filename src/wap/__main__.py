@@ -21,7 +21,7 @@ def main() -> None:
         error(wap_exc.message)
         exit_code = 1
     except click.ClickException as click_exc:
-        error(click_exc.message)
+        error(str(click_exc))
         exit_code = 1
     except click.Abort:
         error("Aborted!")
