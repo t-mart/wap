@@ -85,6 +85,14 @@ wap looks for installations in the following places:
 If you've installed World of Warcraft into a custom location not listed above, you may point wap to
 it with any of the [`--<flavor>-addons-path`](#-flavor-addons-path) options
 
+
+### `--force-link`
+
+`--force-link`
+
+Lets the link operation succeed if something was already there when [`--link`-ing](#-link) by
+deleting it first.
+
 ### `--<flavor>-addons-path`
 
 - `--vanilla-addons-path DIRECTORY`
