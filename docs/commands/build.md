@@ -48,7 +48,7 @@ to test them out in the game.
     A symlink is a file that points to/targets another file. As far as World of Warcraft is
     concerned, the symlink is indistinguishable from the real file. If the symlink is deleted, the
     target file will be unaffected. See [Symbolic link](https://en.wikipedia.org/wiki/Symbolic_link)
-     on Wikipedia for more information.
+    on Wikipedia for more information.
 
 !!! warning
 
@@ -56,6 +56,9 @@ to test them out in the game.
 
     - Enable developer mode by searching for "developer mode" in Settings and clicking the toggle.
       *(Recommended)*
+
+        ![Turning on Developer Mod](/assets/developer-mode.png)
+
     - Run wap as an administrator.
 
 The argument provided specifies to which installations links should be made: `auto` symlinks into
