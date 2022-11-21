@@ -2,7 +2,7 @@
 
 ## Installation
 
-Before you get started, Python 3.10 or greater is required.
+Before you get started, Python 3.11 or greater is required.
 [Download it here](https://www.python.org/downloads/).
 
 ### pipx (Recommended)

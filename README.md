@@ -26,7 +26,7 @@ A developer-friendly World of Warcraft addon packager.
 
 These instructions create and upload a working addon without editing a single line of code!
 
-1. Download and install [Python 3.10](https://www.python.org/downloads/).
+1. Download and install [Python 3.11](https://www.python.org/downloads/).
 
 2. Install `wap`:
 
@@ -71,6 +71,6 @@ These instructions create and upload a working addon without editing a single li
 - PyPI: <https://pypi.org/project/wow-addon-packager/>
 - Source Code: <https://github.com/t-mart/wap>
 - Documentation: <https://t-mart.github.io/wap/>
-- Supported Python Versions: 3.10 and later
+- Supported Python Versions: 3.11 and later
 - Badge: [![Packaged by wap](https://img.shields.io/badge/packaged%20by-wap-d33682)](https://github.com/t-mart/wap)
 - Contribution Guide: <https://t-mart.github.io/wap/contributing>
