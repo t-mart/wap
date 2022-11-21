@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.9
+
+- Fix `--force-link` deleting of symlinks.
+
 ## 0.10.7
 
 - When linking during builds, let users forcibly link if the link path already exists with the
