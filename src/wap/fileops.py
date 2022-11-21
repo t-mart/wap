@@ -105,18 +105,17 @@ def symlink(
             return
         raise PathExistsError(
             f"Intended symlink {new_path} already exists and points to a different "
-            "target. Please delete the symlink and try again."
+            "target. Delete the symlink and try again."
         ) from file_exists_error
     except FileNotFoundError as file_not_found_error:
         raise PathMissingError(
-            f"Unable to create link {new_path}. Please ensure its parent directory "
-            "exists."
+            f"Unable to create link {new_path}. Ensure its parent directory exists."
         ) from file_not_found_error
     except OSError as os_error:
         if getattr(os_error, "winerror", None) == 1314:
             raise PlatformError(
                 f"Could not create symbolic link from {new_path} to {target_path} "
-                "because this program Windows Developer Mode is not enable or because "
+                "because Windows Developer Mode is not enabled or because "
                 "this program is not running as an administrator."
             ) from os_error
         raise os_error
