@@ -14,13 +14,13 @@ def delete_path(path: Path) -> None:
     Deletes either a file or directory. The path existance must be checked before
     calling this function.
     """
-    if path.is_file():
+    if path.is_file() or path.is_symlink():
         path.unlink()
     elif path.is_dir():
         shutil.rmtree(path)
     else:  # pragma: no cover
         raise PathTypeError(
-            f"Path {path} should be a file or directory in order to delete it."
+            f"Cannot delete path {path} because its not a file or directory."
         )
 
 
