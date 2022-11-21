@@ -274,7 +274,7 @@ def test_build_with_linking(fs_env: FSEnv, link_arg: str) -> None:
         "vanilla",
     ],
 )
-def test_build_link_exists(fs_env: FSEnv, link_arg: str) -> None:
+def test_build_link_already_linked(fs_env: FSEnv, link_arg: str) -> None:
     fs_env.write_config(get_basic_config())
     fs_env.place_addon("basic")
     fs_env.place_file("LICENSE")
@@ -293,6 +293,66 @@ def test_build_link_exists(fs_env: FSEnv, link_arg: str) -> None:
     )
 
     args.extend(["--link", link_arg])
+
+    result = invoke_build(args)
+
+    assert result.success
+    assert (
+        Path(f"dist/{PACKAGE_NAME}-{PACKAGE_VERSION}/Addon").resolve()
+        == (Path(INSTALLATION_ADDON_DIRS[link_arg]) / "Addon").resolve()
+    )
+
+
+@pytest.mark.parametrize(
+    "link_arg",
+    [
+        "mainline",
+        "wrath",
+        "vanilla",
+    ],
+)
+def test_build_link_path_exists(fs_env: FSEnv, link_arg: str) -> None:
+    fs_env.write_config(get_basic_config())
+    fs_env.place_addon("basic")
+    fs_env.place_file("LICENSE")
+
+    args: list[str] = []
+    for flavor, path in INSTALLATION_ADDON_DIRS.items():
+        args.extend((f"--{flavor}-addons-path", path))
+        fs_env.place_dir(path, parents=True, exist_ok=True)
+
+    # create a dir in the spot where the link would be made
+    fs_env.place_dir(str(Path(INSTALLATION_ADDON_DIRS[link_arg]) / "Addon"))
+
+    args.extend(["--link", link_arg])
+
+    result = invoke_build(args)
+
+    assert isinstance(result.exception, PathExistsError)
+
+
+@pytest.mark.parametrize(
+    "link_arg",
+    [
+        "mainline",
+        "wrath",
+        "vanilla",
+    ],
+)
+def test_build_link_path_exists_force(fs_env: FSEnv, link_arg: str) -> None:
+    fs_env.write_config(get_basic_config())
+    fs_env.place_addon("basic")
+    fs_env.place_file("LICENSE")
+
+    args: list[str] = []
+    for flavor, path in INSTALLATION_ADDON_DIRS.items():
+        args.extend((f"--{flavor}-addons-path", path))
+        fs_env.place_dir(path, parents=True, exist_ok=True)
+
+    # create a dir in the spot where the link would be made
+    fs_env.place_dir(str(Path(INSTALLATION_ADDON_DIRS[link_arg]) / "Addon"))
+
+    args.extend(["--link", link_arg, "--link-force"])
 
     result = invoke_build(args)
 

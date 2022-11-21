@@ -19,7 +19,7 @@ from wap.config import AddonConfig, Config
 from wap.console import print, warn
 from wap.core import get_build_path
 from wap.exception import ConfigError, PathExistsError, PathTypeError
-from wap.fileops import clean_dir, copy_path, symlink
+from wap.fileops import clean_dir, copy_path, delete_path, symlink
 from wap.toc import Toc
 from wap.wow import FLAVOR_MAP, FLAVOR_NAMES, FlavorName, Version
 
@@ -28,11 +28,18 @@ from wap.wow import FLAVOR_MAP, FLAVOR_NAMES, FlavorName, Version
 class AddonBuildResult:
     path: Path
 
-    def link(self, wow_addons_path: Path) -> Path | None:
+    def link(self, wow_addons_path: Path, force: bool) -> Path | None:
         """
         Links this built addon to a WoW addons directory. Returns the link path.
         """
         link_path = wow_addons_path / self.path.name
+
+        if (
+            force
+            and link_path.exists()
+            and (link_path.resolve() != self.path.resolve())
+        ):
+            delete_path(link_path)
 
         symlink(new_path=link_path, target_path=self.path)
 
@@ -263,13 +270,6 @@ def resolve_globs(root_path: Path, glob_patterns: Sequence[str]) -> Sequence[Pat
 @config_path_option()
 @output_path_option()
 @clean_option()
-# this is kinda a odd one:
-# - <nothing> = empty tuple
-# - --link = ("auto")
-# - --link auto = ("auto")
-# - --link mainline = ("mainline")
-# - --link mainline --link tbc = ("mainline", "tbc")
-# - --link mainline --link auto = ("mainline", "auto") (raises an exception)
 @click.option(
     "-l",
     "--link",
@@ -290,6 +290,14 @@ def resolve_globs(root_path: Path, glob_patterns: Sequence[str]) -> Sequence[Pat
     show_default=True,
 )
 @click.option(
+    "--link-force",
+    is_flag=True,
+    help=(
+        "If --link and the link path already exists, delete it first so that this link "
+        "can be made."
+    ),
+)
+@click.option(
     "-w",
     "--watch",
     "enable_watch",
@@ -302,6 +310,7 @@ def build(
     output_path: Path | None,
     clean: bool,
     flavors_to_link: Sequence[FlavorName | AutoChoiceName],
+    link_force: bool,
     enable_watch: bool,
     mainline_addons_path: Path,
     wrath_addons_path: Path,
@@ -345,7 +354,7 @@ def build(
             print(build_addon_msg)
 
             for flavor_name, addon_dir in addon_link_dirs.items():
-                link_path = addon.link(wow_addons_path=addon_dir)
+                link_path = addon.link(wow_addons_path=addon_dir, force=link_force)
                 if first_time:
                     print(
                         f"Linked [path]{link_path}[/path] "

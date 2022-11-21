@@ -105,7 +105,8 @@ def symlink(
             return
         raise PathExistsError(
             f"Intended symlink {new_path} already exists and points to a different "
-            "target. Delete the symlink and try again."
+            'target. Delete the symlink and try again, or provide the "--link-force" '
+            "option to delete it automatically."
         ) from file_exists_error
     except FileNotFoundError as file_not_found_error:
         raise PathMissingError(
