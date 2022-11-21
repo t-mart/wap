@@ -3,8 +3,6 @@
 [![GitHub Actions CI status for default branch](https://github.com/t-mart/wap/actions/workflows/ci.yml/badge.svg)](https://github.com/t-mart/wap/actions/workflows/ci.yml)
 [![Latest release on PyPI](https://img.shields.io/pypi/v/wow-addon-packager)](https://pypi.org/project/wow-addon-packager/)
 
-
-
 A developer-friendly World of Warcraft addon packager.
 
 ![demonstration of wap usage](https://raw.githubusercontent.com/t-mart/wap/master/docs/assets/demo.gif)
@@ -64,7 +62,7 @@ These instructions create and upload a working addon without editing a single li
    [API token](https://authors.curseforge.com/account/api-tokens) so that others can use it:
 
     ```console
-    wap upload --curseforge-token "<api-token>"
+    wap publish --curseforge-token "<api-token>"
     ```
 
 ## Project Information

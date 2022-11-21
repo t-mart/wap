@@ -1,6 +1,8 @@
 # Changelog
 
-## dev
+## 0.10.6
+
+(woops forgot to update these)
 
 - Change configuration file format from YAML to JSON
 - Use JSON schema for validation, available at `src/wap/schema/wap.schema.json`
