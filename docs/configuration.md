@@ -7,7 +7,6 @@ explicitly provided), `wap` will look in the current directory for a
 file named `wap.json`, and then, in any parent directory. If you have used git, then you are
 already familiar.
 
-
 ## Full examples
 
 - A minimal configuration:

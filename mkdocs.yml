@@ -34,6 +34,7 @@ nav:
     - wap validate: commands/validate.md
   - Configuration: configuration.md
   - TOC Generation: toc-gen.md
+  - Github Action: gh-action.md
   - Project Structure: project-structure.md
   - Contributing: contributing.md
   - Changelog: changelog.md
