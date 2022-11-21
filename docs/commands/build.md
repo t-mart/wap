@@ -50,18 +50,19 @@ to test them out in the game.
     target file will be unaffected. See [Symbolic link](https://en.wikipedia.org/wiki/Symbolic_link)
      on Wikipedia for more information.
 
+!!! warning
+
     Windows users will not be able to create symlinks by default. There are two options:
 
     - Enable developer mode by searching for "developer mode" in Settings and clicking the toggle.
       *(Recommended)*
     - Run wap as an administrator.
 
-The argument provided specifies to which installations links should be made. Without an argument,
-`--link` runs as if `auto` was provided.
+The argument provided specifies to which installations links should be made: `auto` symlinks into
+any found installations on your computer that are also compatible with the addon. `mainline`,
+`wrath`, `vanilla` symlink into those respective flavor's installation.
 
-For a given addon, `auto` symlinks into any found installations on your computer if the addon is
-compatible with that flavor's installation. Otherwise, `mainline`, `wrath`, `vanilla` symlink into
-those respective flavor's installation.
+ Without an argument, `--link` runs as if `auto` was provided.
 
 This option can be provided multiple times unless `auto` is also provided.
 
