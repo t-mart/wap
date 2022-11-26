@@ -7,6 +7,7 @@ repo_name: t-mart/wap
 
 docs_dir: docs
 site_dir: site
+site_url: https://t-mart.github.io/wap/
 
 theme:
   name: material

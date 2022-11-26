@@ -57,7 +57,7 @@ to test them out in the game.
     - Enable developer mode by searching for "developer mode" in Settings and clicking the toggle.
       *(Recommended)*
 
-        ![Turning on Developer Mod](/assets/developer-mode.png)
+        ![Turning on Developer Mode](/assets/developer-mode.png)
 
     - Run wap as an administrator.
 
