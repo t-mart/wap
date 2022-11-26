@@ -213,7 +213,7 @@ A container for Curseforge configuration.
 The Curseforge project identifier, which identifies the package to publish to. You can find it on
 your project page:
 
-![Project id as found on Curseforge's "About Project" section](/assets/where-to-find-project-id.png)
+![Project id as found on Curseforge's "About Project" section](assets/where-to-find-project-id.png)
 
 You can create a new pacakge on [the website](https://www.curseforge.com/project/1/1/create).
 
