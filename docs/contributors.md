@@ -2,7 +2,7 @@
 
 If you're working on an project that uses `wap`, do the following to get started:
 
-1. First, [install `wap`](../installation.md).
+1. First, [install `wap`](installation.md).
 
 2. If you haven't already, fork or clone the project that you want to work on. For example:
 
@@ -16,7 +16,7 @@ If you're working on an project that uses `wap`, do the following to get started
     cd ItemVersion
     ```
 
-4. [Build](../commands/build.md) the project:
+4. [Build](commands/build.md) the project:
 
     ```shell
     wap build
@@ -26,7 +26,7 @@ If you're working on an project that uses `wap`, do the following to get started
 
     At this point, you could copy-paste that directory into your WoW `Interface/AddOns` directory,
     but `wap` has a much more elegant developer-experience solution: run `wap build` in
-    [`--watch`](../commands/build.md#-watch) and [`--link`](../commands/build.md#-link) mode to have
+    [`--watch`](commands/build.md#-watch) and [`--link`](commands/build.md#-link) mode to have
     it automatically rebuild and link into your AddOns directory. No copy-pasting needed!
 
     ```shell
