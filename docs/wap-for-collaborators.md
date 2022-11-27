@@ -1,6 +1,6 @@
-# wap for Contributors
+# wap for Collaborators
 
-If you're working on an project that uses `wap`, do the following to get started:
+If you're collaborating on an project that uses `wap`, do the following to get started:
 
 1. First, [install `wap`](installation.md).
 
