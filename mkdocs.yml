@@ -37,6 +37,7 @@ nav:
   - TOC Generation: toc-gen.md
   - Github Action: gh-action.md
   - Project Structure: project-structure.md
+  - wap for Contributors: contributors.md
   - Contributing: contributing.md
   - Changelog: changelog.md
   - License: license.md

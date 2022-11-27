@@ -54,8 +54,9 @@ to test them out in the game.
 
     Windows users will not be able to create symlinks by default. There are two options:
 
-    - Enable developer mode by searching for "developer mode" in Settings and clicking the toggle.
-      *(Recommended)*
+    - **Recommended** Enable developer mode by searching for "developer mode" in Settings and
+      clicking the toggle.
+
 
         ![Turning on Developer Mode](../assets/developer-mode.png)
 

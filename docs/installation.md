@@ -7,8 +7,13 @@ Before you get started, Python 3.11 or greater is required.
 
 ### pipx (Recommended)
 
-The recommended way to install `wap` is with [pipx](https://pypa.github.io/pipx/). After installing
-that, you can then run:
+The recommended way to install `wap` is with [pipx](https://pypa.github.io/pipx/). Its a little more
+work than the [pip](#pip) method, but is safer and will prevent some nasty, hard-to-diagnose bugs.
+
+First, install pipx by following [its installation
+instructions](https://pypa.github.io/pipx/#install-pipx).
+
+Then, you can then run:
 
 ```console
 pipx install wow-addon-packager
@@ -16,7 +21,7 @@ pipx install wow-addon-packager
 
 ### pip
 
-`pip` is automatically bundled with recent versions of Python.
+To install with pip, run the following:
 
 ```console
 pip install --upgrade --user wow-addon-packager

@@ -2,7 +2,7 @@
 
 ## Pull Requests
 
-- Limit each pull request to *one* change only.
+- Limit each pull request to *one* idea only.
 - Pull requests branches will be squashed and rebased on top of `master`.
 - *Always* add tests and docs for your code.
 - No contribution is too small! Please submit as many fixes for typos and grammar bloopers as you
