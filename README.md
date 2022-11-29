@@ -71,7 +71,7 @@ These instructions create and upload a working addon without editing a single li
 - PyPI: <https://pypi.org/project/wow-addon-packager/>
 - Source Code: <https://github.com/t-mart/wap>
 - Documentation: <https://t-mart.github.io/wap/>
-- GitHub Action: <https://t-mart.github.io/wap-action/>
+- GitHub Action: <https://github.com/t-mart/wap-action>
 - Supported Python Versions: 3.11 and later
 - Badge: [![Packaged by wap](https://img.shields.io/badge/packaged%20by-wap-d33682)](https://github.com/t-mart/wap)
 - Contribution Guide: <https://t-mart.github.io/wap/contributing>
