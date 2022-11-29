@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.11
+
+- Fix dependency issue
+
 ## 0.10.10
 
 - Bump HTTP timeout from 5 to 15 seconds to make uploads less likely to fail.

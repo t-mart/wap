@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wow-addon-packager"
-version = "0.10.9"
+version = "0.10.11"
 description = "A developer-friendly World of Warcraft addon packager"
 authors = ["Tim Martin <tim@timmart.in>"]
 license = "MIT"
@@ -49,11 +49,11 @@ respx = "^0.19.3"
 glom = "^22.1.0"
 multipart = "^0.2.4"
 mkdocs-material = "^8.5.2"
-# NOTE: this pygments source should be replaced once the wowtoc lexer
-# support is released. See https://github.com/pygments/pygments/pull/2244
-pygments = {git = "https://github.com/pygments/pygments", rev = "fccb16b"}
 pre-commit = "^2.20.0"
 twine = "^4.0.1"
+# NOTE: this pygments source should be replaced once the wowtoc lexer
+# support is released. See https://github.com/pygments/pygments/pull/2244
+pygments = {git = "https://github.com/pygments/pygments.git", rev = "00652612173e39d1552dd2efeb12ae1020fa003f"}
 
 [build-system]
 requires = ["poetry-core"]
@@ -71,7 +71,7 @@ testpaths = "tests"
 
 [tool.black]
 line-length = 88
-target-version = ['py310']
+target-version = ['py311']
 
 [tool.isort]
 profile = "black"
