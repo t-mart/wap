@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.12
+
+- Fix broken tests
+
 ## 0.10.11
 
 - Fix dependency issue
