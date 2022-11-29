@@ -32,7 +32,7 @@ class CurseForgeAPI:
 
     api_token: str
 
-    _CLIENT: ClassVar[httpx.Client] = httpx.Client()
+    _CLIENT: ClassVar[httpx.Client] = httpx.Client(timeout=15.0)
     TOKEN_HEADER_NAME: ClassVar[str] = "X-Api-Token"
     UPLOADED_FILE_URL_TEMPLATE: ClassVar[
         str

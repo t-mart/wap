@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.10
+
+- Bump HTTP timeout from 5 to 15 seconds to make uploads less likely to fail.
+
 ## 0.10.9
 
 - Fix `--force-link` deleting of symlinks.
