@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.13
+
+- Disable twine whl check because its broken upstream
+
 ## 0.10.12
 
 - Fix broken tests
