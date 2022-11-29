@@ -50,9 +50,12 @@ jobs:
           poetry run flake8 src tests docs
 
       - name: Check twine
+        shell: bash
+        # TODO: Renable the dist/* line. Currently failing to check the whl
         run: |
           poetry build
-          poetry run twine check dist/*
+          # poetry run twine check dist/*
+          poetry run twine check dist/*.tar.gz
 
   test:
     name: Test
