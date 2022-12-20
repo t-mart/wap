@@ -13,15 +13,9 @@ repos:
     hooks:
       - id: black
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.188
     hooks:
-      - id: isort
-        files: \.py$
-
-  - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
-    hooks:
-      - id: flake8
+      - id: ruff
 
   # not gonna put mypy here. too slow and doesn't work well for individual files.
