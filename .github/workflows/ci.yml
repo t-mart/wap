@@ -33,9 +33,9 @@ jobs:
         run: |
           poetry install
 
-      - name: isort check
+      - name: ruff check
         run: |
-          poetry run isort --check src tests docs
+          poetry run ruff src tests docs
 
       - name: black check
         run: |
@@ -44,10 +44,6 @@ jobs:
       - name: mypy check
         run: |
           poetry run mypy src tests docs
-
-      - name: flake8 check
-        run: |
-          poetry run flake8 src tests docs
 
       - name: Check twine
         shell: bash
