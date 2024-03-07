@@ -11,7 +11,7 @@ from zipfile import ZipFile
 
 import pytest
 from attrs import frozen
-from glom import assign, delete
+from glom import assign, delete  # type: ignore
 from respx.router import MockRouter
 
 from tests.cmd_util import invoke_publish
@@ -104,7 +104,7 @@ def test_publish_normal(fs_env: FSEnv, cf_api_respx: MockRouter) -> None:
     assert upload_file_route
 
     req_content = CFUploadRequestContent.from_request(
-        upload_file_route.calls[0].request
+        upload_file_route.calls[0].request  # type: ignore
     )
     assert (
         req_content.metadata.items()
@@ -164,7 +164,7 @@ def test_publish_changelog_explicit_type(
     upload_file_route = cf_api_respx.routes["upload-file"]
     assert upload_file_route
     req_content = CFUploadRequestContent.from_request(
-        upload_file_route.calls[0].request
+        upload_file_route.calls[0].request  # type: ignore
     )
     assert req_content.metadata["changelogType"] == expected_type
     assert req_content.metadata["changelog"] == ""
@@ -200,7 +200,7 @@ def test_publish_auto_changelog_type_determination(
     upload_file_route = cf_api_respx.routes["upload-file"]
     assert upload_file_route
     req_content = CFUploadRequestContent.from_request(
-        upload_file_route.calls[0].request
+        upload_file_route.calls[0].request  # type: ignore
     )
     assert req_content.metadata["changelogType"] == expected_type
     assert req_content.metadata["changelog"] == changelog_text
@@ -261,7 +261,7 @@ def test_publish_release_types(
     assert upload_file_route
 
     req_content = CFUploadRequestContent.from_request(
-        upload_file_route.calls[0].request
+        upload_file_route.calls[0].request  # type: ignore
     )
     expected_release_type = "alpha"
     if config_release_type:

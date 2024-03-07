@@ -11,7 +11,7 @@ import tests.fixture
 
 def _get_fixture_file_path(subpath: Path) -> Path:
     return Path(
-        str(importlib.resources.files(tests.fixture).joinpath(Path("data") / subpath))
+        str(importlib.resources.files(tests.fixture).joinpath(Path("data") / subpath))  # type: ignore
     )
 
 

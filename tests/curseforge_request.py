@@ -10,7 +10,7 @@ from io import BytesIO
 from typing import Any
 
 import httpx
-import multipart
+import multipart  # type: ignore
 from attrs import frozen
 
 
@@ -23,16 +23,16 @@ class CFUploadRequestContent:
 
     @classmethod
     def from_parse(cls, parse: multipart.MultipartParser) -> CFUploadRequestContent:
-        metadata = json.loads(parse.get("metadata").raw)
-        file_part = parse.get("file")
-        file_content_type = file_part.content_type
-        file_name = file_part.filename
-        file_stream = file_part.raw
+        metadata = json.loads(parse.get("metadata").raw)  # type: ignore
+        file_part = parse.get("file")  # type: ignore
+        file_content_type: str = file_part.content_type  # type: ignore
+        file_name = file_part.filename  # type: ignore
+        file_stream = file_part.raw  # type: ignore
         return CFUploadRequestContent(
             metadata=metadata,
             file_content_type=file_content_type,
-            file_name=file_name,
-            file_stream=file_stream,
+            file_name=file_name,  # type: ignore
+            file_stream=file_stream,  # type: ignore
         )
 
     @classmethod

@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import pytest
 from attrs import frozen
-from glom import T, assign, glom
+from glom import T, assign, glom  # type: ignore
 
 from tests.cmd_util import invoke_build
 from tests.fixture.config import get_basic_config
@@ -36,14 +36,14 @@ SUFFIX_INTERFACE_PAIRS = [
     ("_Wrath", "30400"),
     ("", "90207"),
 ]
-PACKAGE_VERSION = get_basic_config()["version"]
+PACKAGE_VERSION: str = get_basic_config()["version"]
 PACKAGE_NAME = get_basic_config()["name"]
 
 
 def check_basic_addon(addon_root: Path) -> None:
     config = get_basic_config()
     expected_toc_files = ["Main.lua", "Extra.lua"]
-    expected_toc_tags = {
+    expected_toc_tags: dict[str, str] = {
         "Title": glom(config, "package.0.toc.tags.Title"),
         "Version": PACKAGE_VERSION,
         # first consult tag Author, then top-level author key
@@ -86,8 +86,8 @@ class Toc:
     @classmethod
     def parse(cls, path: Path) -> Toc:
         contents = path.read_text()
-        tags = {}
-        files = []
+        tags: dict[str, str] = {}
+        files: list[str] = []
         for line in contents.splitlines():
             if line.startswith("##"):
                 key, _, value = line.removeprefix("##").partition(":")

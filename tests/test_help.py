@@ -12,7 +12,7 @@ from tests.cmd_util import invoke_help
 )
 def test_help(subcommand: str | None) -> None:
     with patch("tests.cmd_util.base.webbrowser.open") as webbrowser_open_mock:
-        args = []
+        args: list[str] = []
         if subcommand is not None:
             args.append(subcommand)
         result = invoke_help(args)
@@ -31,7 +31,7 @@ def test_help(subcommand: str | None) -> None:
 )
 def test_help_no_browser(subcommand: str | None) -> None:
     with patch("tests.cmd_util.base.webbrowser.open", side_effect=webbrowser.Error):
-        args = []
+        args: list[str] = []
         if subcommand is not None:
             args.append(subcommand)
         result = invoke_help(args)
