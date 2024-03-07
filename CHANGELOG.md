@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.11.0
+
+- Hello again
+- Use Python 3.12
+- Update dependencies
+- Fix some typing issues
+- Remove:
+  - pre-commit: I just lost a whole commit because something went wrong with
+    this. And, I'd rather enforce this with CI instead.
+  - mypy: pylance/ruff is good enough
+  - black: use ruff instead
+- Bump latest wow versions (for scaffolding of new projects)
+
 ## 0.10.13
 
 - Disable twine whl check because its broken upstream
@@ -22,8 +35,9 @@
 
 ## 0.10.7
 
-- When linking during builds, let users forcibly link if the link path already exists with the
-  `--force-link` option. This will delete the file/directory that was already there.
+- When linking during builds, let users forcibly link if the link path already
+  exists with the `--force-link` option. This will delete the file/directory
+  that was already there.
 
 ## 0.10.6
 
@@ -32,12 +46,13 @@
 - Change configuration file format from YAML to JSON
 - Use JSON schema for validation, available at `src/wap/schema/wap.schema.json`
 - Don't prefix default configuration file name with a dot
-- Build TOC files for all flavors in one package instead of one flavor per package
+- Build TOC files for all flavors in one package instead of one flavor per
+  package
 - Add, remove, rename some commands
 - Move documentation to Material for MkDocs
 - Rewrite almost everything
 
 ## 0.9.0
 
-- Force UTF-8 encoding for configuration and changelog files, and gracefully error on any other
-encoding.
+- Force UTF-8 encoding for configuration and changelog files, and gracefully
+  error on any other encoding.
