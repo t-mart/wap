@@ -35,7 +35,7 @@ jobs:
 
       - name: ruff check
         run: |
-          poetry run ruff src tests docs
+          poetry run ruff check src tests docs
 
       - name: Check twine
         shell: bash
