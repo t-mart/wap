@@ -64,15 +64,15 @@ class Addon:
 
         source_path = (config_dir / addon_config.path).resolve()
 
-        include_paths = (
+        include_paths: list[Path] = (
             resolve_globs(root_path=config_dir, glob_patterns=addon_config.include)
             if addon_config.include
             else []
         )
 
-        tocs = []
+        tocs: list[Toc] = []
         if addon_config.toc is not None:
-            wow_versions = []
+            wow_versions: list[Version] = []
             for flavor_name, flavor_version in config.wow_versions.items():
                 wow_version = Version.from_dotted(flavor_version)
                 toc = Toc.from_toc_config(
@@ -139,7 +139,7 @@ class Addon:
             copy_path(include_path, include_path_target)
 
         # write tocs
-        toc_paths = []
+        toc_paths: list[Path] = []
         for toc in self.tocs:
             toc.validate(build_path)
             toc_path_target = build_path / toc.filename(build_path.name)
@@ -188,7 +188,7 @@ class Package:
         )
 
         # dupe check
-        seen_addon_paths = set()
+        seen_addon_paths: set[Path] = set()
         for addon in package.addons:
             if addon.source_path not in seen_addon_paths:
                 seen_addon_paths.add(addon.source_path)
@@ -253,8 +253,8 @@ def get_addon_link_targets(
     }
 
 
-def resolve_globs(root_path: Path, glob_patterns: Sequence[str]) -> Sequence[Path]:
-    paths = []
+def resolve_globs(root_path: Path, glob_patterns: Sequence[str]) -> list[Path]:
+    paths: list[Path] = []
     for pattern in glob_patterns:
         matching_paths = list(root_path.glob(pattern))
         if len(matching_paths) == 0:

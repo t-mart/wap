@@ -214,7 +214,7 @@ class TocConfig:
         )
 
     @property
-    def serialized_tags(self) -> Mapping[str, str]:
+    def serialized_tags(self) -> dict[str, str]:
         def enabled(value: bool) -> str:
             return "enabled" if value else "disabled"
 

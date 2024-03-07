@@ -65,8 +65,8 @@ class Toc:
 
     @classmethod
     def parse(cls, contents: str, flavor_suffix: str) -> Toc:
-        tags = []
-        files = []
+        tags: list[tuple[str, str]] = []
+        files: list[str] = []
 
         for line in contents.splitlines():
             if line and not line.startswith(cls._COMMENT_LINE_PREFIX):
@@ -104,7 +104,7 @@ class Toc:
         default_tags[f"{_METADATA_TAG_PREFIX}BuildTool"] = f"wap {__version__}"
 
         # all default tags are overrideable
-        merged_tags = default_tags | toc_config.serialized_tags
+        merged_tags: dict[str, str] = default_tags | toc_config.serialized_tags
 
         # sort the tags, for Title and Notes
         # TOC parsing logic is that, for a given user locale "xxXX" and tag name "Tag"

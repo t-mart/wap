@@ -11,7 +11,7 @@ from wap.commands.util import (
 from wap.config import Config
 from wap.console import print, warn
 from wap.core import get_build_path
-from wap.curseforge import RELEASE_TYPES, Changelog, CurseForgeAPI
+from wap.curseforge import RELEASE_TYPES, Changelog, CurseForgeAPI, GameVersionId
 from wap.exception import ConfigError, CurseForgeAPIError, PathMissingError
 
 DEFAULT_RELEASE_TYPE = "alpha"
@@ -91,7 +91,7 @@ def publish(
     print("Getting CurseForge WoW version ids...")
     version_map = cf_api.get_version_map()
 
-    version_ids = []
+    version_ids: list[GameVersionId] = []
     for flavor_name, version in config.wow_versions.items():
         try:
             version_ids.append(version_map[version])
