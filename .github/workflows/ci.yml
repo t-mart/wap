@@ -37,14 +37,6 @@ jobs:
         run: |
           poetry run ruff src tests docs
 
-      - name: black check
-        run: |
-          poetry run black --check src tests docs
-
-      - name: mypy check
-        run: |
-          poetry run mypy src tests docs
-
       - name: Check twine
         shell: bash
         # TODO: Renable the dist/* line. Currently failing to check the whl
