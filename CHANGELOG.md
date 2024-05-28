@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.0
+
+- Call it "Classic", not "Wrath" or "Cata", which are moving targets.
+
 ## 0.11.0
 
 - Hello again
