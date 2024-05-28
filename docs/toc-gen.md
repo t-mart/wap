@@ -2,7 +2,7 @@
 
 wap can generate TOC files for you addons. Generating TOC files:
 
-- lets you support all desired flavors of WoW (Retail, Wrath, Classic) simultaneously
+- lets you support all desired flavors of WoW (Retail, Classic, Vanilla) simultaneously
 - has less error surface area than maintaining TOC files directly
 - keeps your project [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) by auto-providing
   some tags from other parts of the configuration
@@ -21,7 +21,7 @@ For example, if you have a configuration like this:
   "author": "tim",
   "wowVersions": {
     "mainline": "9.2.7",
-    "wrath": "3.4.0",
+    "classic": "4.4.0",
     "vanilla": "1.14.3"
   },
   "package": [
@@ -60,12 +60,12 @@ this:
     Main.lua
     ```
 
-=== "`MyAddon_Wrath.toc`"
+=== "`MyAddon_Classic.toc`"
 
 
     ```wowtoc
     ## Author: tim
-    ## Interface: 30400
+    ## Interface: 40400
     ## Version: 0.0.1
     ## X-BuildDateTime: 2022-10-20T21:38:08.636618+00:00
     ## X-BuildTool: wap 0.9.0

@@ -27,13 +27,13 @@ from wap.exception import (
 
 INSTALLATION_ADDON_DIRS = {
     "mainline": "wow/_retail_/Interface/AddOns",
-    "wrath": "wow/_classic_/Interface/AddOns",
+    "classic": "wow/_classic_/Interface/AddOns",
     "vanilla": "wow/_classic_era_/Interface/AddOns",
 }
 SUFFIX_INTERFACE_PAIRS = [
     ("_Mainline", "90207"),
     ("_Vanilla", "11403"),
-    ("_Wrath", "30400"),
+    ("_Classic", "40400"),
     ("", "90207"),
 ]
 PACKAGE_VERSION: str = get_basic_config()["version"]
@@ -240,7 +240,7 @@ def test_build_addon_path_is_not_dir(fs_env: FSEnv) -> None:
     "link_arg",
     [
         "mainline",
-        "wrath",
+        "classic",
         "vanilla",
     ],
 )
@@ -270,7 +270,7 @@ def test_build_with_linking(fs_env: FSEnv, link_arg: str) -> None:
     "link_arg",
     [
         "mainline",
-        "wrath",
+        "classic",
         "vanilla",
     ],
 )
@@ -307,7 +307,7 @@ def test_build_link_already_linked(fs_env: FSEnv, link_arg: str) -> None:
     "link_arg",
     [
         "mainline",
-        "wrath",
+        "classic",
         "vanilla",
     ],
 )
@@ -335,7 +335,7 @@ def test_build_link_path_exists(fs_env: FSEnv, link_arg: str) -> None:
     "link_arg",
     [
         "mainline",
-        "wrath",
+        "classic",
         "vanilla",
     ],
 )
@@ -368,7 +368,7 @@ def test_build_link_path_exists_force(fs_env: FSEnv, link_arg: str) -> None:
     "exist_flavor",
     [
         "mainline",
-        "wrath",
+        "classic",
         "vanilla",
     ],
 )
@@ -405,7 +405,7 @@ def test_build_with_auto_linking(
     "other_flavor",
     [
         "mainline",
-        "wrath",
+        "classic",
         "vanilla",
     ],
 )
@@ -526,7 +526,7 @@ def test_build_toc_file_missing(fs_env: FSEnv) -> None:
     "toc_suffix",
     [
         "",
-        "_Wrath",
+        "_Classic",
         "_Vanilla",
     ],
 )

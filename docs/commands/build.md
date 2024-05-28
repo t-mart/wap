@@ -35,7 +35,7 @@ You can press ++ctrl+c++ to exit this mode.
 
 ### `--link`
 
-`-l, --link [auto|mainline|wrath|vanilla]`
+`-l, --link [auto|mainline|classic|vanilla]`
 
 After building, symlink your addons in the output directory to the respective World of Warcraft
 installation directory.
@@ -64,7 +64,7 @@ to test them out in the game.
 
 The argument provided specifies to which installations links should be made: `auto` symlinks into
 any found installations on your computer that are also compatible with the addon. `mainline`,
-`wrath`, `vanilla` symlink into those respective flavor's installation.
+`classic`, `vanilla` symlink into those respective flavor's installation.
 
  Without an argument, `--link` runs as if `auto` was provided.
 
@@ -80,7 +80,7 @@ wap looks for installations in the following places:
 | Flavor     | Addons Directory                          |
 |------------|-------------------------------------------|
 | `mainline` | `<prefix>/_retail_/Interface/Addons`      |
-| `wrath`    | `<prefix>/_classic_/Interface/Addons`     |
+| `classic`    | `<prefix>/_classic_/Interface/Addons`     |
 | `vanilla`  | `<prefix>/_classic_era_/Interface/Addons` |
 
 If you've installed World of Warcraft into a custom location not listed above, you may point wap to
@@ -97,7 +97,7 @@ deleting it first.
 ### `--<flavor>-addons-path`
 
 - `--vanilla-addons-path DIRECTORY`
-- `--wrath-addons-path DIRECTORY`
+- `--classic-addons-path DIRECTORY`
 - `--mainline-addons-path DIRECTORY`
 
 When linking with [`--link`](#-link), override the default installation path with the directory path
@@ -106,7 +106,7 @@ provided.
 !!! example
 
     ```shell
-    wap build --wrath-addons-path "D:/Games/World of Warcraft/_classic_/Interface/Addons"
+    wap build --classic-addons-path "D:/Games/World of Warcraft/_classic_/Interface/Addons"
     ```
 
 ### `--clean`

@@ -20,8 +20,8 @@ F9::
     TypeCommand("A neat new addon built with wap!")  ; description
     TypeCommand("")  ; default version
     TypeCommand("y")  ; yes to retail
-    TypeCommand("y")  ; yes to wrath
     TypeCommand("y")  ; yes to classic
+    TypeCommand("y")  ; yes to vanilla
     TypeCommand("y")  ; yes to publish
     TypeCommand("441390")  ; project id
     TypeCommand("my-addon")  ; project slug

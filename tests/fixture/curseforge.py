@@ -65,7 +65,7 @@ def _version_response(_: Request, **kwargs: str) -> Response:
         json=[
             {"name": "9.2.7", "id": 1000},
             {"name": "9.2.7", "id": 1001},  # this one has higher id though
-            {"name": "3.4.0", "id": 1002},
+            {"name": "4.4.0", "id": 1002},
             {"name": "1.14.3", "id": 1003},
         ],
     )

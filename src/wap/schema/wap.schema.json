@@ -36,12 +36,12 @@
           "description": "The supported mainline (or retail) version.",
           "$ref": "#/$defs/wowVersion"
         },
-        "wrath": {
-          "description": "The supported Wrath of the Lich King Classic version.",
+        "classic": {
+          "description": "The supported Classic version.",
           "$ref": "#/$defs/wowVersion"
         },
         "vanilla": {
-          "description": "The supported Vanilla Classic version.",
+          "description": "The supported Vanilla version.",
           "$ref": "#/$defs/wowVersion"
         }
       },

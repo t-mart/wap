@@ -37,7 +37,7 @@ already familiar.
       "description": "MyAddon enhances something...",
       "wowVersions": {
         "mainline": "9.2.7",
-        "wrath": "3.4.0",
+        "classic": "4.4.0",
         "vanilla": "1.14.3"
       },
       "publish": {
@@ -161,7 +161,7 @@ Additionally, in any [generated TOC files](./toc-gen.md), this value will be the
 ### `wowVersions`
 
 - Required
-- Type: object with at least one key from `["mainline", "wrath", "vanilla"]` and values of the
+- Type: object with at least one key from `["mainline", "classic", "vanilla"]` and values of the
   form `x.y.z` where `x`, `y`, and `z` are non-negative numbers
 
 This object maps the flavors of the game your addon will support to the versions of those
@@ -169,11 +169,11 @@ flavors.
 
 The recognized flavors are as follows:
 
-| Flavor     | Description                                                             |
-|------------|-------------------------------------------------------------------------|
-| `mainline` | The mainline or "retail" flavor, which includes the latest expansions   |
-| `wrath`    | The classic flavor that has slowly been evolving through old expansions |
-| `vanilla`  | The classic flavor that only includes the first expansion               |
+| Flavor        | Description                                                             |
+|---------------|-------------------------------------------------------------------------|
+| `mainline`    | The mainline or "retail" flavor, which includes the latest expansions   |
+| `classic`     | The classic flavor that has slowly been evolving through old expansions |
+| `vanilla`     | The classic flavor that only includes the first expansion               |
 
 In any [generated TOC files](./toc-gen.md), this value (in its interface form) will be the default
 for `Interface`.

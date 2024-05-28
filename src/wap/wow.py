@@ -74,7 +74,7 @@ class Version:
 
 FlavorName = Literal[
     "mainline",
-    "wrath",
+    "classic",
     "vanilla",
 ]
 FLAVOR_NAMES: tuple[FlavorName, ...] = get_args(FlavorName)
@@ -105,16 +105,16 @@ MAINLINE_FLAVOR = Flavor(
     latest_version=Version.from_dotted(_latest_versions["mainline"]),
     installation_dir_name="_retail_",
 )
-WRATH_FLAVOR = Flavor(
-    name="wrath",
-    canon_name="Wrath of the Lich King Classic",
-    toc_suffix="_Wrath",
-    latest_version=Version.from_dotted(_latest_versions["wrath"]),
+CLASSIC_FLAVOR = Flavor(
+    name="classic",
+    canon_name="Classic",
+    toc_suffix="_Classic",
+    latest_version=Version.from_dotted(_latest_versions["classic"]),
     installation_dir_name="_classic_",
 )
 VANILLA_FLAVOR = Flavor(
     name="vanilla",
-    canon_name="WoW Classic",
+    canon_name="Vanilla",
     toc_suffix="_Vanilla",
     latest_version=Version.from_dotted(_latest_versions["vanilla"]),
     installation_dir_name="_classic_era_",
@@ -122,7 +122,7 @@ VANILLA_FLAVOR = Flavor(
 
 FLAVORS = [
     MAINLINE_FLAVOR,
-    WRATH_FLAVOR,
+    CLASSIC_FLAVOR,
     VANILLA_FLAVOR,
 ]
 

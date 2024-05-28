@@ -219,12 +219,12 @@ def get_addon_link_targets(
     flavors_to_link: Sequence[FlavorName | AutoChoiceName],
     config: Config,
     mainline_addons_path: Path,
-    wrath_addons_path: Path,
+    classic_addons_path: Path,
     vanilla_addons_path: Path,
 ) -> dict[FlavorName, Path]:
     flavor_addons_path_map: dict[FlavorName, Path] = {
         "mainline": mainline_addons_path,
-        "wrath": wrath_addons_path,
+        "classic": classic_addons_path,
         "vanilla": vanilla_addons_path,
     }
     uniq_flavors = set(flavors_to_link)
@@ -313,7 +313,7 @@ def build(
     link_force: bool,
     enable_watch: bool,
     mainline_addons_path: Path,
-    wrath_addons_path: Path,
+    classic_addons_path: Path,
     vanilla_addons_path: Path,
 ) -> None:
     """
@@ -343,7 +343,7 @@ def build(
             flavors_to_link,
             config,
             mainline_addons_path=mainline_addons_path,
-            wrath_addons_path=wrath_addons_path,
+            classic_addons_path=classic_addons_path,
             vanilla_addons_path=vanilla_addons_path,
         )
 

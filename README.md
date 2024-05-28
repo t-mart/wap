@@ -9,8 +9,8 @@ A developer-friendly World of Warcraft addon packager.
 
 ## Features
 
-- [Builds](https://t-mart.github.io/wap/commands/build/) Retail, Wrath, Classic addons (or all
-  three!)
+- [Builds](https://t-mart.github.io/wap/commands/build/) Retail, Classic,
+  Vanilla addons (or all three!)
 - [Publishes](https://t-mart.github.io/wap/commands/publish/) your addons to CurseForge
 - [Generates valid TOC files](https://t-mart.github.io/wap/toc-gen/) automagically
 - [Continuously rebuilds](https://t-mart.github.io/wap/commands/build/#-watch) your addon during

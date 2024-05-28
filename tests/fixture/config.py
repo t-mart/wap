@@ -6,7 +6,7 @@ _BASIC = {
     "name": "Package",
     "author": "Me",
     "version": "1.2.3",
-    "wowVersions": {"mainline": "9.2.7", "wrath": "3.4.0", "vanilla": "1.14.3"},
+    "wowVersions": {"mainline": "9.2.7", "classic": "4.4.0", "vanilla": "1.14.3"},
     "publish": {"curseforge": {"projectId": "1234", "slug": "thepackage"}},
     "package": [
         {
