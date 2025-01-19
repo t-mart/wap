@@ -67,18 +67,15 @@ def _render_as_style(text: str, style: str) -> str:
 
 # this is only overloaded because rich overloads it. unnecessary...
 @overload
-def prompt_ask(prompt: str) -> str:
-    ...
+def prompt_ask(prompt: str) -> str: ...
 
 
 @overload
-def prompt_ask(prompt: str, default: str) -> str:
-    ...
+def prompt_ask(prompt: str, default: str) -> str: ...
 
 
 @overload
-def prompt_ask(prompt: str, default: str | None) -> str | None:
-    ...
+def prompt_ask(prompt: str, default: str | None) -> str | None: ...
 
 
 def prompt_ask(prompt: str, default: str | None = None) -> str | None:
@@ -116,7 +113,7 @@ if __name__ == "__main__":
     debug("debug")
 
     print("[path]C:\\Users\\tim\\code\\")
-    print(f'[path]{PureWindowsPath("C:/Users/tim/Saved Games/").as_uri()}')
+    print(f"[path]{PureWindowsPath('C:/Users/tim/Saved Games/').as_uri()}")
     print("[path]C:/Users/tim/Saved Games/")
 
     print("[hint]Next time, do this...")

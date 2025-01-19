@@ -19,31 +19,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Poetry
-        run: |
-          pipx install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: "poetry"
+      - name: Set up Python
+        run: uv python install
 
-      - name: Install dependencies
-        run: |
-          poetry install
+      - name: Install the project
+        run: uv sync --all-extras --dev
 
-      - name: ruff check
-        run: |
-          poetry run ruff check src tests docs
+      - name: Ruff Format Check
+        run: uv run ruff format --check
+
+      - name: Ruff Check
+        run: uv run ruff check --diff
 
       - name: Check twine
         shell: bash
-        # TODO: Renable the dist/* line. Currently failing to check the whl
         run: |
-          poetry build
-          # poetry run twine check dist/*
-          poetry run twine check dist/*.tar.gz
+          uv build
+          uv run twine check dist/*.tar.gz
 
   test:
     name: Test
@@ -57,23 +52,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Poetry
-        run: |
-          pipx install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: "poetry"
+      - name: Set up Python
+        run: uv python install
 
-      - name: Install dependencies
-        run: |
-          poetry install
+      - name: Install the project
+        run: uv sync --all-extras --dev
 
-      - name: Run tests
-        run: |
-          poetry run pytest
+      - name: Test
+        run: uv run pytest
 
   publish:
     name: Publish
@@ -85,33 +74,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Poetry
-        run: |
-          pipx install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: "poetry"
+      - name: Set up Python
+        run: uv python install
 
-      - name: Install dependencies
-        run: |
-          poetry install
+      - name: Install the project
+        run: uv sync --all-extras --dev
 
       - name: Build
-        run: |
-          poetry build
-
-      - name: Configure PyPI
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          poetry config pypi-token.pypi "$PYPI_TOKEN"
+        run: uv build
 
       - name: Publish to PyPI
         run: |
-          poetry publish
+          uv publish --token $PYPI_TOKEN
 
       # I suppose this is kinda useful to have, but, really, its just so that the mkdocs scraper
       # can determine the latest version number in its github section.

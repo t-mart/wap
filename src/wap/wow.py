@@ -15,19 +15,14 @@ from wap.exception import VersionError
 
 @frozen(order=True)
 class Version:
-
-    _INTERFACE_PATTERN: ClassVar[
-        str
-    ] = r"""(?x)
+    _INTERFACE_PATTERN: ClassVar[str] = r"""(?x)
         ^
         (?P<major>\d+)
         (?P<minor>\d{2})
         (?P<patch>\d{2})
         $
     """
-    _DOT_PATTERN: ClassVar[
-        str
-    ] = r"""(?x)
+    _DOT_PATTERN: ClassVar[str] = r"""(?x)
         ^
         (?P<major>\d+)
         \.

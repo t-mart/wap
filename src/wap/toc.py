@@ -98,9 +98,9 @@ class Toc:
         default_tags["Title"] = source_path.name
         default_tags["Version"] = config.version
         default_tags["Interface"] = wow_version.interface_version
-        default_tags[
-            f"{_METADATA_TAG_PREFIX}BuildDateTime"
-        ] = arrow.utcnow().isoformat()
+        default_tags[f"{_METADATA_TAG_PREFIX}BuildDateTime"] = (
+            arrow.utcnow().isoformat()
+        )
         default_tags[f"{_METADATA_TAG_PREFIX}BuildTool"] = f"wap {__version__}"
 
         # all default tags are overrideable

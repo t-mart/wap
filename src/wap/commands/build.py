@@ -146,8 +146,7 @@ class Addon:
             rel_path = Path(toc_path_target.name)
             if rel_path in addon_paths:
                 warn(
-                    f"Generated TOC path {rel_path} already exists in output "
-                    "directory"
+                    f"Generated TOC path {rel_path} already exists in output directory"
                 )
             else:
                 addon_paths.add(rel_path)

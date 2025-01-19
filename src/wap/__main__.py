@@ -1,6 +1,7 @@
 """
 Main entrypoint to the module
 """
+
 import sys
 
 import click

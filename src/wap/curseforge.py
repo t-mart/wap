@@ -29,19 +29,18 @@ def _raise_for_status(response: httpx.Response, activity_text: str) -> None:
 
 @frozen(kw_only=True)
 class CurseForgeAPI:
-
     api_token: str
 
     _CLIENT: ClassVar[httpx.Client] = httpx.Client(timeout=15.0)
     TOKEN_HEADER_NAME: ClassVar[str] = "X-Api-Token"
-    UPLOADED_FILE_URL_TEMPLATE: ClassVar[
-        str
-    ] = "https://www.curseforge.com/wow/addons/{slug}/files/{file_id}"
+    UPLOADED_FILE_URL_TEMPLATE: ClassVar[str] = (
+        "https://www.curseforge.com/wow/addons/{slug}/files/{file_id}"
+    )
 
     VERSION_ENDPOINT_URL: ClassVar[str] = "https://wow.curseforge.com/api/game/versions"
-    UPLOAD_ENDPOINT_URL_TEMPLATE: ClassVar[
-        str
-    ] = "https://wow.curseforge.com/api/projects/{project_id}/upload-file"
+    UPLOAD_ENDPOINT_URL_TEMPLATE: ClassVar[str] = (
+        "https://wow.curseforge.com/api/projects/{project_id}/upload-file"
+    )
 
     def upload(
         self,
