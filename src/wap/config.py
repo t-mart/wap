@@ -23,7 +23,7 @@ SCHEMA_URL = (
 def get_schema() -> Any:
     path = importlib.resources.files(wap).joinpath("schema/wap.schema.json")
     data = path.read_text(encoding="utf-8")
-    return json.loads(data  )
+    return json.loads(data)
 
 
 @frozen(kw_only=True)
