@@ -34,9 +34,6 @@ homepage = "https://github.com/t-mart/wap"
 repository = "https://github.com/t-mart/wap"
 documentation = "https://t-mart.github.io/wap/"
 
-[tool.uv]
-package = true
-
 [project.scripts]
 wap = "wap.__main__:main"
 
@@ -53,3 +50,13 @@ dev = [
     "twine>=6.2.0",
     "ty>=0.0.14",
 ]
+
+[build-system]
+requires = ["uv_build>=0.9.27,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "wap"
+
+[tool.uv]
+package = true
