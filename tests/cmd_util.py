@@ -4,7 +4,7 @@ import re
 from collections.abc import Sequence
 
 from attr import frozen
-from click import BaseCommand
+from click import Command
 from click.testing import CliRunner, Result
 
 # we need to patch some functions in these module, so we gotta import the module itself
@@ -49,8 +49,8 @@ class RunResult:  # yeesh, this name is derivative
         return self.exit_code == 0
 
 
-def invoke(command: BaseCommand, args: Sequence[str] | None = None) -> RunResult:
-    runner = CliRunner(mix_stderr=False)
+def invoke(command: Command, args: Sequence[str] | None = None) -> RunResult:
+    runner = CliRunner()
     result = runner.invoke(command, args or [])
     return RunResult.from_result(result)
 
